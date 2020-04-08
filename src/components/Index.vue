@@ -3,10 +3,10 @@
     <el-container>
         <!-- 资源目录树形表格 -->
         <el-aside width="350px">
-            <el-table :data="ResourceTableData" style="width: 100%;margin-bottom: 20px;" height="1000px" row-key="资源名称" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" @row-click="elementlink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" highlight-current-row @current-change="ResourceTableChange">
-                <el-table-column prop="资源名称" label="资源名称">
+            <el-table :data="ResourceTableData" style="width: 100%;margin-bottom: 20px;" height="1000px" row-key="ID" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" @row-click="elementlink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" highlight-current-row @current-change="ResourceTableChange">
+                <el-table-column prop="Name" label="资源名称">
                 </el-table-column>
-                <el-table-column prop="类型" label="类型">
+                <el-table-column prop="Type" label="类型">
                 </el-table-column>
             </el-table>
         </el-aside>
@@ -44,7 +44,7 @@
                     </el-table-column>
                 </el-table>
             </el-row>
-
+            <!-- 标签分栏表格 -->
             <el-row class="elcochoose">
                 <el-tabs v-model="activeName" type="card">
                     <el-tab-pane label="要素分类" name="first">
@@ -96,6 +96,7 @@
                     </el-tab-pane>
                 </el-tabs>
 
+                <!-- 轮播形式展现数据表 -->
                 <!-- <el-carousel type="card" height="490px" :autoplay="false">
                     <el-carousel-item v-for="item in 3" :key="item">
 
@@ -143,7 +144,7 @@
                 </el-carousel> -->
             </el-row>
             <el-row>
-                
+
                 <el-button type="text" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>
 
                 <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
@@ -173,6 +174,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            //表格初始化赋值
             ResourceTableData: [],
             ElementTableData: [],
             ElementClassifyTableData: [],
@@ -180,7 +182,7 @@ export default {
             ElementRangeTableData: [],
             //标签页首选选项卡
             activeName: 'first',
-
+            //弹出框参数
             dialogFormVisible: false,
             form: [],
             formLabelWidth: '120px'
@@ -194,28 +196,40 @@ export default {
         //资源目录树形网格
         treeList() {
             var that = this;
-            axios.post("http://localhost:52225/api/Resource/GetResource").then(function (res) {
-                let datas = res.data;
-                var AllData = datas;
-
-                let treeMapList = AllData.reduce((memo, current) => {
-                    current.label = current.资源名称;
-                    memo[current["资源ID"]] = current;
-                    return memo;
-                }, {});
-                let resultdata = AllData.reduce((arr, current) => {
-                    let pid = current.上级资源ID;
-                    let parent = treeMapList[pid];
+            axios.post("https://localhost:44331/api/GetAllResources").then(function (res) {
+                var AllData = res.data;
+                console.log(AllData);
+                let map = {};
+                let val = [];
+                //生成数据对象集合
+                AllData.forEach(it => {
+                    map[it.ID] = it; //department_id为每个节点的id
+                });
+                //生成结果集
+                AllData.forEach(it => {
+                    const parent = map[it.PID]; //pid_department_id为父节点的id
                     if (parent) {
-                        parent.children ? parent.children.push(current) : parent.children = [current]
-                    } else if (pid === "") { //则是根节点
-                        arr.push(current)
+                        if (!Array.isArray(parent.children)) parent.children = [];
+                        parent.children.push(it);
+                    } else {
+                        val.push(it)
                     }
-                    return arr;
-                }, []);
-                that.ResourceTableData = resultdata;
-                console.log(that.ResourceTableData);
-            })
+                });
+                for(var i in AllData){
+                    if(AllData[i].children == null){
+                        delete AllData[i];
+                        //AllData.splice(i, 1);
+                        for(var j in AllData){
+                            if(AllData[j].PID != null){
+                                delete AllData[j];
+                               // AllData.splice(j, 1);
+                            }
+                        }
+                    }
+                };
+                console.log(AllData);
+                that.ResourceTableData = AllData;
+            }) 
         },
         //资源--要素--分类--统计指标 联动
         elementlink(row, column, event) {
