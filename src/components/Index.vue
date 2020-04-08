@@ -406,8 +406,8 @@ export default {
 
         //点击确认
         handleConfirm() {
-
-            this.$ajax.post('https://localhost:44331/api/GreateNResource', this.form)
+            
+            this.$ajax.post('http://localhost:62200/api/CreateResource',this.form)
                 //返回成功调用
                 .then((res) => {
                     this.$message('新增成功!');
