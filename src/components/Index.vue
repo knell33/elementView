@@ -151,6 +151,7 @@
                         </el-table>
                     </el-carousel-item>
                 </el-carousel> -->
+                
             </el-row>
             <el-row>
                 <el-dialog title="新增资源" :visible.sync="dialogFormVisible" width="30%">
