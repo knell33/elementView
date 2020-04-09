@@ -13,9 +13,9 @@
             <div v-show="menuVisible">
                 <ul id="menu" class="menu">
                     <li class="ms-item wrap-ms-right" @click="handleAdd()"><i class="el-icon-circle-plus icon1"></i>新增本级</li>
-                    <li class="ms-item wrap-ms-right" @click="handleAdd()"><i class="el-icon-circle-plus icon1"></i>新增下级</li>
-                    <li class="ms-item wrap-ms-right"><i class="el-icon-s-order icon1"></i>修改</li>
-                    <li class="ms-item wrap-ms-right"><i class="el-icon-delete-solid icon1"></i>删除</li>
+                    <li class="ms-item wrap-ms-right" @click="handleXAdd()"><i class="el-icon-circle-plus icon1"></i>新增下级</li>
+                    <li class="ms-item wrap-ms-right" @click="handleUpdate()"><i class="el-icon-s-order icon1"></i>修改</li>
+                    <li class="ms-item wrap-ms-right" @click="handleDelete()"><i class="el-icon-delete-solid icon1"></i>删除</li>
                 </ul>
             </div>
         </el-aside>
@@ -151,17 +151,17 @@
                         </el-table>
                     </el-carousel-item>
                 </el-carousel> -->
-                
+
             </el-row>
             <el-row>
-                <el-dialog title="新增资源" :visible.sync="dialogFormVisible" width="30%">
-                    <el-form ref="mform" :model="form" label-width="80px">
-                        <el-form-item label="上级">
+                <el-dialog title="" :visible.sync="dialogFormVisible" :before-close="closedialog" width="30%">
+                    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+                        <el-form-item label="上级" prop="PID">
                             <el-select v-model="form.PID" placeholder="请选择上级">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="类型">
+                        <el-form-item label="类型" prop="Type">
                             <el-select v-model="form.Type" placeholder="请选择资源类型">
                                 <el-option label="目录" value="目录"></el-option>
                                 <el-option label="资源" value="资源"></el-option>
@@ -172,24 +172,23 @@
                                 <el-option label="业务明细" value="业务明细"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="名称">
+                        <el-form-item label="名称" prop="Name">
                             <el-input v-model="form.Name"></el-input>
                         </el-form-item>
-                        <el-form-item label="显示名称">
+                        <el-form-item label="显示名称" prop="ShowName">
                             <el-input v-model="form.ShowName"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="是否树形">
-                            <el-switch v-model="form.TreeForm" :active-value="1" :inactive-value="0" @change=chang($event,state)></el-switch>
+                        <el-form-item label="是否树形" prop="TreeForm">
+                            <el-switch v-model="form.TreeForm" :active-value="1" :inactive-value="0"></el-switch>
                         </el-form-item>
-                        <el-form-item label="备注">
-
+                        <el-form-item label="备注" prop="Note">
                             <el-input type="textarea" v-model="form.Note"></el-input>
                         </el-form-item>
                     </el-form>
                     <span slot="footer" class="dialog-footer">
-                        <el-button @click="dialogFormVisible=false">取 消</el-button>
-                        <el-button type="primary" @click="handleConfirm">确 定</el-button>
+                        <el-button @click="colse">取 消</el-button>
+                        <el-button type="primary" :loading="loading" @click="handleConfirm()">确 定</el-button>
                     </span>
                 </el-dialog>
             </el-row>
@@ -200,8 +199,21 @@
 
 <script>
 import axios from 'axios';
+import {
+    isnull
+} from '../validation/index'
 export default {
     data() {
+        const validateName = (rule, value, callback) => {
+            if (!value) {
+                callback(new Error('目录名称不能为空!'))
+            }
+        }
+        const validateType = (rule, value, callback) => {
+            if (!value) {
+                callback(new Error('目录类型不能为空!'))
+            }
+        }
         return {
             //表格初始化赋值
             ResourceTableData: [],
@@ -225,8 +237,30 @@ export default {
                 RelationID: ""
 
             },
-            //
+            //双击后当前行的数据
+            srow: [],
+            //双击后当前行的ID
+            rid: null,
+            //编辑标识
+            mark: null,
+            //右键菜单模态框
             menuVisible: false,
+            //
+            loading: false,
+            //验证规格
+            rules: {
+                Name: [{
+                    required: true,
+                    validator: validateName,
+                    trigger: 'blur'
+                }],
+                Type: [{
+                    required: true,
+                    validator: validateType,
+                    trigger: 'blur'
+                }]
+
+            },
             formLabelWidth: '120px'
         };
     },
@@ -246,8 +280,8 @@ export default {
                         Name: Pdata[i].Name
                     })
                 }
-                console.log("进入测试");
-                console.log(obj);
+                //console.log("进入测试");
+                //console.log(obj);
             });
             return obj;
         }
@@ -370,8 +404,9 @@ export default {
             this.menuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
             this.menuVisible = true; // 显示模态窗口，跳出自定义菜单栏
             var menu = document.querySelector('#menu');
-
             this.styleMenu(menu);
+            this.srow = row; //将当前行的数据保存至srow中
+            this.rid = row.ID;
             console.log(row);
             console.log(event);
 
@@ -395,34 +430,154 @@ export default {
                 menu.style.top = event.clientY - 10 + 'px';
             }
         },
-        //点击增加
+
+        //新增本级
         handleAdd() {
+            this.title = "新增本级资源目录"
             this.dialogFormVisible = true;
+            this.mark = 1; //编辑标识
+            this.form = {}; //清空表单
         },
 
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
+        //新增下级
+        handleXAdd() {
+            this.title = "新增下级资源目录"
+            this.dialogFormVisible = true;
+            this.mark = 1;
+            this.form.PID = this.srow.ID; //将本级的ID作为PID
         },
 
         //点击确认
         handleConfirm() {
+            //console.log(this.mark);
+            if (this.mark == 1) {
+                // this.$refs['form'].validate(valid => {
+                //     if (valid) {
+                //         this.$message({
+                //             type: 'success',
+                //             message: '通过验证!'
+                //         });
+                //         this.$refs['form'].resetFields();
+                //          this.loading=true;
+                        this.$ajax.post('http://localhost:62200/api/CreateResource',this.form)
+                            //返回成功调用
+                            .then(() => {
+                                this.$message({
+                                    type: 'success',
+                                    message: '新增成功'
+                                });
+                                this.dialogFormVisible = false;
+                                this.form = {};
+                                this.mark = null;
+                                this.treeList();
 
-            this.$ajax.post('https://localhost:44331/api/GreateNResource', this.form)
-                //返回成功调用
-                .then((res) => {
-                    this.$message('新增成功!');
-                    this.dialogFormVisible = false;
-                    this.$refs['mform'].resetFields(); // 清空表单
-                    this.$refs['mform'].clearValidate(); //清空数据
-                    location.reload();
+                            })
+                            //返回失败调用
+                            .catch(() => {
+                                this.loading=false;
+                                this.$message({
+                                    type: 'error',
+                                    message: '新增失败!'
+                                });
+                            });
+                //     } else {
+                //         console.log('error submit!!');
+                //         return false;
+                //     }
+                // })
 
+            } else {
+                this.$ajax.put('http://localhost:62200/api/PutResourceByID', this.form)
+                    //返回成功调用
+                    .then((res) => {
+                        this.$message({
+                            type: 'success',
+                            message: '修改成功!'
+                        });
+                        this.dialogFormVisible = false;
+                        this.form = {};
+                        this.mark = null;
+                        this.treeList();
+
+                    })
+                    //返回失败调用
+                    .catch((res) => {
+                        this.$message({
+                            type: 'error',
+                            message: '修改失败!'
+                        });
+
+                    });
+
+            }
+        },
+
+        //修改
+        handleUpdate() {
+            this.mark = 2;
+            //console.log(this.srow);
+            //console.log(this.mark);
+            this.dialogFormVisible = true;
+            this.form = this.srow;
+        },
+
+        //关闭并清空模态框
+        colse() {
+            this.dialogFormVisible = false;
+            this.title = "";
+            this.form = {};
+            this.$refs['form'].resetFields();
+
+        },
+        //点击X关闭模态框
+        closedialog(done) {
+            this.$confirm('确认关闭？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
                 })
-                //返回失败调用
-                .catch((res) => {
-                    this.$message('新增失败!');
+                .then(_ => {
+                    done();
+                    this.form = {};
+                    this.mark = null;
+                    this.title = "";
+                    this.$refs['form'].resetFields();
+                })
+                .catch(_ => {});
+        },
+        //右键删除
+        handleDelete() {
+            this.$confirm('是否要删除当前资源目录？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                })
+                .then(() => {
+                    this.$ajax.delete('http://localhost:62200/api/DeleteResourceByID', {
+                            params: ({
+                                ResourceId: this.rid
+                            })
+                        })
+                        //返回成功调用
+                        .then((res) => {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            //location.reload();
+                            this.treeList();
+                        })
+                        //返回失败调用
+                        .catch((res) => {
+                            this.$message({
+                                type: 'error',
+                                message: '删除失败!'
+                            });
 
-                });
-        }
+                        });
+                })
+                .catch(() => {});
+        },
 
     }
 }
