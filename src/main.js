@@ -12,6 +12,7 @@ import qs from 'qs';
 //引入layui
 
 
+
 Vue.config.productionTip = false
 
 // new Vue({
