@@ -199,8 +199,21 @@
 
 <script>
 import axios from 'axios';
+import {
+    isnull
+} from '../validation/index'
 export default {
     data() {
+        const validateName = (rule, value, callback) => {
+            if (!value) {
+                callback(new Error('目录名称不能为空!'))
+            }
+        }
+        const validateType = (rule, value, callback) => {
+            if (!value) {
+                callback(new Error('目录类型不能为空!'))
+            }
+        }
         return {
             //表格初始化赋值
             ResourceTableData: [],
