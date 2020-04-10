@@ -12,10 +12,10 @@
             <!-- 资源目录右键菜单 -->
             <div v-show="menuVisible">
                 <ul id="menu" class="menu">
-                    <li class="ms-item wrap-ms-right" @click="handleAdd()"><i class="el-icon-circle-plus icon1"></i>新增本级</li>
-                    <li class="ms-item wrap-ms-right" @click="handleAdd()"><i class="el-icon-circle-plus icon1"></i>新增下级</li>
-                    <li class="ms-item wrap-ms-right"><i class="el-icon-s-order icon1"></i>修改</li>
-                    <li class="ms-item wrap-ms-right"><i class="el-icon-delete-solid icon1"></i>删除</li>
+                    <li class="ms-item wrap-ms-right" @click="handleAdd()"><i class="el-icon-circle-plus icon1"></i>新增资源事务</li>
+                    <li class="ms-item wrap-ms-right" @click="handleXAdd()"><i class="el-icon-circle-plus icon1"></i>新增下级事务</li>
+                    <li class="ms-item wrap-ms-right" @click="handleUpdate()"><i class="el-icon-s-order icon1"></i>修改</li>
+                    <li class="ms-item wrap-ms-right" @click="handleDelete()"><i class="el-icon-delete-solid icon1"></i>删除</li>
                 </ul>
             </div>
         </el-aside>
@@ -151,17 +151,17 @@
                         </el-table>
                     </el-carousel-item>
                 </el-carousel> -->
-                
+
             </el-row>
             <el-row>
-                <el-dialog title="新增资源" :visible.sync="dialogFormVisible" width="30%">
-                    <el-form ref="mform" :model="form" label-width="80px">
-                        <el-form-item label="上级">
-                            <el-select v-model="form.PID" placeholder="请选择上级">
+                <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="closedialog" width="30%" id="resourceiframe">
+                    <el-form ref="form" :model="form" :rules="ResourceRules" status-icon label-width="80px">
+                        <el-form-item label="上级" prop="PID">
+                            <el-select v-model="form.PID" filterable :filter-method="resourcedatafilter" :default-first-option=true placeholder="请选择上级">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="类型">
+                        <el-form-item label="类型" prop="Type">
                             <el-select v-model="form.Type" placeholder="请选择资源类型">
                                 <el-option label="目录" value="目录"></el-option>
                                 <el-option label="资源" value="资源"></el-option>
@@ -172,24 +172,23 @@
                                 <el-option label="业务明细" value="业务明细"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="名称">
+                        <el-form-item label="名称" prop="Name">
                             <el-input v-model="form.Name"></el-input>
                         </el-form-item>
-                        <el-form-item label="显示名称">
+                        <el-form-item label="显示名称" prop="ShowName">
                             <el-input v-model="form.ShowName"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="是否树形">
-                            <el-switch v-model="form.TreeForm" :active-value="1" :inactive-value="0" @change=chang($event,state)></el-switch>
+                        <el-form-item label="是否树形" prop="TreeForm">
+                            <el-switch v-model="form.TreeForm" :active-value="1" :inactive-value="0"></el-switch>
                         </el-form-item>
-                        <el-form-item label="备注">
-
+                        <el-form-item label="备注" prop="Note">
                             <el-input type="textarea" v-model="form.Note"></el-input>
                         </el-form-item>
                     </el-form>
                     <span slot="footer" class="dialog-footer">
-                        <el-button @click="dialogFormVisible=false">取 消</el-button>
-                        <el-button type="primary" @click="handleConfirm">确 定</el-button>
+                        <el-button @click="colse()">取 消</el-button>
+                        <el-button type="primary" :loading="loading" @click="submitForm('form')">确 定</el-button>
                     </span>
                 </el-dialog>
             </el-row>
@@ -225,9 +224,35 @@ export default {
                 RelationID: ""
 
             },
-            //
+            //验证规格
+            ResourceRules: {
+                Type: [{
+                    required: true,
+                    message: '请选择类型',
+                    trigger: 'blur'
+                }],
+                Name: [{
+                    required: true,
+                    message: '请输入名称',
+                    trigger: 'blur'
+                }]
+            },
+            //修改时保存当前行的数据
+            srow: [],
+            //修改时保存当前行的ID
+            rid: null,
+            //编辑标识
+            mark: null,
+            //右键菜单模态框
             menuVisible: false,
-            formLabelWidth: '120px'
+            //
+            loading: false,
+
+            formLabelWidth: '120px',
+            //资源目录对应操作的弹框标题
+            choosetitle: '',
+            // resourcedatafilter: '',
+            getType: '',
         };
     },
     created: function () {
@@ -235,6 +260,7 @@ export default {
 
     },
     computed: {
+        //上级资源列表
         PList() {
             var obj = [];
             axios.post("http://localhost:62200/api/GetAllResources").then(function (res) {
@@ -246,8 +272,8 @@ export default {
                         Name: Pdata[i].Name
                     })
                 }
-                console.log("进入测试");
-                console.log(obj);
+                //console.log("进入测试");
+                //console.log(obj);
             });
             return obj;
         }
@@ -256,7 +282,7 @@ export default {
         //资源目录树形网格
         treeList() {
             var that = this;
-            axios.post("http://localhost:62200/api/GetAllResources").then(function (res) {
+            axios.post("GetAllResources").then(function (res) {
                 var AllData = res.data;
                 console.log(AllData);
                 let map = {};
@@ -289,18 +315,14 @@ export default {
                 };
                 console.log(AllData);
                 that.ResourceTableData = AllData;
-            })
-        },
-
-        TableList() {
-
+            });
         },
         //资源--要素--分类--统计指标 联动
         elementlink(row, column, event) {
             var that = this;
             console.log(row.ID);
             //要素
-            this.$ajax.post('http://localhost:62200/api/GetAllELementByResourceID',
+            this.$ajax.post('GetAllELementByResourceID',
                     this.$qs.stringify({
                         RID: row.ID
                     }))
@@ -314,7 +336,7 @@ export default {
                     console.log("出错了")
                 });
             //分类
-            this.$ajax.post('http://localhost:62200/api/GetAllElementClassifyByRID',
+            this.$ajax.post('GetAllElementClassifyByRID',
                     this.$qs.stringify({
                         RID: row.ID
                     }))
@@ -324,7 +346,7 @@ export default {
                 })
                 .catch(function (res) {})
             //统计指标
-            this.$ajax.post('http://localhost:62200/api/GetCountNormByRID',
+            this.$ajax.post('GetCountNormByRID',
                     this.$qs.stringify({
                         RID: row.ID
                     }))
@@ -339,7 +361,7 @@ export default {
             var that = this;
             console.log(row.ID);
             //要素值域选项
-            this.$ajax.post('http://localhost:62200/api/GetElementRangeByEID',
+            this.$ajax.post('GetElementRangeByEID',
                     this.$qs.stringify({
                         EID: row.ID
                     }))
@@ -370,11 +392,13 @@ export default {
             this.menuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
             this.menuVisible = true; // 显示模态窗口，跳出自定义菜单栏
             var menu = document.querySelector('#menu');
-
             this.styleMenu(menu);
-            console.log(row);
+            this.srow = row; //将当前行的数据保存至srow中
+            //   console.log("进入保存");
+            console.log(this.srow);
+            //  console.log("退出保存");
+            this.rid = row.ID;
             console.log(event);
-
         },
         foo() {
             // 取消鼠标监听事件 菜单栏
@@ -395,35 +419,264 @@ export default {
                 menu.style.top = event.clientY - 10 + 'px';
             }
         },
-        //点击增加
+
+        //新增本级
         handleAdd() {
+            // this.title = "新增本级资源目录";
+            this.choosetitle = "新增资源事务";
             this.dialogFormVisible = true;
+            this.mark = 1; //编辑标识
+            //   this.form = {}; //清空表单
         },
 
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
+        //新增下级
+        handleXAdd() {
+            // this.title = "新增下级资源目录"
+            this.choosetitle = "新增下级事务";
+            this.dialogFormVisible = true;
+            this.mark = 1;
+            this.form.PID = this.srow.ID; //将本级的ID作为PID
+            this.form.Type = "事务";
         },
 
-        //点击确认
-        handleConfirm() {
-            
-            this.$ajax.post('http://localhost:62200/api/CreateResource',this.form)
+        //修改
+        handleUpdate() {
+            this.choosetitle = "修改资源";
+            this.mark = 2;
+            //console.log(this.srow);
+            //console.log(this.mark);
+            this.dialogFormVisible = true;
+            this.form = this.srow;
+        },
+        getTypeData() {
+            var that = this;
+            this.$ajax.post('GetTypeByRID',
+                    this.$qs.stringify({
+                        RID: this.form.PID
+                    }))
                 //返回成功调用
-                .then((res) => {
-                    this.$message('新增成功!');
-                    this.dialogFormVisible = false;
-                    this.$refs['mform'].resetFields(); // 清空表单
-                    this.$refs['mform'].clearValidate(); //清空数据
-                    location.reload();
-
+                .then(function (res) {
+                    var GetType = res.data[0].Type;
+                    that.getType = GetType;
+                    //  console.log("调用");
+                    //  console.log(that.getType);
                 })
                 //返回失败调用
-                .catch((res) => {
-                    this.$message('新增失败!');
-
+                .catch(function (res) {
+                    console.log("没有找到类型");
                 });
-        }
+        },
+        //点击确认
+        submitForm(forname) {
+            var that =this;
+            if (this.form.Type == "") {
+                this.$message.error('请输入资源类型');
+            } else if (this.form.Name == "") {
+                this.$message.error('请输入资源名称');
+            } else {
+                if (this.mark == 1) {
+                    console.log("aa");
+                    console.log(this.form);
+                    var Type1 = this.form.Type;
+                    console.log(Type1);
+                    console.log("aa");
+                    this.getTypeData();
 
+                    console.log(this.getType);
+
+                    if (this.getType == "资源" && Type1 == "资源") {
+                        this.$message({
+                            message: '资源的下级不允许再挂资源，只能添加【附加资源】！',
+                            type: 'warning',
+                            center: true,
+                            duration: 4000,
+                            offset: 40
+                        });
+                    } else if (this.getType == "事务" && Type1 == "事务") {
+                        this.$message({
+                            message: '事务的下级不允许再挂事务！',
+                            type: 'warning',
+                            center: true,
+                            duration: 4000,
+                            offset: 40
+                        });
+                    } else if (this.getType == "业务" && Type1 == "业务明细") {
+                        this.$message({
+                            message: '业务明细必须挂在业务的下级！',
+                            type: 'warning',
+                            center: true,
+                            duration: 4000,
+                            offset: 40
+                        });
+                    } else if (this.getType == "资源" && Type1 == "资源关系" && this.getType != "附加资源" && this.getType != "事务") {
+                        this.$message({
+                            message: '资源关系必须挂在资源或者附加资源的下级！',
+                            type: 'warning',
+                            center: true,
+                            duration: 4000,
+                            offset: 40
+                        });
+                    } else {
+                        console.log("进入新增");
+                        this.$ajax.post("CreateResource", this.form)
+                            .then(function (obj) {
+                                that.$message({
+                                    type: 'success',
+                                    message: '新增成功',
+                                    duration: 4000,
+                                    offset: 40
+                                });
+                                that.dialogFormVisible = false;
+                                that.form = {};
+                                that.mark = null;
+                                that.treeList();
+                            })
+                            .catch(function (obj) {
+                                console.log("新增失败");
+                                that.$message({
+                                    type: 'warning',
+                                    message: '出现未知错误！',
+                                    duration: 4000,
+                                    offset: 40
+                                });
+                            })
+                    }
+
+                } else {
+
+                    if (this.getType == "资源" && Type1 == "资源") {
+                        this.$message({
+                            message: '资源的下级不允许再挂资源，只能添加【附加资源】！',
+                            type: 'warning',
+                            center: true,
+                            duration: 4000,
+                            offset: 40
+                        });
+                    } else if (this.getType == "事务" && Type1 == "事务") {
+                        this.$message({
+                            message: '事务的下级不允许再挂事务！',
+                            type: 'warning',
+                            center: true,
+                            duration: 4000,
+                            offset: 40
+                        });
+                    } else if (this.getType == "业务" && Type1 == "业务明细") {
+                        this.$message({
+                            message: '业务明细必须挂在业务的下级！',
+                            type: 'warning',
+                            center: true,
+                            duration: 4000,
+                            offset: 40
+                        });
+                    } else if (this.getType == "资源" && Type1 == "资源关系" && this.getType != "附加资源" && this.getType != "事务") {
+                        this.$message({
+                            message: '资源关系必须挂在资源或者附加资源的下级！',
+                            type: 'warning',
+                            center: true,
+                            duration: 4000,
+                            offset: 40
+                        });
+                    } else {
+                        console.log("进入修改");
+                        this.$ajax.put('PutResourceByID', this.form)
+                            //返回成功调用
+                            .then((res) => {
+                                that.$message({
+                                    type: 'success',
+                                    message: '修改成功！',
+                                    duration: 4000,
+                                    offset: 40
+                                });
+                                that.dialogFormVisible = false;
+                                that.form = {};
+                                that.mark = null;
+                                that.treeList();
+
+                            })
+                            //返回失败调用
+                            .catch((res) => {
+                                that.$message({
+                                    type: 'warning',
+                                    message: '修改失败！',
+                                    duration: 4000,
+                                    offset: 40
+                                });
+                            });
+                    }
+                }
+            }
+        },
+        //关闭并清空模态框
+        colse() {
+            this.dialogFormVisible = false;
+            this.title = "";
+            this.form = {};
+            this.$refs['form'].resetFields();
+
+        },
+        //点击X关闭模态框
+        closedialog(done) {
+            this.$confirm('确认关闭？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                })
+                .then(_ => {
+                    done();
+                    this.form = {};
+                    this.mark = null;
+                    this.title = "";
+                    this.$refs['form'].resetFields();
+                })
+                .catch(_ => {});
+        },
+        //右键删除
+        handleDelete() {
+            this.$confirm('是否要删除当前资源目录？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                })
+                .then(() => {
+                    this.$ajax.delete('DeleteResourceByID', {
+                            params: ({
+                                ResourceId: this.rid
+                            })
+                        })
+                        //返回成功调用
+                        .then((res) => {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            //location.reload();
+                            this.treeList();
+                        })
+                        //返回失败调用
+                        .catch((res) => {
+                            this.$message({
+                                type: 'error',
+                                message: '删除失败!'
+                            });
+
+                        });
+                })
+                .catch(() => {});
+        },
+
+    },
+    // 上级资源列表下拉框开启搜索功能
+    resourcedatafilter(val) {
+        this.value = val
+        if (val) {
+            this.options = this.optionsCopy.filter((item => {
+                if (!!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+                    return true;
+                }
+            }))
+        } else {
+            this.options = this.optionsCopy; //val为空时，还原数组
+        }
     }
 }
 </script>
@@ -434,16 +687,8 @@ export default {
     margin-top: 10px;
 }
 
-.menu__item {
-    display: block;
-    line-height: 20px;
-    text-align: left;
-    margin-top: 10px;
-
-}
-
 .menu {
-    width: 110px;
+    width: 145px;
     overflow: hidden;
     /*隐藏溢出的元素*/
     box-shadow: 0 1px 1px #888, 1px 0 1px #ccc;
