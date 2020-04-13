@@ -9,15 +9,6 @@
                 <el-table-column prop="Type" label="类型">
                 </el-table-column>
             </el-table>
-            <!-- 资源目录右键菜单 -->
-            <div v-show="menuVisible">
-                <ul id="menu" class="menu">
-                    <li class="ms-item wrap-ms-right" @click="handleAdd()"><i class="el-icon-circle-plus icon1"></i>新增资源事务</li>
-                    <li class="ms-item wrap-ms-right" @click="handleXAdd()"><i class="el-icon-circle-plus icon1"></i>新增下级事务</li>
-                    <li class="ms-item wrap-ms-right" @click="handleUpdate()"><i class="el-icon-s-order icon1"></i>修改</li>
-                    <li class="ms-item wrap-ms-right" @click="handleDelete()"><i class="el-icon-delete-solid icon1"></i>删除</li>
-                </ul>
-            </div>
         </el-aside>
         <!-- 要素目录表格 -->
         <el-main>
@@ -154,8 +145,9 @@
 
             </el-row>
             <el-row>
+                <!-- 资源目录新增、修改弹框 -->
                 <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="closedialog" width="30%" id="resourceiframe">
-                    <el-form ref="form" :model="form" :rules="ResourceRules" status-icon label-width="80px">
+                    <el-form ref="form" :model="form" status-icon label-width="80px">
                         <el-form-item label="上级" prop="PID">
                             <el-select v-model="form.PID" filterable :filter-method="resourcedatafilter" :default-first-option=true placeholder="请选择上级">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
@@ -194,6 +186,15 @@
             </el-row>
         </el-main>
     </el-container>
+    <!-- 资源目录右键菜单 -->
+    <div v-show="menuVisible">
+        <ul id="menu" class="menu">
+            <li class="ms-item wrap-ms-right" @click="handleAdd()"><i class="el-icon-circle-plus icon1"></i>新增资源事务</li>
+            <li class="ms-item wrap-ms-right" @click="handleXAdd()"><i class="el-icon-circle-plus icon1"></i>新增下级事务</li>
+            <li class="ms-item wrap-ms-right" @click="handleUpdate()"><i class="el-icon-s-order icon1"></i>修改</li>
+            <li class="ms-item wrap-ms-right" @click="handleDelete()"><i class="el-icon-delete-solid icon1"></i>删除</li>
+        </ul>
+    </div>
 </el-container>
 </template>
 
@@ -204,16 +205,6 @@ import {
 } from '../validation/index'
 export default {
     data() {
-        const validateName = (rule, value, callback) => {
-            if (!value) {
-                callback(new Error('目录名称不能为空!'))
-            }
-        }
-        const validateType = (rule, value, callback) => {
-            if (!value) {
-                callback(new Error('目录类型不能为空!'))
-            }
-        }
         return {
             //表格初始化赋值
             ResourceTableData: [],
@@ -225,6 +216,7 @@ export default {
             activeName: 'first',
             //弹出框参数
             dialogFormVisible: false,
+            //资源目录弹框
             form: {
                 ID: "",
                 PID: "",
@@ -237,34 +229,23 @@ export default {
                 RelationID: ""
 
             },
-            //验证规格
-            ResourceRules: {
-                Type: [{
-                    required: true,
-                    message: '请选择类型',
-                    trigger: 'blur'
-                }],
-                Name: [{
-                    required: true,
-                    message: '请输入名称',
-                    trigger: 'blur'
-                }]
-            },
-            //修改时保存当前行的数据
+            //资源目录修改时保存当前行的数据
             srow: [],
-            //修改时保存当前行的ID
+            //资源目录修改时保存当前行的ID
             rid: null,
-            //编辑标识
+            //资源目录编辑标识
             mark: null,
             //右键菜单模态框
             menuVisible: false,
-            //
-            loading: false,
 
+            loading: false,
+            //资源目录弹框
             formLabelWidth: '120px',
             //资源目录对应操作的弹框标题
             choosetitle: '',
-            // resourcedatafilter: '',
+            //资源目录上级select框自定义搜索方法
+             resourcedatafilter: null,
+            //根据资源ID获取资源类型
             getType: '',
         };
     },
@@ -276,7 +257,7 @@ export default {
         //上级资源列表
         PList() {
             var obj = [];
-            axios.post("http://localhost:62200/api/GetAllResources").then(function (res) {
+            axios.post("GetAllResources").then(function (res) {
                 var Pdata = res.data;
 
                 for (let i in Pdata) {
@@ -400,7 +381,7 @@ export default {
         ElementRangeTableChange(val) {
             this.current = val;
         },
-
+        //资源目录右键点击事件
         rightClick(row, event) {
             this.menuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
             this.menuVisible = true; // 显示模态窗口，跳出自定义菜单栏
@@ -413,6 +394,7 @@ export default {
             this.rid = row.ID;
             console.log(event);
         },
+        //弹窗公共方法
         foo() {
             // 取消鼠标监听事件 菜单栏
             this.menuVisible = false;
@@ -433,7 +415,7 @@ export default {
             }
         },
 
-        //新增本级
+        //资源目录新增本级
         handleAdd() {
             // this.title = "新增本级资源目录";
             this.choosetitle = "新增资源事务";
@@ -442,7 +424,7 @@ export default {
             //   this.form = {}; //清空表单
         },
 
-        //新增下级
+        //资源目录新增下级
         handleXAdd() {
             // this.title = "新增下级资源目录"
             this.choosetitle = "新增下级事务";
@@ -452,7 +434,7 @@ export default {
             this.form.Type = "事务";
         },
 
-        //修改
+        //资源目录修改
         handleUpdate() {
             this.choosetitle = "修改资源";
             this.mark = 2;
@@ -461,6 +443,7 @@ export default {
             this.dialogFormVisible = true;
             this.form = this.srow;
         },
+        //根据资源ID获取资源类型
         getTypeData() {
             var that = this;
             this.$ajax.post('GetTypeByRID',
@@ -479,9 +462,9 @@ export default {
                     console.log("没有找到类型");
                 });
         },
-        //点击确认
+        //资源目录弹框点击确认事件
         submitForm(forname) {
-            var that =this;
+            var that = this;
             if (this.form.Type == "") {
                 this.$message.error('请输入资源类型');
             } else if (this.form.Name == "") {
@@ -622,10 +605,7 @@ export default {
         //关闭并清空模态框
         colse() {
             this.dialogFormVisible = false;
-            this.title = "";
             this.form = {};
-            this.$refs['form'].resetFields();
-
         },
         //点击X关闭模态框
         closedialog(done) {
@@ -643,7 +623,7 @@ export default {
                 })
                 .catch(_ => {});
         },
-        //右键删除
+        //资源目录右键删除
         handleDelete() {
             this.$confirm('是否要删除当前资源目录？', '提示', {
                     confirmButtonText: '确定',
@@ -690,7 +670,8 @@ export default {
         } else {
             this.options = this.optionsCopy; //val为空时，还原数组
         }
-    }
+    },
+    
 }
 </script>
 
