@@ -200,9 +200,6 @@
 
 <script>
 import axios from 'axios';
-import {
-    isnull
-} from '../validation/index'
 export default {
     data() {
         return {
@@ -671,7 +668,7 @@ export default {
             this.options = this.optionsCopy; //val为空时，还原数组
         }
     },
-    
+
 }
 </script>
 
