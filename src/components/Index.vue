@@ -531,7 +531,7 @@ export default {
                 })
                 .catch(function (res) {})
             //统计指标
-            this.$ajax.post('GetCountNormByRID',
+            this.$ajax.post('GetAllCountNormByRID',
                     this.$qs.stringify({
                         RID: row.ID
                     }))
@@ -546,7 +546,7 @@ export default {
         elementrangelink(row, column, event) {
             var that = this;
             //要素值域选项
-            this.$ajax.post('GetElementRangeByEID',
+            this.$ajax.post('GetAllElementRangeByEID',
                     this.$qs.stringify({
                         EID: row.EID
                     }))
