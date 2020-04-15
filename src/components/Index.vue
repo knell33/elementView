@@ -3,7 +3,7 @@
     <el-container>
         <!-- 资源目录树形表格 -->
         <el-aside width="350px">
-            <el-table :data="ResourceTableData" style="width: 100%;margin-bottom: 20px;" height="1000px" row-key="ID" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" @row-click="elementlink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" highlight-current-row @current-change="ResourceTableChange" @row-contextmenu="rightClick">
+            <el-table :data="ResourceTableData" style="width: 100%;margin-bottom: 20px;" height="1000px" row-key="ID" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" @row-click="elementlink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" highlight-current-row @current-change="ResourceTableChange" @row-contextmenu="rightClick" @header-contextmenu="rightHeaderClick">
                 <el-table-column prop="Name" label="资源名称">
                 </el-table-column>
                 <el-table-column prop="Type" label="类型">
@@ -13,7 +13,7 @@
         <!-- 要素目录表格 -->
         <el-main>
             <el-row>
-                <el-table :data="ElementTableData" height="460px" @row-click="elementrangelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick">
+                <el-table :data="ElementTableData" height="460px" @row-click="elementrangelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick">
                     <el-table-column label="序号" prop="Numbera">
                     </el-table-column>
                     <el-table-column label="分类名称" prop="ClassifyName">
@@ -297,7 +297,6 @@
 
 <script>
 import axios from 'axios';
-//import * as fecha from 'element-ui/lib/utils/date';
 export default {
     data() {
         return {
@@ -580,21 +579,34 @@ export default {
             var menu = document.querySelector('#menu');
             this.styleMenu(menu);
             this.srow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
-            console.log(this.srow);
-            //  console.log("退出保存");
             this.rid = row.ID;
-            console.log(event);
         },
         //要素目录右键点击事件
         elrightClick(row, event) {
-            this.elmenuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
-            this.elmenuVisible = true; // 显示模态窗口，跳出自定义菜单栏
+            this.elmenuVisible = false;
+            this.elmenuVisible = true;
             var elmenu = document.querySelector('#elmenu');
             this.styleMenu(elmenu);
             this.erow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
-            console.log(this.erow);
             this.rid = row.RID;
             this.eid = row.EID;
+        },
+        //资源目录右键点击表头事件
+        rightHeaderClick(column,event){
+            console.log("进入资源目录表头事件");
+            console.log(column);
+            console.log(event);
+            this.menuVisible = false;
+            this.menuVisible = true;
+            var menu = document.querySelector('#menu');
+            this.styleMenu(menu);
+        },
+        //要素目录右键点击表头事件
+        elrightHeaderClick(column,event){
+            this.elmenuVisible = false;
+            this.elmenuVisible = true;
+            var elmenu = document.querySelector('#elmenu');
+            this.styleMenu(elmenu);
         },
         //弹窗公共方法
         foo() {
@@ -915,12 +927,6 @@ export default {
                 this.options = this.optionsCopy; //val为空时，还原数组
             }
         },
-
-        //列表日期格式转换
-        // dateFormat(row,column,cellValue){
-        //     console.log(row,column,cellValue);
-        //     return cellValue?fecha.format(new Date(cellValue),'yyyy-MM-dd'):'';
-        // },
         //要素目录新增
         AddElement() {
             this.elchoosetitle = "新增要素";

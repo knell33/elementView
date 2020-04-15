@@ -4,7 +4,7 @@ import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 //表格日期显示格式转换
-import * as fecha from "element-ui/lib/utils/date"
+//import * as fecha from "element-ui/lib/utils/date"
 //导入全局样式表
 import './assets/css/global.css'
 //导入ajax
