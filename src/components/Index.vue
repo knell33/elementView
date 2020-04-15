@@ -148,8 +148,8 @@
                 <!-- 资源目录新增、修改弹框 -->
                 <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="closedialog" width="30%">
                     <el-form ref="form" :model="form" status-icon label-width="80px">
-                        <el-form-item label="上级" prop="PID">
-                            <el-select v-model="form.PID" filterable :filter-method="resourcedatafilter" :default-first-option=true placeholder="请选择上级" style="width:100%">
+                        <el-form-item label="上级">
+                            <el-select v-model="form.PID" filterable :filter-method="datafilter" :default-first-option=true placeholder="请选择上级" style="width:100%">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
@@ -164,33 +164,33 @@
                                 <el-option label="业务明细" value="业务明细"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="名称" prop="Name">
+                        <el-form-item label="名称">
                             <el-input v-model="form.Name"></el-input>
                         </el-form-item>
-                        <el-form-item label="显示名称" prop="ShowName">
+                        <el-form-item label="显示名称">
                             <el-input v-model="form.ShowName"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="是否树形" prop="TreeForm">
+                        <el-form-item label="是否树形">
                             <el-switch v-model="form.TreeForm" :active-value="1" :inactive-value="0"></el-switch>
                         </el-form-item>
-                        <el-form-item label="备注" prop="Note">
+                        <el-form-item label="备注">
                             <el-input type="textarea" v-model="form.Note"></el-input>
                         </el-form-item>
                     </el-form>
                     <span slot="footer" class="dialog-footer">
-                        <el-button @click="colse()">取 消</el-button>
                         <el-button type="primary" :loading="loading" @click="submitForm('form')">确 定</el-button>
+                        <el-button @click="colse()">取 消</el-button>
                     </span>
                 </el-dialog>
                 <!-- 要素目录新增、修改弹框 -->
-                <el-dialog :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedialog" width="40%">
+                <el-drawer :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedrawer" size="45%">
                     <el-form ref="elform" :model="elform" status-icon label-width="110px" :inline="true" label-position="left">
                         <el-form-item label="序号">
-                            <el-input v-model="elform.Numbera"></el-input>
+                            <el-input v-model="elform.Numbera" :disabled="true"></el-input>
                         </el-form-item>
-                        <el-form-item label="资源" style="margin-left:20px">
-                            <el-select v-model="elform.RID" filterable :filter-method="resourcedatafilter" :default-first-option=true placeholder="请选择资源">
+                        <el-form-item label="资源" style="margin-left:20px" clearable>
+                            <el-select v-model="elform.RID" filterable :filter-method="datafilter" :default-first-option=true placeholder="请选择资源" @change="resourceChange">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
@@ -198,12 +198,12 @@
                             <el-input v-model="elform.Name"></el-input>
                         </el-form-item>
                         <el-form-item label="分类" style="margin-left:20px">
-                            <el-select v-model="elform.CID" filterable :filter-method="resourcedatafilter" :default-first-option=true placeholder="请选择分类" style="width:217px">
+                            <el-select v-model="elform.CID" filterable :filter-method="datafilter" :default-first-option=true placeholder="请选择分类" style="width:217px" clearable>
                                 <el-option v-for="(item,index) in ClassifyList" :label="item.CName" :value="item.CID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="要素类型">
-                            <el-select v-model="elform.Type" placeholder="请选择要素类型" style="width:203px">
+                            <el-select v-model="elform.Type" placeholder="请选择要素类型" style="width:203px" @change="typeChange" clearable>
                                 <el-option label="是否" value="是否"></el-option>
                                 <el-option label="数字" value="数字"></el-option>
                                 <el-option label="单行文本" value="单行文本"></el-option>
@@ -219,7 +219,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="选项类型" style="margin-left:17px">
-                            <el-select v-model="elform.OptionType" placeholder="请选择选项类型" style="width:219px">
+                            <el-select v-model="elform.OptionType" placeholder="请选择选项类型" style="width:220px" :disabled="optiondis" clearable>
                                 <el-option label="下拉单选" value="下拉单选"></el-option>
                                 <el-option label="下拉多选" value="下拉多选"></el-option>
                                 <el-option label="平面单选" value="平面单选"></el-option>
@@ -227,60 +227,51 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="值域资源">
-                            <el-select v-model="elform.DRID" filterable :filter-method="resourcedatafilter" :default-first-option=true placeholder="请选择资源" style="width:203px">
+                            <el-select v-model="elform.DRID" filterable :filter-method="datafilter" :default-first-option=true placeholder="请选择资源" style="width:203px" :disabled="drdis" clearable>
                                 <el-option v-for="(item,index) in DRList" :label="item.DRName" :value="item.DRID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="是否必填" style="margin-left:17px">
-                            <el-select v-model="elform.IFRequired" placeholder="请选择" style="width:219px">
-                                <el-option label="是" value="1"></el-option>
-                                <el-option label="否" value="0"></el-option>
-                            </el-select>
+                            <el-switch v-model="elform.IFRequired" :active-value="1" :inactive-value="0" style="width:217px"></el-switch>
                         </el-form-item>
                         <el-form-item label="长度">
-                            <el-input v-model="elform.Length"></el-input>
+                            <el-input v-model="elform.Length" :disabled="lengthdis"></el-input>
                         </el-form-item>
-                        <el-form-item label="精度" style="margin-left:20px">
+                        <el-form-item label="精度" style="margin-left:17px">
                             <el-input v-model="elform.Precision" style="width:217px"></el-input>
                         </el-form-item>
                         <el-form-item label="单位">
-                            <el-input v-model="elform.Unit"></el-input>
+                            <el-input v-model="elform.Unit" :disabled="unitdis"></el-input>
                         </el-form-item>
                         <el-form-item label="默认值" style="margin-left:20px">
                             <el-input v-model="elform.Defaulta" style="width:217px"></el-input>
                         </el-form-item>
                         <el-form-item label="是否展示主目录">
-                            <el-select v-model="elform.IFZSZML" placeholder="请选择" style="width:202px">
-                                <el-option label="是" value="1"></el-option>
-                                <el-option label="否" value="0"></el-option>
-                            </el-select>
+                            <el-switch v-model="elform.IFZSZML" :active-value="1" :inactive-value="0" style="width:217px"></el-switch>
                         </el-form-item>
-                        <el-form-item label="是否展示名称" style="margin-left:17px">
-                            <el-select v-model="elform.IFZSMC" placeholder="请选择" style="width:219px">
-                                <el-option label="是" value="1"></el-option>
-                                <el-option label="否" value="0"></el-option>
-                            </el-select>
+                        <el-form-item label="是否展示名称" style="margin-left:10x" clearable>
+                            <el-switch v-model="elform.IFZSMC" :active-value="1" :inactive-value="0" :disabled="zsmcdis" style="width:217px"></el-switch>
                         </el-form-item>
                         <el-form-item label="编码目录">
-                            <el-select v-model="elform.CDID" filterable :filter-method="resourcedatafilter" :default-first-option=true placeholder="请选择资源" style="width:202px">
+                            <el-select v-model="elform.CDID" filterable :filter-method="datafilter" :default-first-option=true placeholder="请选择资源" style="width:202px" :disabled="cddis" clearable>
                                 <el-option v-for="(item,index) in CDList" :label="item.CDName" :value="item.CDID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="要素分类" style="margin-left:20px">
-                            <el-select v-model="elform.ElementClassify" placeholder="请选择" style="width:219px">
+                            <el-select v-model="elform.ElementClassify" placeholder="请选择" style="width:219px" clearable>
                                 <el-option label="普通要素" value="普通要素"></el-option>
                                 <el-option label="计算要素" value="计算要素"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="备注">
-                            <el-input type="textarea" v-model="elform.Note" style="width:564px"></el-input>
+                            <el-input type="textarea" v-model="elform.Note" style="width:564px" :autosize="{ minRows: 2}"></el-input>
                         </el-form-item>
                     </el-form>
-                    <span slot="footer" class="dialog-footer">
+                    <div class="elem_footer">
+                        <el-button type="primary" :loading="loading" @click="elsubmitForm()">确 定</el-button>
                         <el-button @click="colse()">取 消</el-button>
-                        <el-button type="primary" :loading="loading" @click="elsubmitForm('elform')">确 定</el-button>
-                    </span>
-                </el-dialog>
+                    </div>
+                </el-drawer>
             </el-row>
         </el-main>
     </el-container>
@@ -322,6 +313,8 @@ export default {
 
             //资源目录弹出框参数
             dialogFormVisible: false,
+            //要素目录弹出框参数
+            eldialogFormVisible: false,
             //资源目录弹框表单
             form: {
                 ID: "",
@@ -354,12 +347,16 @@ export default {
             elchoosetitle: '',
 
             //资源目录上级select框自定义搜索方法
-            resourcedatafilter: null,
+            //datafilter: null,
             //根据资源ID获取资源类型
             getType: '',
 
             //要素目录修改时保存当前行的要素id
             eid: '',
+            //要素目录修改时保存对应行信息
+            erow: [],
+            //鼠标左键单击资源目录保存资源ID
+            lrid: '',
             //要素目录弹窗表格
             elform: {
                 EID: "",
@@ -373,15 +370,23 @@ export default {
                 Precision: '',
                 Defaulta: "",
                 CID: "",
-                IFRequired: '0',
+                IFRequired: 0,
                 OptionType: "",
                 Numbera: "",
                 DRID: "",
-                IFZSZML: '0',
-                IFZSMC: '1',
+                IFZSZML: 0,
+                IFZSMC: 1,
                 CDID: "",
                 ElementClassify: "普通要素"
-            }
+            },
+            //要素目录弹窗字段禁用初始值
+            zsmcdis: false, //名称是否展示
+            unitdis: false, //单位
+            lengthdis: false, //长度
+            optiondis: false, //选项类型
+            drdis: false, //值域资源
+            cddis: false, //编码目录
+
         };
     },
     created: function () {
@@ -397,7 +402,8 @@ export default {
                 for (let i in Pdata) {
                     obj.push({
                         ID: Pdata[i].ID,
-                        Name: Pdata[i].Name
+                        Name: Pdata[i].Name,
+                        Type: Pdata[i].Type
                     })
                 }
                 //console.log("进入测试");
@@ -423,9 +429,9 @@ export default {
             return obj;
         },
         //值域资源列表
-        DRList(){
+        DRList() {
             var obj = [];
-            this.$ajax.post("GetAllDR",).then(function (res) {
+            this.$ajax.post("GetAllDR", ).then(function (res) {
                 var DRdata = res.data;
                 for (let i in DRdata) {
                     obj.push({
@@ -437,9 +443,9 @@ export default {
             return obj;
         },
         //通用编码目录列表
-        CDList(){
+        CDList() {
             var obj = [];
-            this.$ajax.get("GetAllGCodedir",).then(function (res) {
+            this.$ajax.get("GetAllGCodedir", ).then(function (res) {
                 var CDdata = res.data;
                 for (let i in CDdata) {
                     obj.push({
@@ -493,7 +499,10 @@ export default {
         //资源--要素--分类--统计指标 联动
         elementlink(row, column, event) {
             var that = this;
-            console.log(row.ID);
+            //保存资源ID供要素目录新增时使用
+            this.lrid = row.ID;
+            console.log("保存资源ID供要素目录新增时使用");
+            console.log(this.lrid);
             //要素
             this.$ajax.post('GetAllELementByResourceID',
                     this.$qs.stringify({
@@ -501,6 +510,7 @@ export default {
                     }))
                 //返回成功调用
                 .then(function (res) {
+                    console.log("要素目录");
                     console.log(res);
                     that.ElementTableData = res.data;
                 })
@@ -514,6 +524,7 @@ export default {
                         RID: row.ID
                     }))
                 .then(function (res) {
+                    console.log("要素分类");
                     console.log(res);
                     that.ElementClassifyTableData = res.data;
                 })
@@ -524,6 +535,7 @@ export default {
                         RID: row.ID
                     }))
                 .then(function (res) {
+                    console.log("统计指标");
                     console.log(res);
                     that.CountNormTableData = res.data;
                 })
@@ -532,13 +544,13 @@ export default {
         //要素目录--文本值域选项 联动
         elementrangelink(row, column, event) {
             var that = this;
-            console.log(row.ID);
             //要素值域选项
             this.$ajax.post('GetElementRangeByEID',
                     this.$qs.stringify({
-                        EID: row.ID
+                        EID: row.EID
                     }))
                 .then(function (res) {
+                    console.log("要素值域选项");
                     console.log(res);
                     that.ElementRangeTableData = res.data;
                 })
@@ -566,8 +578,7 @@ export default {
             this.menuVisible = true; // 显示模态窗口，跳出自定义菜单栏
             var menu = document.querySelector('#menu');
             this.styleMenu(menu);
-            this.srow = row; //将当前行的数据保存至srow中
-            //   console.log("进入保存");
+            this.srow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
             console.log(this.srow);
             //  console.log("退出保存");
             this.rid = row.ID;
@@ -579,13 +590,10 @@ export default {
             this.elmenuVisible = true; // 显示模态窗口，跳出自定义菜单栏
             var elmenu = document.querySelector('#elmenu');
             this.styleMenu(elmenu);
-            this.srow = row; //将当前行的数据保存至srow中
-            // console.log("进入保存");
-            console.log(this.srow);
-            // console.log("退出保存");
+            this.erow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
+            console.log(this.erow);
             this.rid = row.RID;
             this.eid = row.EID;
-            // console.log(event);
         },
         //弹窗公共方法
         foo() {
@@ -707,6 +715,7 @@ export default {
                         });
                     } else {
                         console.log("进入新增");
+                        console.log(this.form);
                         this.$ajax.post("CreateResource", this.form)
                             .then(function (obj) {
                                 that.$message({
@@ -803,24 +812,62 @@ export default {
             this.form = {};
             //关闭要素目录弹框
             this.eldialogFormVisible = false;
-            this.elform = {};
+            this.elform = {
+                EID: "",
+                RID: "",
+                Name: "",
+                Type: "",
+                Unit: "",
+                Note: "",
+                LastModify: "",
+                Length: '',
+                Precision: '',
+                Defaulta: "",
+                CID: "",
+                IFRequired: 0,
+                OptionType: "",
+                Numbera: "",
+                DRID: "",
+                IFZSZML: 0,
+                IFZSMC: 1,
+                CDID: "",
+                ElementClassify: "普通要素"
+            };
         },
-        //点击X关闭模态框
+        //点击X关闭资源目录模态框
         closedialog(done) {
-            this.$confirm('确认关闭？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                })
-                .then(_ => {
-                    done();
-                    this.form = {};
-                    this.mark = null;
-                    this.$refs['form'].resetFields();
-                })
-                .catch(_ => {});
+            done();
+            this.form = {};
+            this.mark = null;
+            this.$refs['form'].resetFields();
         },
-
+        //点击X关闭要素目录模态框
+        closedrawer(done) {
+            done();
+            this.elform = {
+                EID: "",
+                RID: "",
+                Name: "",
+                Type: "",
+                Unit: "",
+                Note: "",
+                LastModify: "",
+                Length: '',
+                Precision: '',
+                Defaulta: "",
+                CID: "",
+                IFRequired: 0,
+                OptionType: "",
+                Numbera: "",
+                DRID: "",
+                IFZSZML: 0,
+                IFZSMC: 1,
+                CDID: "",
+                ElementClassify: "普通要素"
+            };
+            this.mark = null;
+            this.$refs['elform'].resetFields();
+        },
         //资源目录右键删除
         handleDelete() {
             this.$confirm('是否要删除当前资源目录？', '提示', {
@@ -848,14 +895,13 @@ export default {
                             this.$message({
                                 type: 'error',
                                 message: '删除失败!'
-                            });
-
+                            });s
                         });
                 })
                 .catch(() => {});
         },
         // 下拉框开启搜索功能
-        resourcedatafilter(val) {
+        datafilter(val) {
             this.value = val
             if (val) {
                 this.options = this.optionsCopy.filter((item => {
@@ -878,15 +924,273 @@ export default {
             this.elchoosetitle = "新增要素";
             this.eldialogFormVisible = true;
             this.mark = 1;
+            this.elform.RID = this.lrid;
+            //设置名称是否展示禁用
+            for (let i in this.PList) {
+                if (this.PList[i].ID == this.elform.RID) {
+                    if (this.PList[i].Type == "资源") {
+                        this.zsmcdis = true;
+                    }
+                }
+            };
+            //单位、长度、选项类型、值域资源、编码目录字段禁用
+            this.unitdis = true;
+            this.lengthdis = true;
+            this.optiondis = true;
+            this.drdis = true;
+            this.cddis = true;
+            //设置初始序号
+            this.elform.Numbera = (this.ElementTableData.length + 1).toString();
         },
         //要素目录修改
         UpdateElement() {
+            this.elchoosetitle = "修改要素";
+            this.mark = 2;
+            this.eldialogFormVisible = true;
+            this.elform = this.erow;
+            console.log(this.erow);
+            //设置名称是否展示禁用
+            if (this.erow.Type == "资源") {
+                this.zsmcdis = true;
+            }
+            //单位、长度、选项类型、值域资源、编码目录字段禁用
+            if (this.erow.Type != "数字") {
+                this.unitdis = true;
+            } else {
+                this.unitdis = false;
+            };
+            if (this.erow.Type != "数字" && this.erow.Type != "字符" && this.erow.Type != "单行文本" && this.erow.Type != "单行文本(带选项)" && this.erow.Type != "多行文本") {
+                this.lengthdis = true;
+            } else {
+                this.lengthdis = false;
+            };
+            if (this.erow.Type != "选项" && this.erow.Type != "资源" && this.erow.Type != "资源关系" && this.erow.Type != "通用编码") {
+                this.optiondis = true;
+            } else {
+                this.optiondis = false;
+            };
+            if (this.erow.Type != "资源") {
+                this.drdis = true;
+            } else {
+                this.drdis = false;
+            };
+            if (this.erow.Type != "通用编码") {
+                this.cddis = true;
+            } else {
+                this.cddis = false;
+            }
 
         },
         //要素目录删除
         DeleteElement() {
+            var that = this;
+            this.$confirm('是否要删除当前要素目录？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                })
+                .then(() => {
+                    this.$ajax.delete('DeleteElementByEID', {
+                            params: ({
+                                EID: this.eid
+                            })
+                        })
+                        //返回成功调用
+                        .then((res) => {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            //要素
+                            this.$ajax.post('GetAllELementByResourceID',
+                                    this.$qs.stringify({
+                                        RID: this.lrid
+                                    }))
+                                //返回成功调用
+                                .then(function (res) {
+                                    console.log("要素目录");
+                                    console.log(res);
+                                    that.ElementTableData = res.data;
+                                })
+                                //返回失败调用
+                                .catch(function (res) {
+                                    console.log("出错了")
+                                });
+                        })
+                        //返回失败调用
+                        .catch((res) => {
+                            this.$message({
+                                type: 'error',
+                                message: '删除失败!'
+                            });
 
+                        });
+                })
+                .catch(() => {});
         },
+        //根据条件设置要素目录新增、修改字段的禁用状态
+        resourceChange() {
+            console.log(this.elform);
+            var that = this;
+            //根据资源类型改变名称是否展示禁用
+            for (let i in this.PList) {
+                if (this.PList[i].ID == this.elform.RID) {
+                    if (this.PList[i].Type == "资源") {
+                        this.zsmcdis = true;
+                    } else {
+                        this.zsmcdis = false;
+                    }
+                }
+            };
+            //自动填充序号
+            this.$ajax.post('GetAllELementByResourceID',
+                    this.$qs.stringify({
+                        RID: this.elform.RID
+                    }))
+                //返回成功调用
+                .then(function (res) {
+                    console.log("要素目录");
+                    console.log(res);
+                    that.elform.Numbera = (res.data.length + 1).toString();
+                })
+                //返回失败调用
+                .catch(function (res) {
+                    console.log("出错了")
+                });
+        },
+        //根据要素类型改变单位、长度、选项类型、值域资源、编码目录字段禁用
+        typeChange() {
+            if (this.elform.Type != "数字") {
+                this.unitdis = true;
+            } else {
+                this.unitdis = false;
+            };
+            if (this.elform.Type != "数字" && this.elform.Type != "字符" && this.elform.Type != "单行文本" && this.elform.Type != "单行文本(带选项)" && this.elform.Type != "多行文本") {
+                this.lengthdis = true;
+            } else {
+                this.lengthdis = false;
+            };
+            if (this.elform.Type != "选项" && this.elform.Type != "资源" && this.elform.Type != "资源关系" && this.elform.Type != "通用编码") {
+                this.optiondis = true;
+            } else {
+                this.optiondis = false;
+            };
+            if (this.elform.Type != "资源") {
+                this.drdis = true;
+            } else {
+                this.drdis = false;
+            };
+            if (this.elform.Type != "通用编码") {
+                this.cddis = true;
+            } else {
+                this.cddis = false;
+            }
+        },
+        elsubmitForm() {
+            var that = this;
+            if (this.elform.Type == "资源关系" && this.elform.DRID == null) {
+                this.$message.error('请录入值域资源');
+            } else if (this.elform.Type == "选项" && this.elform.OptionType == null) {
+                this.$message.error('请选择选项类型');
+            } else {
+                if (this.mark == 1) {
+                    console.log("进入要素新增");
+                    console.log(this.elform);
+                    axios.post('CreateElement', this.elform)
+                        //返回成功调用
+                        .then((res) => {
+                            this.$message({
+                                type: 'success',
+                                message: '新增成功!'
+                            });
+                            //要素
+                            this.$ajax.post('GetAllELementByResourceID',
+                                    this.$qs.stringify({
+                                        RID: this.lrid
+                                    }))
+                                //返回成功调用
+                                .then(function (res) {
+                                    console.log("要素目录");
+                                    console.log(res);
+                                    that.ElementTableData = res.data;
+                                })
+                                //返回失败调用
+                                .catch(function (res) {
+                                    console.log("出错了")
+                                });
+                        })
+                        //返回失败调用
+                        .catch((res) => {
+                            this.$message({
+                                type: 'error',
+                                message: '新增失败!'
+                            });
+
+                        });
+
+                } else {
+                    console.log("进入要素修改");
+                    this.$ajax.put('UpdateElementByEID', this.elform)
+                        //返回成功调用
+                        .then((res) => {
+                            that.$message({
+                                type: 'success',
+                                message: '修改成功！',
+                                duration: 4000,
+                                offset: 40
+                            });
+                            //要素
+                            this.$ajax.post('GetAllELementByResourceID',
+                                    this.$qs.stringify({
+                                        RID: this.lrid
+                                    }))
+                                //返回成功调用
+                                .then(function (res) {
+                                    console.log("要素目录");
+                                    console.log(res);
+                                    that.ElementTableData = res.data;
+                                })
+                                //返回失败调用
+                                .catch(function (res) {
+                                    console.log("出错了")
+                                });
+                            that.eldialogFormVisible = false;
+                            that.elform = {
+                                EID: "",
+                                RID: "",
+                                Name: "",
+                                Type: "",
+                                Unit: "",
+                                Note: "",
+                                LastModify: "",
+                                Length: '',
+                                Precision: '',
+                                Defaulta: "",
+                                CID: "",
+                                IFRequired: 0,
+                                OptionType: "",
+                                Numbera: "",
+                                DRID: "",
+                                IFZSZML: 0,
+                                IFZSMC: 1,
+                                CDID: "",
+                                ElementClassify: "普通要素"
+                            };
+                            that.mark = null;
+                        })
+                        //返回失败调用
+                        .catch((res) => {
+                            that.$message({
+                                type: 'warning',
+                                message: '修改失败！',
+                                duration: 4000,
+                                offset: 40
+                            });
+                        });
+                }
+
+            }
+        }
     }
 }
 </script>
@@ -931,5 +1235,9 @@ export default {
 .ms-item:hover {
     background-color: #525a64;
     color: #FFFFFF;
+}
+
+.elem_footer {
+    display: flex;
 }
 </style>>
