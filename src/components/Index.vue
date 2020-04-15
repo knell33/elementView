@@ -463,37 +463,38 @@ export default {
             var that = this;
             axios.post("GetAllResources").then(function (res) {
                 var AllData = res.data;
-                console.log(AllData);
-                let map = {};
-                let val = [];
-                //生成数据对象集合
-                AllData.forEach(it => {
-                    map[it.ID] = it; //department_id为每个节点的id
+
+                // 删除所有 children,以防止数据出现异常（看情况可删除）
+                AllData.forEach(function (item) {
+                    delete item.children;
                 });
-                //生成结果集
-                AllData.forEach(it => {
-                    const parent = map[it.PID]; //pid_department_id为父节点的id
+
+                // 将数据存储为以 id 为 KEY 的 map 索引数据列
+                var map = {};
+                AllData.forEach(function (item) {
+                    //item.Children = [] // 1
+                    map[item.ID] = item;
+                });
+                //console.log(map);
+                var treeData = [];
+                AllData.forEach(function (item) {
+                    //如果需要对特定字段进行处理，那么这里做对应处理，会存在一定数据冗余
+                    //item.label = item.name;
+                    // 以当前遍历项，的pid,去map对象中找到索引的id
+                    var parent = map[item.PID];
+                    // 如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
                     if (parent) {
-                        if (!Array.isArray(parent.children)) parent.children = [];
-                        parent.children.push(it);
+                        (parent.children || (parent.children = [])).push(item);
+                        //parent.Children.push(item) //1
                     } else {
-                        val.push(it)
+                        //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
+
+                        treeData.push(item);
                     }
                 });
-                for (var i in AllData) {
-                    if (AllData[i].children == null) {
-                        delete AllData[i];
-                        //AllData.splice(i, 1);
-                        for (var j in AllData) {
-                            if (AllData[j].PID != null) {
-                                delete AllData[j];
-                                // AllData.splice(j, 1);
-                            }
-                        }
-                    }
-                };
-                console.log(AllData);
-                that.ResourceTableData = AllData;
+                console.log("进入树形");
+                console.log(treeData);
+                that.ResourceTableData = treeData;
             });
         },
         //资源--要素--分类--统计指标 联动
@@ -895,7 +896,8 @@ export default {
                             this.$message({
                                 type: 'error',
                                 message: '删除失败!'
-                            });s
+                            });
+                            s
                         });
                 })
                 .catch(() => {});
@@ -1086,6 +1088,7 @@ export default {
                 this.cddis = false;
             }
         },
+        //要素目录弹框确认提交事件
         elsubmitForm() {
             var that = this;
             if (this.elform.Type == "资源关系" && this.elform.DRID == null) {
@@ -1118,6 +1121,29 @@ export default {
                                 .catch(function (res) {
                                     console.log("出错了")
                                 });
+                            that.eldialogFormVisible = false;
+                            that.elform = {
+                                EID: "",
+                                RID: "",
+                                Name: "",
+                                Type: "",
+                                Unit: "",
+                                Note: "",
+                                LastModify: "",
+                                Length: '',
+                                Precision: '',
+                                Defaulta: "",
+                                CID: "",
+                                IFRequired: 0,
+                                OptionType: "",
+                                Numbera: "",
+                                DRID: "",
+                                IFZSZML: 0,
+                                IFZSMC: 1,
+                                CDID: "",
+                                ElementClassify: "普通要素"
+                            };
+                            that.mark = null;
                         })
                         //返回失败调用
                         .catch((res) => {
@@ -1190,7 +1216,45 @@ export default {
                 }
 
             }
-        }
+        },
+        //资源目录树形测试版
+        treeList1() {
+            var that = this;
+            axios.post("GetAllResources").then(function (res) {
+                var AllData = res.data;
+                console.log(AllData);
+                let map = {};
+                let val = [];
+                //生成数据对象集合
+                AllData.forEach(it => {
+                    map[it.ID] = it; //department_id为每个节点的id
+                });
+                //生成结果集
+                AllData.forEach(it => {
+                    const parent = map[it.PID]; //pid_department_id为父节点的id
+                    if (parent) {
+                        if (!Array.isArray(parent.children)) parent.children = [];
+                        parent.children.push(it);
+                    } else {
+                        val.push(it)
+                    }
+                });
+                for (var i in AllData) {
+                    if (AllData[i].children == null) {
+                        delete AllData[i];
+                        //AllData.splice(i, 1);
+                        for (var j in AllData) {
+                            if (AllData[j].PID != null) {
+                                delete AllData[j];
+                                // AllData.splice(j, 1);
+                            }
+                        }
+                    }
+                };
+                console.log(AllData);
+                that.ResourceTableData = AllData;
+            });
+        },
     }
 }
 </script>
