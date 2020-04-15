@@ -40,7 +40,7 @@
                     </el-table-column>
                     <el-table-column label="最后修改人" prop="LastModify">
                     </el-table-column>
-                    <el-table-column label="最后修改时间" prop="LastDate" width="165px">
+                    <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px">
                     </el-table-column>
                 </el-table>
             </el-row>
@@ -56,7 +56,7 @@
                             </el-table-column>
                             <el-table-column label="最后修改人" prop="LastModify">
                             </el-table-column>
-                            <el-table-column label="最后修改时间" prop="LastDate">
+                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
@@ -77,7 +77,7 @@
                             </el-table-column>
                             <el-table-column label="最后修改人" prop="LastModify">
                             </el-table-column>
-                            <el-table-column label="最后修改时间" prop="LastDate">
+                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
@@ -90,7 +90,7 @@
                             </el-table-column>
                             <el-table-column label="最后修改人" prop="LastModify">
                             </el-table-column>
-                            <el-table-column label="最后修改时间" prop="LastDate">
+                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
@@ -297,6 +297,7 @@
 
 <script>
 import axios from 'axios';
+import * as fecha from "element-ui/lib/utils/date";
 export default {
     data() {
         return {
@@ -1222,6 +1223,14 @@ export default {
                 }
 
             }
+        },
+        //表格日期显示格式转换
+        dateFormat(row,column,cellValue){
+            // console.log("进入日期转换");
+            // console.log(row);
+            // console.log(column);
+            // console.log(cellValue);
+            return cellValue?fecha.format(new Date(cellValue),'yyyy-MM-dd HH:mm:ss'):'--';
         },
         //资源目录树形测试版
         treeList1() {
