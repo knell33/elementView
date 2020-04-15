@@ -48,8 +48,9 @@
             <el-row class="elcochoose">
                 <el-tabs v-model="activeName" type="card">
                     <el-tab-pane label="要素分类" name="first">
+
                         <!-- 要素分类表格 -->
-                        <el-table :data="ElementClassifyTableData" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange">
+                        <el-table :data="ElementClassifyTableData" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyRightClick">
                             <el-table-column label="分类名称" prop="Name">
                             </el-table-column>
                             <el-table-column label="备注" prop="Note">
@@ -59,11 +60,12 @@
                             <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
                             </el-table-column>
                         </el-table>
+
                     </el-tab-pane>
                     <el-tab-pane label="统计指标定义" name="second">
                         <!-- 统计指标关联表格 -->
-                        <el-table :data="CountNormTableData" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange">
-                            <el-table-column label="指标名称" prop="Name">
+                        <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightClickNorm" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName">
+                            <el-table-column label="指标名称" prop="NormName">
                             </el-table-column>
                             <el-table-column label="计算类型" prop="CalculateType">
                             </el-table-column>
@@ -145,7 +147,7 @@
 
             </el-row>
             <el-row>
-                <!-- 资源目录新增、修改弹框 -->
+                <!-- 资源目录新增、修改弹窗 -->
                 <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="closedialog" width="30%">
                     <el-form ref="form" :model="form" status-icon label-width="80px">
                         <el-form-item label="上级">
@@ -183,7 +185,7 @@
                         <el-button @click="colse()">取 消</el-button>
                     </span>
                 </el-dialog>
-                <!-- 要素目录新增、修改弹框 -->
+                <!-- 要素目录新增、修改弹窗 -->
                 <el-drawer :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedrawer" size="45%">
                     <el-form ref="elform" :model="elform" status-icon label-width="110px" :inline="true" label-position="left">
                         <el-form-item label="序号">
@@ -272,6 +274,74 @@
                         <el-button @click="colse()">取 消</el-button>
                     </div>
                 </el-drawer>
+                <!--要素分类弹窗-->
+                <el-dialog :title="choosetitle" :visible.sync="ClassifydialogFormVisible" :before-close="ElementClassifyother" width="30%" id="classifyiframe">
+                    <el-form ref="cform" :model="cform" status-icon label-width="80px">
+                        <el-form-item label="资源" prop="RID">
+                            <el-select v-model="cform.RID" filterable :default-first-option=true placeholder="请选择资源">
+                                <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="名称" prop="Name">
+                            <el-input v-model="cform.Name" clearable></el-input>
+                        </el-form-item>
+                        <el-form-item label="备注" prop="Note">
+                            <el-input type="textarea" v-model="cform.Note"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="ElementClassify('cancel')">取 消</el-button>
+                        <el-button type="primary" @click="ElementClassify('submit')">确 定</el-button>
+                    </span>
+                </el-dialog>
+                <!-- 统计指标定义弹窗 -->
+                <el-dialog :title="choosetitle" :visible.sync="dialogFormVisibleCountNorm" :before-close="CountNormother" width="30%">
+                    <el-form ref="mform" :model="form" label-width="80px">
+                        <el-form-item label="资源">
+                            <el-input v-model="form.Name" label="form.Name" value="form.RID" :disabled="true"></el-input>
+                            <!-- <el-select v-model="form.Name">
+                                    <el-option label="form.RID" value="form.RID"></el-option>
+                                </el-select> -->
+                        </el-form-item>
+                        <el-form-item label="关联类型">
+                            <el-input v-model="form.AssociationType" :disabled="true"></el-input>
+                        </el-form-item>
+                        <el-form-item label="指标名称">
+                            <el-input v-model="form.NormName" clearable></el-input>
+                        </el-form-item>
+                        <el-form-item label="要素名称">
+                            <el-select v-model="form.GLID" placeholder="请选择要素名称" @change="ElementchangeName">
+                                <el-option v-for="(item,index) in ElementList" :label="item.Name" :value="item.ID" :key="index"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="计算类型">
+                            <el-select v-model="form.CalculateType" placeholder="请选择资源类型">
+                                <el-option label="计数" value="计数"></el-option>
+                                <el-option label="求和" value="求和"></el-option>
+                                <el-option label="是否" value="是否"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="运算符">
+                            <el-select v-model="form.Operator" placeholder="请选择资源类型">
+                                <el-option label="=" value="="></el-option>
+                                <el-option label=">" value=">"></el-option>
+                                <el-option label="<" value="<"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="运算值">
+                            <el-input v-model="form.Ovalue" clearable></el-input>
+                        </el-form-item>
+                        <el-form-item label="备注">
+                            <el-input type="textarea" v-model="form.Note"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="CountNorm('cancel')">取 消</el-button>
+                        <el-button type="primary" :loading="loading" @click="CountNorm('submit')">确 定</el-button>
+
+                    </span>
+                </el-dialog>
+
             </el-row>
         </el-main>
     </el-container>
@@ -292,12 +362,77 @@
             <li class="ms-item wrap-ms-right" @click="DeleteElement()"><i class="el-icon-delete-solid icon1"></i>删除要素</li>
         </ul>
     </div>
+    <!-- 统计指标右键菜单 -->
+    <div v-show="menuVisibleCountNorm">
+        <ul id="menuCountNorm" class="menu">
+            <!-- 统计指标 -->
+            <li class="ms-item wrap-ms-right" @click="CountNorm('add')"><i class="el-icon-circle-plus icon1"></i>新增统计</li>
+            <li class="ms-item wrap-ms-right" @click="CountNorm('update')"><i class="el-icon-s-order icon1"></i>修改统计</li>
+            <li class="ms-item wrap-ms-right" @click="CountNorm('delete')"><i class="el-icon-delete-solid icon1"></i>删除统计</li>
+        </ul>
+    </div>
+    <!-- 要素分类右键菜单 -->
+    <div v-show="cmenuVisible">
+        <ul id="cmenu" class="menu">
+            <li class="ms-item wrap-ms-right" @click="ElementClassify('add')"><i class="el-icon-circle-plus icon1"></i>新增要素分类</li>
+            <li class="ms-item wrap-ms-right" @click="ElementClassify('update')"><i class="el-icon-s-order icon1"></i>修改要素分类</li>
+            <li class="ms-item wrap-ms-right" @click="ElementClassify('delete')"><i class="el-icon-delete-solid icon1"></i>删除要素分类</li>
+        </ul>
+    </div>
 </el-container>
 </template>
 
 <script>
 import axios from 'axios';
 import * as fecha from "element-ui/lib/utils/date";
+import {
+    NowDate,
+    DatePutT
+
+} from '../utility/date';
+
+import {
+    cfoo,
+    crightClick,
+    rightClick,
+    styleMenu,
+    cstyleMenu,
+    rightClickCountNorm,
+    styleMenuCountNorm
+} from '../utility/rightclick';
+
+import {
+    handleAdd,
+    handleXAdd,
+    handleUpdate,
+    getTypeData,
+    submitForm,
+    colse,
+    closedialog,
+    handleDelete,
+    resourcedatafilter
+} from '../views/Resource';
+
+import {
+    ClassifyhandleAdd,
+    ClassifyhandleUpdate,
+    ClassifysubmitForm,
+    Classifycolse,
+    Classifyclosedialog,
+    ClassifyhandleDelete
+} from '../views/ElementClassify';
+
+import {
+    countNormAdd,
+    countNormUpdate,
+    submitCountNorm,
+    countNormcolse,
+    countNormclosedialog,
+    countNormDelete,
+    changeName,
+
+} from '../views/CountNorm';
+
 export default {
     data() {
         return {
@@ -325,7 +460,10 @@ export default {
                 LastModify: "",
                 ShowName: "",
                 TreeForm: 0,
-                RelationID: ""
+                RelationID: "",
+                //统计指标 需要用到的数据
+                RID: "",
+                NormName: ""
 
             },
             //资源目录修改时保存当前行的数据
@@ -387,6 +525,31 @@ export default {
             drdis: false, //值域资源
             cddis: false, //编码目录
 
+            //要素分类模态框
+            cmenuVisible: false,
+            ClassifydialogFormVisible: false,
+            cform: {
+                ID: "",
+                RID: "",
+                Name: "",
+                Note: "",
+                LastModify: "",
+                LastDate: ""
+            },
+            //单击树形后的当前行ID
+            treedata: "",
+            //右键要素目录后的当前行的数据
+            crow: '',
+            ////右键要素目录后的当前行的ID
+            cid: '',
+            //统计指标 弹出窗参数
+            dialogFormVisibleCountNorm: false,
+            //统计指标 弹出窗需要的数据
+            resouceData: [],
+            //右键菜单模态框-统计指标
+            menuVisibleCountNorm: false,
+            //禁用装态
+            isDisabled: false
         };
     },
     created: function () {
@@ -455,7 +618,29 @@ export default {
                 }
             });
             return obj;
-        }
+        },
+        //统计指标-要素名称
+        ElementList() {
+            let obj = [];
+            console.log("统计指标-要素名称");
+            this.$ajax.post('GetAllElementByResourceID', this.$qs.stringify({
+                    RID: this.resouceData.ID
+                }))
+                .then(function (res) {
+                    for (let i in res.data) {
+                        obj.push({
+                            ID: res.data[i].EID,
+                            Name: res.data[i].Name
+                        })
+                    }
+                    //解决当获取的列表有值但无法选择
+                    if (!res.data.GLID) {
+                        res.data.GLID = null;
+                    }
+                });
+            console.log(obj);
+            return obj;
+        },
     },
     methods: {
         //资源目录树形网格
@@ -500,6 +685,10 @@ export default {
         //资源--要素--分类--统计指标 联动
         elementlink(row, column, event) {
             var that = this;
+            //单击资源目录保存资源ID
+            that.treedata = row.ID;
+            //单击资源目录保存当前行记录
+            that.resouceData = row;
             //保存资源ID供要素目录新增时使用
             this.lrid = row.ID;
             console.log("保存资源ID供要素目录新增时使用");
@@ -593,7 +782,7 @@ export default {
             this.eid = row.EID;
         },
         //资源目录右键点击表头事件
-        rightHeaderClick(column,event){
+        rightHeaderClick(column, event) {
             console.log("进入资源目录表头事件");
             console.log(column);
             console.log(event);
@@ -603,7 +792,7 @@ export default {
             this.styleMenu(menu);
         },
         //要素目录右键点击表头事件
-        elrightHeaderClick(column,event){
+        elrightHeaderClick(column, event) {
             this.elmenuVisible = false;
             this.elmenuVisible = true;
             var elmenu = document.querySelector('#elmenu');
@@ -1225,12 +1414,12 @@ export default {
             }
         },
         //表格日期显示格式转换
-        dateFormat(row,column,cellValue){
+        dateFormat(row, column, cellValue) {
             // console.log("进入日期转换");
             // console.log(row);
             // console.log(column);
             // console.log(cellValue);
-            return cellValue?fecha.format(new Date(cellValue),'yyyy-MM-dd HH:mm:ss'):'--';
+            return cellValue ? fecha.format(new Date(cellValue), 'yyyy-MM-dd HH:mm:ss') : '--';
         },
         //资源目录树形测试版
         treeList1() {
@@ -1270,6 +1459,96 @@ export default {
                 that.ResourceTableData = AllData;
             });
         },
+
+
+
+        //获取资源目录表格行的索引
+        ResourcetableRowClassName({
+            row,
+            rowIndex
+        }) {
+            row.row_index = rowIndex;
+        },
+        //获取要素分类表格行的索引
+        ElementClassifytableRowClassName({
+            row,
+            rowIndex
+        }) {
+            row.row_index = rowIndex;
+        },
+
+        //要素分类右键
+        ElementClassifyRightClick(row, column, event) {
+            let _this = this;
+            crightClick(_this, row, column, event);
+
+        },
+        //要素分类 打开不同编辑类型的模态框
+        ElementClassify(state) {
+            let _this = this;
+            if (state == 'add') {
+                ClassifyhandleAdd(_this);
+            } else if (state == 'update') {
+                ClassifyhandleUpdate(_this);
+
+            } else if (state == 'delete') {
+                ClassifyhandleDelete(_this);
+
+            } else if (state == 'submit') {
+                ClassifysubmitForm(_this);
+
+            } else if (state == 'cancel') {
+                Classifycolse(_this);
+            }
+
+        },
+        //点击其他区域关闭要素分类模态框
+        ElementClassifyother(done) {
+            let _this = this;
+            Classifyclosedialog(done, _this);
+        },
+
+        //获取统计指标表格行的索引
+        CountNormtableRowClassName({
+            row,
+            rowIndex
+        }) {
+            row.row_index = rowIndex;
+        },
+        //统计指标右键
+        rightClickNorm(row, event) {
+            let _this = this;
+            rightClickCountNorm(_this, row, event);
+        },
+
+        //统计指标 打开不同编辑类型的模态框
+        CountNorm(state, row, event) {
+            let _this = this;
+            if (state == 'add') {
+                countNormAdd(_this);
+
+            } else if (state == 'update') {
+                countNormUpdate(_this);
+
+            } else if (state == 'delete') {
+                countNormDelete(_this);
+
+            } else if (state == 'submit') {
+                submitCountNorm(_this);
+            } else if (state == 'cancel') {
+                countNormcolse(_this);
+            }
+
+        },
+        //点击其他区域关闭统计指标模态框
+        CountNormother(done) {
+            countNormclosedialog(done, this);
+        },
+        //统计指标-实现要素名称和指标名称值变化联动
+        ElementchangeName(val) {
+            changeName(this, val);
+        },
+
     }
 }
 </script>
