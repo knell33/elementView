@@ -19,7 +19,7 @@ Vue.config.productionTip = false
 //     render: h => h(App)
 // }).$mount('#app')
 Vue.use(ElementUI);
-Vue.use(fecha);
+//Vue.use(fecha);
 
 //配置请求根路径
 axios.defaults.baseURL = 'http://localhost:62200/api/'

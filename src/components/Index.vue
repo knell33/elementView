@@ -1310,4 +1310,4 @@ export default {
 .elem_footer {
     display: flex;
 }
-</style>>
+</style>
