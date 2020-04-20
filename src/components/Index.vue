@@ -9,9 +9,9 @@
                 <el-table-column prop="Type" label="类型">
                 </el-table-column>
             </el-table>
-        </el-aside>
-        <!-- 要素目录表格 -->
+        </el-aside>      
         <el-main>
+            <!-- 要素目录表格 -->
             <el-row>
                 <el-table :data="ElementTableData" height="460px" @row-click="elementrangelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick">
                     <el-table-column label="序号" prop="Numbera">
@@ -48,7 +48,6 @@
             <el-row class="elcochoose">
                 <el-tabs v-model="activeName" type="card">
                     <el-tab-pane label="要素分类" name="first">
-
                         <!-- 要素分类表格 -->
                         <el-table :data="ElementClassifyTableData" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyRightClick">
                             <el-table-column label="分类名称" prop="Name">
@@ -60,7 +59,6 @@
                             <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
                             </el-table-column>
                         </el-table>
-
                     </el-tab-pane>
                     <el-tab-pane label="统计指标定义" name="second">
                         <!-- 统计指标关联表格 -->
@@ -97,7 +95,6 @@
                         </el-table>
                     </el-tab-pane>
                 </el-tabs>
-
                 <!-- 轮播形式展现数据表 -->
                 <!-- <el-carousel type="card" height="490px" :autoplay="false">
                     <el-carousel-item v-for="item in 3" :key="item">
@@ -144,7 +141,6 @@
                         </el-table>
                     </el-carousel-item>
                 </el-carousel> -->
-
             </el-row>
             <el-row>
                 <!-- 资源目录新增、修改弹窗 -->
@@ -186,7 +182,7 @@
                     </span>
                 </el-dialog>
                 <!-- 要素目录新增、修改弹窗 -->
-                <el-drawer :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedrawer" size="45%">
+                <el-dialog :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedrawer" width="40%">
                     <el-form ref="elform" :model="elform" status-icon label-width="110px" :inline="true" label-position="left">
                         <el-form-item label="序号">
                             <el-input v-model="elform.Numbera" :disabled="true"></el-input>
@@ -269,11 +265,11 @@
                             <el-input type="textarea" v-model="elform.Note" style="width:564px" :autosize="{ minRows: 2}"></el-input>
                         </el-form-item>
                     </el-form>
-                    <div class="elem_footer">
+                    <span slot="footer" class="dialog-footer">
                         <el-button type="primary" :loading="loading" @click="elsubmitForm()">确 定</el-button>
                         <el-button @click="colse()">取 消</el-button>
-                    </div>
-                </el-drawer>
+                    </span>
+                </el-dialog>
                 <!--要素分类弹窗-->
                 <el-dialog :title="choosetitle" :visible.sync="ClassifydialogFormVisible" :before-close="ElementClassifyother" width="30%" id="classifyiframe">
                     <el-form ref="cform" :model="cform" status-icon label-width="80px">
@@ -290,8 +286,8 @@
                         </el-form-item>
                     </el-form>
                     <span slot="footer" class="dialog-footer">
-                        <el-button @click="ElementClassify('cancel')">取 消</el-button>
                         <el-button type="primary" @click="ElementClassify('submit')">确 定</el-button>
+                        <el-button @click="ElementClassify('cancel')">取 消</el-button>
                     </span>
                 </el-dialog>
                 <!-- 统计指标定义弹窗 -->
@@ -336,12 +332,10 @@
                         </el-form-item>
                     </el-form>
                     <span slot="footer" class="dialog-footer">
-                        <el-button @click="CountNorm('cancel')">取 消</el-button>
                         <el-button type="primary" :loading="loading" @click="CountNorm('submit')">确 定</el-button>
-
+                        <el-button @click="CountNorm('cancel')">取 消</el-button>
                     </span>
                 </el-dialog>
-
             </el-row>
         </el-main>
     </el-container>
@@ -384,6 +378,7 @@
 
 <script>
 import axios from 'axios';
+import qs from 'qs';
 import * as fecha from "element-ui/lib/utils/date";
 import {
     NowDate,
@@ -1295,8 +1290,9 @@ export default {
                 if (this.mark == 1) {
                     console.log("进入要素新增");
                     console.log(this.elform);
-                    axios.post('CreateElement', this.elform)
-                        //返回成功调用
+                    console.log(qs.stringify(this.elform));
+                    axios.post("CreateElement", qs.stringify(this.elform),{headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+                    //返回成功调用
                         .then((res) => {
                             this.$message({
                                 type: 'success',
@@ -1349,7 +1345,6 @@ export default {
                             });
 
                         });
-
                 } else {
                     console.log("进入要素修改");
                     this.$ajax.put('UpdateElementByEID', this.elform)
