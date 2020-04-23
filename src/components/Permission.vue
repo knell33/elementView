@@ -4,7 +4,7 @@
         <el-header>
             <!-- 角色信息表格 -->
             <el-row>
-                <span>角色信息</span>
+                <div class="tabletitle">角色信息</div>
                 <el-table el-header :data="RoleData" height="460px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick">
                     <el-table-column label="角色名称" prop="Name">
                     </el-table-column>
@@ -18,8 +18,8 @@
             </el-row>
             <!-- 角色权限表格 -->
             <el-row>
-                <span>角色权限</span>
-                <el-table el-header :data="PermissionData" height="460px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="PermissionRightClick" @header-contextmenu="PermissionRightClick" :row-class-name="MainAuthoritytableRowClassName">
+                <div class="tabletitle">角色权限</div>
+                <el-table el-header :data="PermissionData" height="460px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="PermissionRightClick" :row-class-name="MainAuthoritytableRowClassName">
                     <el-table-column label="主体名称" prop="MainName">
                     </el-table-column>
                     <el-table-column label="类型" prop="Type">
@@ -39,7 +39,7 @@
         <el-header>
             <!-- 角色用户表格 -->
             <el-row>
-                <span>用户信息</span>
+                <div class="tabletitle">用户信息</div>
                 <el-table el-header :data="RoleUesrData" height="460px" @row-click="RoleUesrlink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row>
                     <el-table-column label="用户名" prop="UserName">
                     </el-table-column>
@@ -52,7 +52,7 @@
 
             <!-- 用户权限表格 -->
             <el-row>
-                <span>用户权限</span>
+                <div class="tabletitle">用户权限</div>
                 <el-table el-header :data="PersonnelAuthorityData" height="460px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row>
                     <el-table-column label="主体名称" prop="MName">
                     </el-table-column>
@@ -72,14 +72,11 @@
                 <ul id="romenu" class="menu">
                     <li class="ms-item wrap-ms-right" @click="AddPermission('form')"><i class="el-icon-circle-plus icon1"></i>新增窗体权限</li>
                     <li class="ms-item wrap-ms-right" @click="AddPermission('other')"><i class="el-icon-s-order icon1"></i>新增其他权限</li>
-                    
                 </ul>
             </div>
             <!-- 权限右键菜单 -->
             <div v-show="PermissionVisible">
                 <ul id="pmmenu" class="menu">
-                    <li class="ms-item wrap-ms-right" @click="AddPermission('form')"><i class="el-icon-circle-plus icon1"></i>新增窗体权限</li>
-                    <li class="ms-item wrap-ms-right" @click="AddPermission('other')"><i class="el-icon-s-order icon1"></i>新增其他权限</li>
                     <li class="ms-item wrap-ms-right" @click="DeletePermission()"><i class="el-icon-delete-solid icon1"></i>删除角色权限</li>
                 </ul>
             </div>
@@ -133,7 +130,7 @@
                             <el-option v-for="(item,index) in PList" :key="index" :label="item.Name" :value="item.ID">
                             </el-option>
                         </el-select> -->
-                        <treeselect v-model="oform.MID" :options="ResourceTree"  @input="ChangeMain" :placeholder="choose1"/>
+                        <treeselect v-model="ResourceTree.ID" :options="ResourceTree"  @input="ChangeMain" placeholder="请选择" noResultsText="没有搜索到该选项"/>
                     </el-form-item>
 
                 </el-form>
@@ -244,9 +241,12 @@ export default {
                 LastModify: "",
                 LastDate: ""
             },
-            ResourceTree:[],
-            choose1: "请选择"
-
+            //树形下拉选择框
+            ResourceTree:{
+                ID: "",
+                PID: "",
+                Name: ""
+            },
         }
     },
     components: {
@@ -299,7 +299,6 @@ export default {
                 //console.log(map);
                 var treeData = [];
                 AllData.forEach(function (item) {
-                    //如果需要对特定字段进行处理，那么这里做对应处理，会存在一定数据冗余
                      item.label = item.Name;
                      item.id = item.ID
                     // 以当前遍历项，的pid,去map对象中找到索引的id
@@ -563,5 +562,9 @@ export default {
 
 .elem_footer {
     display: flex;
+}
+.tabletitle {
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    background-color: aliceblue;
 }
 </style>

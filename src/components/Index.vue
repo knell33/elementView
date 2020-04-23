@@ -226,9 +226,10 @@
                             <el-input v-model="elform.Numbera" :disabled="true"></el-input>
                         </el-form-item>
                         <el-form-item label="资源" style="margin-left:20px" clearable>
-                            <el-select v-model="elform.RID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择资源" @change="resourceChange">
+                            <!-- <el-select v-model="elform.RID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择资源" @change="resourceChange">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
-                            </el-select>
+                            </el-select> -->
+                            <treeselect v-model="elform.RID" placeholder="请选择资源" :options="ResourceTableData" @change="resourceChange" style="width:203px"/>
                         </el-form-item>
                         <el-form-item label="要素名称">
                             <el-input v-model="elform.Name"></el-input>
@@ -790,7 +791,7 @@ export default {
                 //console.log(map);
                 var treeData = [];
                 AllData.forEach(function (item) {
-                    //如果需要对特定字段进行处理，那么这里做对应处理，会存在一定数据冗余
+                    //树形下拉框参数 item.label item.id
                     item.label = item.Name;
                     item.id = item.ID
                     // 以当前遍历项，的pid,去map对象中找到索引的id
