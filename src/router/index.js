@@ -18,6 +18,12 @@ const routes = [{
     {
         path: '/va',
         component: va
+    },
+    {
+        path: '/permission',
+        //name: 'Permission',
+        component: () =>
+            import ('@/components/Permission')
     }
     //
     // {

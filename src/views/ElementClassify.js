@@ -1,9 +1,9 @@
-import {NowDate} from "../utility/date"
+import { NowDate } from "../utility/date"
 export function ClassifyhandleAdd(_this) {
     _this.choosetitle = "新增要素分类";
     _this.ClassifydialogFormVisible = true;
     //console.log(this.srow);
-    _this.cform.RID=_this.rid;//将单击树形后的当前ID赋值给表单的RID
+    _this.cform.RID = _this.rid; //将单击树形后的当前ID赋值给表单的RID
     _this.mark = 1; //编辑标识
     _this.form = {}; //清空表单
 }
@@ -42,8 +42,8 @@ export function ClassifysubmitForm(_this) {
     that.cform.LastDate = NowDate();
     if (that.mark == 1) {
         //console.log("cform:"+that.cform);
-        that.$ajax.post("CreateElementClassify",that.cform)
-            .then(function (obj) {
+        that.$ajax.post("CreateElementClassify", that.cform)
+            .then(function(obj) {
                 that.$message({
                     type: 'success',
                     message: '新增成功',
@@ -54,9 +54,9 @@ export function ClassifysubmitForm(_this) {
                 that.ClassifydialogFormVisible = false;
                 that.cform = {};
                 that.cmark = null;
-                
+
             })
-            .catch(function (obj) {
+            .catch(function(obj) {
                 console.log("新增失败");
                 that.$message({
                     type: 'warning',
@@ -65,10 +65,9 @@ export function ClassifysubmitForm(_this) {
                     offset: 40
                 });
             })
-    }
-    else {
+    } else {
         //console.log("进入修改");
-        that.$ajax.put('PutElementClassifyByID',that.cform)
+        that.$ajax.put('PutElementClassifyByID', that.cform)
             //返回成功调用
             .then((res) => {
                 that.$message({
@@ -79,11 +78,11 @@ export function ClassifysubmitForm(_this) {
                 });
                 console.log(_this.crow.LastDate);
                 //_this.crow.LastDate = NowDate();
-                that.$set(that.ElementClassifyTableData,_this.crow.row_index,_this.crow);//替换要素分类表格中的数据
+                that.$set(that.ElementClassifyTableData, _this.crow.row_index, _this.crow); //替换要素分类表格中的数据
                 that.ClassifydialogFormVisible = false;
                 that.cform = {};
                 that.mark = null;
-               
+
 
             })
             //返回失败调用
@@ -97,7 +96,7 @@ export function ClassifysubmitForm(_this) {
             });
     }
 }
-    
+
 
 
 //关闭并清空模态框
@@ -109,7 +108,8 @@ export function Classifycolse(_this) {
 }
 
 //点击X关闭模态框
-export function Classifyclosedialog(done,_this) {
+export function Classifyclosedialog(done, _this) {
+    var that = _this;
     _this.$confirm('确认关闭？', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -118,10 +118,10 @@ export function Classifyclosedialog(done,_this) {
         .then(_ => {
             done();
             that.ClassifydialogFormVisible = false;
-            _this.cform = {};
-            _this.mark = null;
+            that.cform = {};
+            that.mark = null;
             //this.title = "";
-            _this.$refs['cform'].resetFields();
+            that.$refs['cform'].resetFields();
         })
         .catch(_ => {});
 }
@@ -145,8 +145,8 @@ export function ClassifyhandleDelete(_this) {
                         type: 'success',
                         message: '删除成功!'
                     });
-                    _this.$delete(_this.ElementClassifyTableData,_this.crow.row_index);
-                    
+                    _this.$delete(_this.ElementClassifyTableData, _this.crow.row_index);
+
                 })
                 //返回失败调用
                 .catch((res) => {
@@ -156,10 +156,7 @@ export function ClassifyhandleDelete(_this) {
                     });
 
                 });
-                _this.$delete(_that.ElementClassifyTableData,_this.crow.row_index);
+            _this.$delete(_that.ElementClassifyTableData, _this.crow.row_index);
         })
         .catch(() => {});
 }
-
-
-

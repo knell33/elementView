@@ -1,48 +1,51 @@
+<!DOCTYPE html>
 <template>
 <el-container>
     <el-container>
         <!-- 资源目录树形表格 -->
         <el-aside width="350px">
-            <el-table :data="ResourceTableData" style="width: 100%;margin-bottom: 20px;" height="1000px" row-key="ID" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" @row-click="elementlink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" highlight-current-row @current-change="ResourceTableChange" @row-contextmenu="rightClick" @header-contextmenu="rightHeaderClick">
+            <el-table :data="ResourceTableData" style="width: 100%;margin-bottom: 20px;" height="913px" row-key="ID" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" @row-click="elementlink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" highlight-current-row @current-change="ResourceTableChange" @row-contextmenu="rightClick" @header-contextmenu="rightHeaderClick">
                 <el-table-column prop="Name" label="资源名称">
                 </el-table-column>
                 <el-table-column prop="Type" label="类型">
                 </el-table-column>
             </el-table>
-        </el-aside>      
+        </el-aside>
+        <!-- 要素目录表格 -->
         <el-main>
-            <!-- 要素目录表格 -->
             <el-row>
-                <el-table :data="ElementTableData" height="460px" @row-click="elementrangelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick">
-                    <el-table-column label="序号" prop="Numbera">
-                    </el-table-column>
-                    <el-table-column label="分类名称" prop="ClassifyName">
-                    </el-table-column>
-                    <el-table-column label="要素名称" prop="Name">
-                    </el-table-column>
-                    <el-table-column label="要素类型" prop="Type">
-                    </el-table-column>
-                    <el-table-column label="选项类型" prop="OptionType">
-                    </el-table-column>
-                    <el-table-column label="定义指标个数" prop="DYZBGS" width="110px">
-                    </el-table-column>
-                    <el-table-column label="单位" prop="Unit">
-                    </el-table-column>
-                    <el-table-column label="长度" prop="Length">
-                    </el-table-column>
-                    <el-table-column label="精度" prop="Precision">
-                    </el-table-column>
-                    <el-table-column label="要素分类" prop="ElementClassify">
-                    </el-table-column>
-                    <el-table-column label="选项" prop="OptionType">
-                    </el-table-column>
-                    <el-table-column label="备注" prop="Note">
-                    </el-table-column>
-                    <el-table-column label="最后修改人" prop="LastModify">
-                    </el-table-column>
-                    <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px">
-                    </el-table-column>
-                </el-table>
+                <el-tabs v-model="activeName" type="card">
+                    <el-table :data="ElementTableData" height="380px" @row-click="elementrangelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick">
+                        <el-table-column label="序号" prop="Numbera">
+                        </el-table-column>
+                        <el-table-column label="分类名称" prop="ClassifyName">
+                        </el-table-column>
+                        <el-table-column label="要素名称" prop="Name">
+                        </el-table-column>
+                        <el-table-column label="要素类型" prop="Type">
+                        </el-table-column>
+                        <el-table-column label="选项类型" prop="OptionType">
+                        </el-table-column>
+                        <el-table-column label="定义指标个数" prop="DYZBGS" width="110px">
+                        </el-table-column>
+                        <el-table-column label="单位" prop="Unit">
+                        </el-table-column>
+                        <el-table-column label="长度" prop="Length">
+                        </el-table-column>
+                        <el-table-column label="精度" prop="Precision">
+                        </el-table-column>
+                        <el-table-column label="要素分类" prop="ElementClassify">
+                        </el-table-column>
+                        <el-table-column label="选项" prop="OptionType">
+                        </el-table-column>
+                        <el-table-column label="备注" prop="Note">
+                        </el-table-column>
+                        <el-table-column label="最后修改人" prop="LastModify">
+                        </el-table-column>
+                        <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px">
+                        </el-table-column>
+                    </el-table>
+                </el-tabs>
             </el-row>
             <!-- 标签分栏表格 -->
             <el-row class="elcochoose">
@@ -94,62 +97,97 @@
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
+                    <!-- 资源明细 -->
+                    <el-tab-pane label="资源明细" name="fourth">
+                        <el-table :data="DetailTableData" height="220px" @row-click="detaillink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="DetailTableChange">
+                            <el-table-column label="明细名称" prop="DetailName">
+                            </el-table-column>
+                            <el-table-column label="上级明细名称" prop="PDetailName">
+                            </el-table-column>
+                            <el-table-column label="事务时间" prop="TransactionDate" :formatter="dateFormat">
+                            </el-table-column>
+                            <el-table-column label="备注" prop="Note">
+                            </el-table-column>
+                            <el-table-column label="最后修改人" prop="LastModify">
+                            </el-table-column>
+                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
+                            </el-table-column>
+                        </el-table>
+                        <!-- 角色权限 -->
+                        <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClickMainAuthority" height="230px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName">
+                            <el-table-column label="角色名称" prop="RoleName">
+                            </el-table-column>
+                            <el-table-column label="类型" prop="Type">
+                            </el-table-column>
+                            <el-table-column label="权限类型" prop="AuthorityType">
+                            </el-table-column>
+                            <el-table-column label="主体名称" prop="MainName">
+                            </el-table-column>
+                            <el-table-column label="最后修改人" prop="LastModify">
+                            </el-table-column>
+                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
                 </el-tabs>
+
                 <!-- 轮播形式展现数据表 -->
                 <!-- <el-carousel type="card" height="490px" :autoplay="false">
-                    <el-carousel-item v-for="item in 3" :key="item">
+                        <el-carousel-item v-for="item in 3" :key="item">
 
-                        <el-table :data="ElementClassifyTableData" height="490px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange">
-                            <el-table-column label="分类名称" prop="分类名称">
-                            </el-table-column>
-                            <el-table-column label="备注" prop="备注">
-                            </el-table-column>
-                            <el-table-column label="最后修改人" prop="最后修改人">
-                            </el-table-column>
-                            <el-table-column label="最后修改时间" prop="最后修改时间">
-                            </el-table-column>
-                        </el-table>
+                            <el-table :data="ElementClassifyTableData" height="490px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange">
+                                <el-table-column label="分类名称" prop="分类名称">
+                                </el-table-column>
+                                <el-table-column label="备注" prop="备注">
+                                </el-table-column>
+                                <el-table-column label="最后修改人" prop="最后修改人">
+                                </el-table-column>
+                                <el-table-column label="最后修改时间" prop="最后修改时间">
+                                </el-table-column>
+                            </el-table>
 
-                        <el-table :data="CountNormTableData" height="490px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange">
-                            <el-table-column label="指标名称" prop="指标名称">
-                            </el-table-column>
-                            <el-table-column label="计算类型" prop="计算类型">
-                            </el-table-column>
-                            <el-table-column label="运算符" prop="运算符">
-                            </el-table-column>
-                            <el-table-column label="运算值" prop="运算值">
-                            </el-table-column>
-                            <el-table-column label="关联类型" prop="关联类型">
-                            </el-table-column>
-                            <el-table-column label="备注" prop="备注">
-                            </el-table-column>
-                            <el-table-column label="最后修改人" prop="最后修改人">
-                            </el-table-column>
-                            <el-table-column label="最后修改时间" prop="最后修改时间">
-                            </el-table-column>
-                        </el-table>
+                            <el-table :data="CountNormTableData" height="490px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange">
+                                <el-table-column label="指标名称" prop="指标名称">
+                                </el-table-column>
+                                <el-table-column label="计算类型" prop="计算类型">
+                                </el-table-column>
+                                <el-table-column label="运算符" prop="运算符">
+                                </el-table-column>
+                                <el-table-column label="运算值" prop="运算值">
+                                </el-table-column>
+                                <el-table-column label="关联类型" prop="关联类型">
+                                </el-table-column>
+                                <el-table-column label="备注" prop="备注">
+                                </el-table-column>
+                                <el-table-column label="最后修改人" prop="最后修改人">
+                                </el-table-column>
+                                <el-table-column label="最后修改时间" prop="最后修改时间">
+                                </el-table-column>
+                            </el-table>
 
-                        <el-table :data="ElementRangeTableData" height="490px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementRangeTableChange">
-                            <el-table-column label="选项名称" prop="选项名称">
-                            </el-table-column>
-                            <el-table-column label="备注" prop="备注">
-                            </el-table-column>
-                            <el-table-column label="最后修改人" prop="最后修改人">
-                            </el-table-column>
-                            <el-table-column label="最后修改时间" prop="最后修改时间">
-                            </el-table-column>
-                        </el-table>
-                    </el-carousel-item>
-                </el-carousel> -->
+                            <el-table :data="ElementRangeTableData" height="490px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementRangeTableChange">
+                                <el-table-column label="选项名称" prop="选项名称">
+                                </el-table-column>
+                                <el-table-column label="备注" prop="备注">
+                                </el-table-column>
+                                <el-table-column label="最后修改人" prop="最后修改人">
+                                </el-table-column>
+                                <el-table-column label="最后修改时间" prop="最后修改时间">
+                                </el-table-column>
+                            </el-table>
+                        </el-carousel-item>
+                    </el-carousel> -->
+
             </el-row>
             <el-row>
                 <!-- 资源目录新增、修改弹窗 -->
                 <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="closedialog" width="30%">
                     <el-form ref="form" :model="form" status-icon label-width="80px">
                         <el-form-item label="上级">
-                            <el-select v-model="form.PID" filterable :filter-method="datafilter" :default-first-option=true placeholder="请选择上级" style="width:100%">
+                            <!-- <el-select v-model="form.PID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择上级" style="width:100%">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
-                            </el-select>
+                            </el-select> -->
+                            <treeselect v-model="form.PID" placeholder="请选择或搜索" :options="ResourceTableData" />
                         </el-form-item>
                         <el-form-item label="类型" prop="Type">
                             <el-select v-model="form.Type" placeholder="请选择资源类型" style="width:100%">
@@ -182,13 +220,13 @@
                     </span>
                 </el-dialog>
                 <!-- 要素目录新增、修改弹窗 -->
-                <el-dialog :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedrawer" width="40%">
-                    <el-form ref="elform" :model="elform" status-icon label-width="110px" :inline="true" label-position="left">
+                <el-dialog :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedrawer" width="45%">
+                    <el-form ref="elform" :model="elform" status-icon label-width="150px" :inline="true">
                         <el-form-item label="序号">
                             <el-input v-model="elform.Numbera" :disabled="true"></el-input>
                         </el-form-item>
                         <el-form-item label="资源" style="margin-left:20px" clearable>
-                            <el-select v-model="elform.RID" filterable :filter-method="datafilter" :default-first-option=true placeholder="请选择资源" @change="resourceChange">
+                            <el-select v-model="elform.RID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择资源" @change="resourceChange">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
@@ -196,7 +234,7 @@
                             <el-input v-model="elform.Name"></el-input>
                         </el-form-item>
                         <el-form-item label="分类" style="margin-left:20px">
-                            <el-select v-model="elform.CID" filterable :filter-method="datafilter" :default-first-option=true placeholder="请选择分类" style="width:217px" clearable>
+                            <el-select v-model="elform.CID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择分类" style="width:217px" clearable>
                                 <el-option v-for="(item,index) in ClassifyList" :label="item.CName" :value="item.CID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
@@ -225,7 +263,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="值域资源">
-                            <el-select v-model="elform.DRID" filterable :filter-method="datafilter" :default-first-option=true placeholder="请选择资源" style="width:203px" :disabled="drdis" clearable>
+                            <el-select v-model="elform.DRID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择资源" style="width:203px" :disabled="drdis" clearable>
                                 <el-option v-for="(item,index) in DRList" :label="item.DRName" :value="item.DRID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
@@ -251,7 +289,7 @@
                             <el-switch v-model="elform.IFZSMC" :active-value="1" :inactive-value="0" :disabled="zsmcdis" style="width:217px"></el-switch>
                         </el-form-item>
                         <el-form-item label="编码目录">
-                            <el-select v-model="elform.CDID" filterable :filter-method="datafilter" :default-first-option=true placeholder="请选择资源" style="width:202px" :disabled="cddis" clearable>
+                            <el-select v-model="elform.CDID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择资源" style="width:202px" :disabled="cddis" clearable>
                                 <el-option v-for="(item,index) in CDList" :label="item.CDName" :value="item.CDID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
@@ -262,7 +300,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="备注">
-                            <el-input type="textarea" v-model="elform.Note" style="width:564px" :autosize="{ minRows: 2}"></el-input>
+                            <el-input type="textarea" v-model="elform.Note" style="width:605px" :autosize="{ minRows: 2}"></el-input>
                         </el-form-item>
                     </el-form>
                     <span slot="footer" class="dialog-footer">
@@ -272,9 +310,9 @@
                 </el-dialog>
                 <!--要素分类弹窗-->
                 <el-dialog :title="choosetitle" :visible.sync="ClassifydialogFormVisible" :before-close="ElementClassifyother" width="30%" id="classifyiframe">
-                    <el-form ref="cform" :model="cform" status-icon label-width="80px">
+                    <el-form ref="cform" :model="cform" status-icon label-width="8%">
                         <el-form-item label="资源" prop="RID">
-                            <el-select v-model="cform.RID" filterable :default-first-option=true placeholder="请选择资源">
+                            <el-select v-model="cform.RID" filterable :default-first-option="true" placeholder="请选择资源" style="width: 100%">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
@@ -295,9 +333,6 @@
                     <el-form ref="mform" :model="form" label-width="80px">
                         <el-form-item label="资源">
                             <el-input v-model="form.Name" label="form.Name" value="form.RID" :disabled="true"></el-input>
-                            <!-- <el-select v-model="form.Name">
-                                    <el-option label="form.RID" value="form.RID"></el-option>
-                                </el-select> -->
                         </el-form-item>
                         <el-form-item label="关联类型">
                             <el-input v-model="form.AssociationType" :disabled="true"></el-input>
@@ -306,19 +341,19 @@
                             <el-input v-model="form.NormName" clearable></el-input>
                         </el-form-item>
                         <el-form-item label="要素名称">
-                            <el-select v-model="form.GLID" placeholder="请选择要素名称" @change="ElementchangeName">
+                            <el-select v-model="form.GLID" placeholder="请选择要素名称" @change="ElementchangeName" style="width: 100%">
                                 <el-option v-for="(item,index) in ElementList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="计算类型">
-                            <el-select v-model="form.CalculateType" placeholder="请选择资源类型">
+                            <el-select v-model="form.CalculateType" placeholder="请选择资源类型" style="width: 100%">
                                 <el-option label="计数" value="计数"></el-option>
                                 <el-option label="求和" value="求和"></el-option>
                                 <el-option label="是否" value="是否"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="运算符">
-                            <el-select v-model="form.Operator" placeholder="请选择资源类型">
+                            <el-select v-model="form.Operator" placeholder="请选择资源类型" style="width: 100%">
                                 <el-option label="=" value="="></el-option>
                                 <el-option label=">" value=">"></el-option>
                                 <el-option label="<" value="<"></el-option>
@@ -336,6 +371,35 @@
                         <el-button @click="CountNorm('cancel')">取 消</el-button>
                     </span>
                 </el-dialog>
+                <!-- 角色权限弹窗 -->
+                <el-dialog :title="choosetitle" :visible.sync="dialogFormVisibleMainAuthority" :before-close="MainAuthorityother" width="30%">
+                    <el-form ref="aform" :model="aform" label-width="80px">
+                        <el-form-item label="类型">
+                            <el-select v-model="aform.Type" placeholder="请选择类型" style="width: 100%" @change="RolechangeName">
+                                <el-option label="资源明细" value="资源明细"></el-option>
+                                <el-option label="要素" value="要素"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="主体名称">
+                            <el-input v-model="aform.MainName" :disabled="isMainName" @input="changeMainName($event)"></el-input>
+                        </el-form-item>
+                        <el-form-item label="角色">
+                            <el-select v-model="aform.RoleID" placeholder="请选择要素名称" style="width: 100%" filterable :filter-method="datafilter">
+                                <el-option v-for="(item,index) in RoleList" :label="item.RoleName" :value="item.RoleID" :key="index"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="权限类型">
+                            <el-select v-model="aform.AuthorityType" multiple placeholder="请选择" value-key="id" change="changeValue" style="width:100%;">
+                                <el-option v-for="item in authoritys" :key="item.id" :label="item.text" :value="item">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button type="primary" :loading="loading" @click="MainAuthority('submit')">确 定</el-button>
+                        <el-button @click="MainAuthority('cancel')">取 消</el-button>
+                    </span>
+                </el-dialog>
             </el-row>
         </el-main>
     </el-container>
@@ -346,6 +410,7 @@
             <li class="ms-item wrap-ms-right" @click="handleXAdd()"><i class="el-icon-circle-plus icon1"></i>新增下级事务</li>
             <li class="ms-item wrap-ms-right" @click="handleUpdate()"><i class="el-icon-s-order icon1"></i>修改资源事务</li>
             <li class="ms-item wrap-ms-right" @click="handleDelete()"><i class="el-icon-delete-solid icon1"></i>删除资源事务</li>
+            <li class="ms-item wrap-ms-right" @click="Permission()"><i class="el-icon-s-order icon1"></i>权限管理</li>
         </ul>
     </div>
     <!-- 要素目录右键菜单 -->
@@ -373,10 +438,22 @@
             <li class="ms-item wrap-ms-right" @click="ElementClassify('delete')"><i class="el-icon-delete-solid icon1"></i>删除要素分类</li>
         </ul>
     </div>
+    <!-- 角色权限右键菜单 -->
+    <div v-show="menuVisibleMainAuthority">
+        <ul id="menuMainAuthority" class="menu">
+            <li class="ms-item wrap-ms-right" @click="MainAuthority('add')"><i class="el-icon-circle-plus icon1"></i>新增角色权限</li>
+            <li class="ms-item wrap-ms-right" @click="MainAuthority('update')"><i class="el-icon-s-order icon1"></i>修改角色权限</li>
+            <li class="ms-item wrap-ms-right" @click="MainAuthority('delete')"><i class="el-icon-delete-solid icon1"></i>删除角色权限</li>
+        </ul>
+    </div>
 </el-container>
 </template>
 
 <script>
+// 引入vue-treeselect组件
+import Treeselect from '@riophae/vue-treeselect'
+// 引入vue-treeselect样式
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import axios from 'axios';
 import qs from 'qs';
 import * as fecha from "element-ui/lib/utils/date";
@@ -389,11 +466,13 @@ import {
 import {
     cfoo,
     crightClick,
+    cstyleMenu,
     rightClick,
     styleMenu,
-    cstyleMenu,
     rightClickCountNorm,
-    styleMenuCountNorm
+    styleMenuCountNorm,
+    rightClickMainAuthority,
+    styleMenuMainAuthority
 } from '../utility/rightclick';
 
 import {
@@ -427,6 +506,19 @@ import {
     changeName,
 
 } from '../views/CountNorm';
+//资源明细角色权限
+import {
+    mainAuthorityAdd,
+    mainAuthorityUpdate,
+    submitMainAuthority,
+    mainAuthoritycolse,
+    mainAuthorityclosedialog,
+    mainAuthorityDelete,
+    getDetailname,
+} from '../views/MainAuthority';
+
+//角色权限
+const authorityOptions = ['新增', '修改', '删除', '查询'];
 
 export default {
     data() {
@@ -437,7 +529,6 @@ export default {
             ElementClassifyTableData: [],
             CountNormTableData: [],
             ElementRangeTableData: [],
-
             //标签页首选选项卡
             activeName: 'first',
 
@@ -459,7 +550,6 @@ export default {
                 //统计指标 需要用到的数据
                 RID: "",
                 NormName: ""
-
             },
             //资源目录修改时保存当前行的数据
             srow: [],
@@ -544,12 +634,33 @@ export default {
             //右键菜单模态框-统计指标
             menuVisibleCountNorm: false,
             //禁用装态
-            isDisabled: false
+            isDisabled: false,
+
+            //角色权限初始化赋值
+            authoritys: authorityOptions,
+            DetailTableData: [],
+            MainAuthorityTableData: [],
+            aform: {
+                RoleID: "",
+                MainName: "",
+                Type: "",
+                AuthorityType: [],
+                RID: "",
+                DID: ""
+            },
+            RoleInfo: [],
+            dialogFormVisibleMainAuthority: false,
+            menuVisibleMainAuthority: false,
+            detailName: "",
+            isMainName: true,
         };
+
     },
+    components: {
+        Treeselect
+    }, //注册组件
     created: function () {
         this.treeList();
-
     },
     computed: {
         //上级资源列表
@@ -636,6 +747,27 @@ export default {
             console.log(obj);
             return obj;
         },
+        //角色权限-角色信息
+        RoleList() {
+            let obj = [];
+            console.log("角色权限-角色信息");
+            this.$ajax.post('GetAllRoleInfo')
+                .then(function (res) {
+                    for (let i in res.data) {
+                        obj.push({
+                            RoleID: res.data[i].RoleID,
+                            RoleName: res.data[i].RoleName
+                        })
+                    }
+                    //解决当获取的列表有值但无法选择
+                    if (!res.data.RoleID) {
+                        res.data.RoleID = null;
+                    }
+                });
+            console.log(obj);
+            this.RoleInfo = obj;
+            return obj;
+        },
     },
     methods: {
         //资源目录树形网格
@@ -659,7 +791,8 @@ export default {
                 var treeData = [];
                 AllData.forEach(function (item) {
                     //如果需要对特定字段进行处理，那么这里做对应处理，会存在一定数据冗余
-                    //item.label = item.name;
+                    item.label = item.Name;
+                    item.id = item.ID
                     // 以当前遍历项，的pid,去map对象中找到索引的id
                     var parent = map[item.PID];
                     // 如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
@@ -678,6 +811,7 @@ export default {
             });
         },
         //资源--要素--分类--统计指标 联动
+        //资源--明细 联动
         elementlink(row, column, event) {
             var that = this;
             //单击资源目录保存资源ID
@@ -725,6 +859,19 @@ export default {
                     that.CountNormTableData = res.data;
                 })
                 .catch(function (res) {})
+            //资源明细
+            this.$ajax.post('GetAllDetailByResourceID',
+                    this.$qs.stringify({
+                        RID: row.ID
+                    }))
+                .then(function (res) {
+                    console.log("资源明细");
+                    console.log(res);
+                    that.DetailTableData = res.data;
+                })
+                .catch(function (res) {})
+            //清空角色权限
+            that.MainAuthorityTableData = [];
         },
         //要素目录--文本值域选项 联动
         elementrangelink(row, column, event) {
@@ -738,6 +885,27 @@ export default {
                     console.log("要素值域选项");
                     console.log(res);
                     that.ElementRangeTableData = res.data;
+                })
+                .catch(function (res) {})
+        },
+        //明细目录--角色权限 联动
+        detaillink(row, column, event) {
+            var that = this;
+            console.log("明细目录--角色权限 联动");
+            console.log(row);
+            that.aform.DID = row.DID;
+            that.aform.RID = row.RID;
+            console.log(that.aform);
+            that.detailName = row.DetailName;
+            //角色权限
+            this.$ajax.post('GetAllMainAuthorityByDetailID',
+                    this.$qs.stringify({
+                        DID: row.DID
+                    }))
+                .then(function (res) {
+                    console.log("角色权限");
+                    console.log(res);
+                    that.MainAuthorityTableData = res.data;
                 })
                 .catch(function (res) {})
         },
@@ -755,6 +923,14 @@ export default {
             this.current = val;
         },
         ElementRangeTableChange(val) {
+            this.current = val;
+        },
+        //选中表格行高亮显示
+        //角色权限
+        DetailTableChange(val) {
+            this.current = val;
+        },
+        MainAuthorityTableChange(val) {
             this.current = val;
         },
         //资源目录右键点击事件
@@ -1290,9 +1466,13 @@ export default {
                 if (this.mark == 1) {
                     console.log("进入要素新增");
                     console.log(this.elform);
-                    console.log(qs.stringify(this.elform));
-                    axios.post("CreateElement", qs.stringify(this.elform),{headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
-                    //返回成功调用
+                    // console.log(qs.stringify(this.CountNormTableData));
+                    axios.post("CreateElement", qs.stringify(this.elform), {
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            }
+                        })
+                        //返回成功调用
                         .then((res) => {
                             this.$message({
                                 type: 'success',
@@ -1345,6 +1525,7 @@ export default {
                             });
 
                         });
+
                 } else {
                     console.log("进入要素修改");
                     this.$ajax.put('UpdateElementByEID', this.elform)
@@ -1410,53 +1591,8 @@ export default {
         },
         //表格日期显示格式转换
         dateFormat(row, column, cellValue) {
-            // console.log("进入日期转换");
-            // console.log(row);
-            // console.log(column);
-            // console.log(cellValue);
             return cellValue ? fecha.format(new Date(cellValue), 'yyyy-MM-dd HH:mm:ss') : '--';
         },
-        //资源目录树形测试版
-        treeList1() {
-            var that = this;
-            axios.post("GetAllResources").then(function (res) {
-                var AllData = res.data;
-                console.log(AllData);
-                let map = {};
-                let val = [];
-                //生成数据对象集合
-                AllData.forEach(it => {
-                    map[it.ID] = it; //department_id为每个节点的id
-                });
-                //生成结果集
-                AllData.forEach(it => {
-                    const parent = map[it.PID]; //pid_department_id为父节点的id
-                    if (parent) {
-                        if (!Array.isArray(parent.children)) parent.children = [];
-                        parent.children.push(it);
-                    } else {
-                        val.push(it)
-                    }
-                });
-                for (var i in AllData) {
-                    if (AllData[i].children == null) {
-                        delete AllData[i];
-                        //AllData.splice(i, 1);
-                        for (var j in AllData) {
-                            if (AllData[j].PID != null) {
-                                delete AllData[j];
-                                // AllData.splice(j, 1);
-                            }
-                        }
-                    }
-                };
-                console.log(AllData);
-                that.ResourceTableData = AllData;
-            });
-        },
-
-
-
         //获取资源目录表格行的索引
         ResourcetableRowClassName({
             row,
@@ -1510,10 +1646,22 @@ export default {
         }) {
             row.row_index = rowIndex;
         },
+        //获取角色权限表格行的索引
+        MainAuthoritytableRowClassName({
+            row,
+            rowIndex
+        }) {
+            row.row_index = rowIndex;
+        },
         //统计指标右键
         rightClickNorm(row, event) {
             let _this = this;
             rightClickCountNorm(_this, row, event);
+        },
+        //角色权限右键
+        rightClickMainAuthority(row, event) {
+            let _this = this;
+            rightClickMainAuthority(_this, row, event);
         },
 
         //统计指标 打开不同编辑类型的模态框
@@ -1535,15 +1683,50 @@ export default {
             }
 
         },
+        //角色权限 打开不同编辑类型的模态框
+        MainAuthority(state, row, event) {
+            let _this = this;
+            if (state == 'add') {
+                mainAuthorityAdd(_this);
+
+            } else if (state == 'update') {
+                mainAuthorityUpdate(_this);
+
+            } else if (state == 'delete') {
+                mainAuthorityDelete(_this);
+
+            } else if (state == 'submit') {
+                submitMainAuthority(_this);
+            } else if (state == 'cancel') {
+                mainAuthoritycolse(_this);
+            }
+
+        },
         //点击其他区域关闭统计指标模态框
         CountNormother(done) {
             countNormclosedialog(done, this);
+        },
+        //点击其他区域关闭角色权限模态框
+        MainAuthorityother(done) {
+            mainAuthorityclosedialog(done, this);
         },
         //统计指标-实现要素名称和指标名称值变化联动
         ElementchangeName(val) {
             changeName(this, val);
         },
-
+        RolechangeName(val) {
+            getDetailname(this, val);
+        },
+        //权限管理跳转页面
+        Permission() {
+            this.$router.push({
+                path: '/Permission'
+            })
+        },
+        //解决当element中input标签输入值不能正常输入
+        changeMainName() {
+            this.$forceUpdate();
+        },
     }
 }
 </script>
@@ -1592,5 +1775,9 @@ export default {
 
 .elem_footer {
     display: flex;
+}
+
+.el-main {
+    padding-top: 0px;
 }
 </style>
