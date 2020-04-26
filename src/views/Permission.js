@@ -9,6 +9,8 @@ export function PermissionhandleAdd(_this) {
     _this.dialogFormVisible = true;
     //console.log(this.srow);
     _this.form.RoleID = _this.RoleIDvue; //将角色表格当前行的ID传给RoleID
+    console.log(_this.form);
+    console.log(_this.multipleSelection);
 
 
 }
@@ -33,6 +35,7 @@ export function PermissionsubmitForm(_this) {
             for (let i in m) {
                 _this.PermissionData.push(m[i]);
             }
+            // _this.multipleSelection = [];
             _this.dialogFormVisible = false;
             this.$refs.PagePermission.clearSelection();
 
@@ -45,22 +48,20 @@ export function PermissionsubmitForm(_this) {
                 duration: 4000,
                 offset: 40
             });
-            that.oform = {};
             that.OtherdialogFormVisible = false;
+            _this.AuthorityType = []; //清空被选中页面权限
         })
 }
 
 //点击取消关闭并清空窗体权限模态框
 export function Permissioncolse(_this) {
     _this.dialogFormVisible = false;
-    _this.multipleSelection = []; //清空选择器
     _this.AuthorityType = []; //清空被选中页面权限
 }
 
 //点击X关闭窗体权限模态框
 export function Permissionclosedialog(done, _this) {
     done();
-    _this.multipleSelection = []; //清空选择器
     _this.AuthorityType = []; //清空被选中页面权限
     _this.dialogFormVisible = false;
 }
@@ -92,6 +93,9 @@ export function OPermissionsubmitForm(_this) {
             });
             that.PermissionData.push(_this.oform);
             that.oform = {};
+            //that.$refs.oform.clearSelection(); //清空其他权限选择器
+
+            that.ResourceTree = [];
             that.OtherdialogFormVisible = false;
         })
         .catch(function(obj) {
@@ -103,6 +107,7 @@ export function OPermissionsubmitForm(_this) {
                 offset: 40
             });
             that.oform = {};
+            that.ResourceTree = [];
             that.OtherdialogFormVisible = false;
         })
 
@@ -113,6 +118,7 @@ export function OPermissionsubmitForm(_this) {
 //点击取消关闭并清空其他权限模态框
 export function OPermissioncolse(_this) {
     _this.oform = {};
+    _this.ResourceTree = [];
     _this.OtherdialogFormVisible = false;
 
 }
@@ -120,6 +126,7 @@ export function OPermissioncolse(_this) {
 //点击X关闭其他权限模态框
 export function OPermissionclosedialog(done, _this) {
     _this.oform = {};
+    _this.ResourceTree = [];
     done();
     _this.OtherdialogFormVisible = false;
 }
@@ -195,7 +202,15 @@ export function RoleUserSubmit1(_this) {
                 for (let i in m) {
                     _this.RoleUesrData.push(m[i]);
                 }
-                _this.RoleUserSelection = []; //清空选择器
+                //_this.RoleUserSelection = []; //清空选择器
+                //角色用户父搜索框重置
+                _this.search = "";
+                //角色用户子搜索框重置
+                _this.search1 = "";
+                //角色用户默认展开行重置
+                _this.expands = [];
+                //角色用户初始页面值展示重置
+                _this.RoleUserOU = _this.RoleUserOUA;
                 _this.RoleUserdialogFormVisible = false;
 
             })

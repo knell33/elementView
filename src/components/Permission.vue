@@ -90,7 +90,7 @@
             <!-- 新增窗体权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="Closedialog" width="30%">
                 <el-form ref="form" :model="form" status-icon label-width="80px">
-                    <el-form-item label="权限类型" prop="Type">
+                    <el-form-item label="权限类型">
                         <el-select v-model="AuthorityType" multiple placeholder="请选择">
                             <el-option label="新增" value="新增"></el-option>
                             <el-option label="修改" value="修改"></el-option>
@@ -322,6 +322,8 @@ export default {
             symbol: "",
             //右键菜单项是否可见
             disabledvalue:"",
+            //资源目录树形数据保存
+            resoursedata: [],
         }
     },
     components: {
@@ -440,7 +442,10 @@ export default {
                 });
 
                 //console.log(treeData);
+                that.resoursedata = treeData;
                 that.ResourceTree = treeData;
+                console.log(that.resoursedata);
+                console.log(that.ResourceTree);
             });
         },
         //创建时获取数据
@@ -623,7 +628,7 @@ export default {
         },
         //角色用户取消
         ColseRoleUser() {
-            ColseRoleUser1(this);
+            ColseRoleUser1(this);          
         },
         //点击其他区域关闭角色用户弹窗
         RUClosedialog(done) {
@@ -801,6 +806,7 @@ export default {
             if (state == 'form') {
                 //提交窗体权限
                 PermissionsubmitForm(this);
+                this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
             } else {
                 //提交其他权限
                 OPermissionsubmitForm(this);
@@ -810,6 +816,7 @@ export default {
         //点击x关闭窗体权限模态框
         Closedialog(done) {
             Permissionclosedialog(done, this);
+            this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
         },
         //点击x关闭其他权限模态框
         OClosedialog(done) {
@@ -822,6 +829,7 @@ export default {
             if (state == 'form') {
                 //关闭窗体权限
                 Permissioncolse(this);
+                this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
             } else {
                 //关闭其他权限
                 OPermissioncolse(this);

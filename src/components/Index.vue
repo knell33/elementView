@@ -1322,13 +1322,13 @@ export default {
             this.mark = 1;
             this.elform.RID = this.lrid;
             //设置名称是否展示禁用
-            for (let i in this.PList) {
-                if (this.PList[i].ID == this.elform.RID) {
-                    if (this.PList[i].Type == "资源") {
-                        this.zsmcdis = true;
-                    }
-                }
-            };
+            // for (let i in this.ResourceTableData) {
+            //     if (this.ResourceTableData[i].id == this.elform.RID) {
+            //         if (this.ResourceTableData[i].Type == "资源") {
+            //             this.zsmcdis = true;
+            //         }
+            //     }
+            // };
             //单位、长度、选项类型、值域资源、编码目录字段禁用
             this.unitdis = true;
             this.lengthdis = true;
@@ -1429,9 +1429,9 @@ export default {
             console.log(this.elform);
             var that = this;
             //根据资源类型改变名称是否展示禁用
-            for (let i in this.PList) {
-                if (this.PList[i].ID == this.elform.RID) {
-                    if (this.PList[i].Type == "资源") {
+            for (let i in this.ResourceTableData) {
+                if (this.ResourceTableData[i].ID == this.elform.RID) {
+                    if (this.ResourceTableData[i].Type == "资源") {
                         this.zsmcdis = true;
                     } else {
                         this.zsmcdis = false;
