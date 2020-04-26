@@ -6,6 +6,7 @@
             <el-row>
                 <h3 class="tabletitle ttop">角色信息</h3>
                 <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick">
+                <el-table el-header :data="RoleData" height="460px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick">
                     <el-table-column label="角色名称" prop="Name">
                     </el-table-column>
                     <el-table-column label="备注" prop="Note">
@@ -44,6 +45,8 @@
                     <div class="g-right" @click="ResourceElement()">资源要素管理</div>
                 </div>
                 <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserRightClick">
+                <h3 class="tabletitle ttop">用户信息</h3>
+                <el-table el-header :data="RoleUesrData" height="460px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
                     <el-table-column label="用户名" prop="UserName">
                     </el-table-column>
                     <el-table-column label="最后修改人" prop="LastModify">
@@ -87,7 +90,7 @@
             <div v-show="RoleUserVisible">
                 <ul id="roleusermenu" class="menu">
                     <li class="ms-item wrap-ms-right" @click="AddRoleuser()"><i class="el-icon-circle-plus icon1"></i>新增用户关系</li>
-                    <li class="ms-item wrap-ms-right" @click="DeleteRoleUser()"><i class="el-icon-s-order icon1"></i>删除用户关系</li>
+                    <li v-show = "disabledvalue" class="ms-item wrap-ms-right" @click="DeleteRoleUser()"><i class="el-icon-s-order icon1"></i>删除用户关系</li>
                 </ul>
             </div>
             <!-- 新增窗体权限弹窗 -->
@@ -95,6 +98,8 @@
                 <el-form ref="form" :model="form" status-icon label-width="80px">
                     <el-form-item label="权限类型" class="g-select-width" prop="Type">
                         <el-select v-model="AuthorityType" class="g-select-width" multiple placeholder="请选择">
+                    <el-form-item label="权限类型">
+                        <el-select v-model="AuthorityType" multiple placeholder="请选择">
                             <el-option label="新增" value="新增"></el-option>
                             <el-option label="修改" value="修改"></el-option>
                             <el-option label="删除" value="删除"></el-option>
@@ -326,6 +331,10 @@ export default {
             expands: [],
             //角色用户搜索标识
             symbol: "",
+            //右键菜单项是否可见
+            disabledvalue:"",
+            //资源目录树形数据保存
+            resoursedata: [],
         }
     },
     components: {
@@ -444,7 +453,10 @@ export default {
                 });
 
                 //console.log(treeData);
+                that.resoursedata = treeData;
                 that.ResourceTree = treeData;
+                console.log(that.resoursedata);
+                console.log(that.ResourceTree);
             });
         },
         //创建时获取数据
@@ -610,7 +622,12 @@ export default {
 
         //角色用户右键菜单
         RoleUserRightClick(row, event) {
-            rightRoleUser(this, row, event);
+            rightRoleUser(this, row, event,'normal');
+        },
+
+        //角色用户右键表头菜单
+        RoleUserheaderRightClick(row, event) {
+            rightRoleUser(this, row, event,'header');
         },
         //新增角色用户
         AddRoleuser() {
@@ -622,7 +639,7 @@ export default {
         },
         //角色用户取消
         ColseRoleUser() {
-            ColseRoleUser1(this);
+            ColseRoleUser1(this);          
         },
         //点击其他区域关闭角色用户弹窗
         RUClosedialog(done) {
@@ -800,6 +817,7 @@ export default {
             if (state == 'form') {
                 //提交窗体权限
                 PermissionsubmitForm(this);
+                this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
             } else {
                 //提交其他权限
                 OPermissionsubmitForm(this);
@@ -809,6 +827,7 @@ export default {
         //点击x关闭窗体权限模态框
         Closedialog(done) {
             Permissionclosedialog(done, this);
+            this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
         },
         //点击x关闭其他权限模态框
         OClosedialog(done) {
@@ -821,6 +840,7 @@ export default {
             if (state == 'form') {
                 //关闭窗体权限
                 Permissioncolse(this);
+                this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
             } else {
                 //关闭其他权限
                 OPermissioncolse(this);

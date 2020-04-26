@@ -45,15 +45,21 @@ export function styleMenu(menu) {
 
 
 //要素分类 右键菜单
-export function crightClick(_this, row, column, event) {
+export function crightClick(_this,row, column, event,state) {
     self = _this; //将指向vue的this赋值给全局变量self
     _this.cmenuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
     _this.cmenuVisible = true; // 显示模态窗口，跳出自定义菜单栏
     var menu = document.querySelector('#cmenu');
     cstyleMenu(menu);
-    _this.rid = _this.treedata; ////将单击树形后的当前ID赋值给表单的rid
-    _this.crow = JSON.parse(JSON.stringify(row));
-    _this.cid = row.ID;
+    if (state == 'header') {
+        _this.disabledvalue = false
+    }
+    else {
+        _this.disabledvalue = true
+        _this.rid = _this.treedata; ////将单击树形后的当前ID赋值给表单的rid
+        _this.crow = JSON.parse(JSON.stringify(row));
+        _this.cid = row.ID;
+    }
     console.log(_this.cid)
         //console.log('ROW:'+_this.crow.row_index);
         //console.log(event);
@@ -79,12 +85,19 @@ export function cstyleMenu(menu) {
 };
 
 //统计指标 右键菜单
-export function rightClickCountNorm(_this, row, event) {
+export function rightClickCountNorm(_this, row, event,state) {
+
     self = _this; //将指向vue的this赋值给全局变量self
     _this.menuVisibleCountNorm = false;
     _this.menuVisibleCountNorm = true;
     var menu = document.querySelector('#menuCountNorm');
     styleMenuCountNorm(menu);
+    if (state == 'header') {
+        _this.disabledvalue = false
+    }
+    else {
+        _this.disabledvalue = true
+    }
     _this.srow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
     //console.log("右键保存数据srow");
     //console.log(_this.srow);
@@ -108,12 +121,18 @@ export function styleMenuCountNorm(menu) {
     }
 }
 //资源明细-角色权限 右键菜单
-export function rightClickMainAuthority(_this, row, event) {
+export function rightClickMainAuthority(_this, row, event,state) {
     self = _this; //将指向vue的this赋值给全局变量self
     _this.menuVisibleMainAuthority = false;
     _this.menuVisibleMainAuthority = true;
     var menu = document.querySelector('#menuMainAuthority');
     styleMenuMainAuthority(menu);
+    if (state == 'header') {
+        _this.disabledvalue = false
+    }
+    else {
+        _this.disabledvalue = true
+    }
     _this.srow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
     _this.aid = row.AID;
     console.log()
@@ -194,12 +213,18 @@ export function stylePermission(menu) {
 }
 
 //角色用户右键菜单
-export function rightRoleUser(_this, row) {
+export function rightRoleUser(_this, row,event,state) {
     self = _this; //将指向vue的this赋值给全局变量self
     _this.RoleUserVisible = false;
     _this.RoleUserVisible = true;
     var menu = document.querySelector('#roleusermenu');
     styleRoleUser(menu);
+    if (state == 'header') {
+        _this.disabledvalue = false
+    }
+    else {
+        _this.disabledvalue = true
+    }
     //保存当前行数据
     _this.RoleUserRowData = JSON.parse(JSON.stringify(row));
     console.log(_this.RoleUserRowData);
