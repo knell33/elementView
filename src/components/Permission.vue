@@ -5,7 +5,7 @@
             <!-- 角色信息表格 -->
             <el-row>
                 <h3 class="tabletitle ttop">角色信息</h3>
-                <el-table el-header :data="RoleData" height="460px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick">
+                <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick">
                     <el-table-column label="角色名称" prop="Name">
                     </el-table-column>
                     <el-table-column label="备注" prop="Note">
@@ -19,7 +19,7 @@
             <!-- 角色权限表格 -->
             <el-row>
                 <h3 class="tabletitle tbuttom">角色权限</h3>
-                <el-table el-header :data="PermissionData" height="460px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="PermissionRightClick" :row-class-name="MainAuthoritytableRowClassName">
+                <el-table el-header :data="PermissionData" height="420px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="PermissionRightClick" :row-class-name="MainAuthoritytableRowClassName">
                     <el-table-column label="主体名称" prop="MainName">
                     </el-table-column>
                     <el-table-column label="类型" prop="Type">
@@ -39,8 +39,11 @@
         <el-header>
             <!-- 角色用户表格 -->
             <el-row>
-                <h3 class="tabletitle ttop">用户信息</h3>
-                <el-table el-header :data="RoleUesrData" height="460px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserRightClick">
+                <div>
+                    <div class="tabletitle ttop g-left">用户信息</div>
+                    <div class="g-right" @click="ResourceElement()">资源要素管理</div>
+                </div>
+                <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserRightClick">
                     <el-table-column label="用户名" prop="UserName">
                     </el-table-column>
                     <el-table-column label="最后修改人" prop="LastModify">
@@ -53,7 +56,7 @@
             <!-- 用户权限表格 -->
             <el-row>
                 <h3 class="tabletitle tbuttom">用户权限</h3>
-                <el-table el-header :data="PersonnelAuthorityData" :row-class-name="PersonnelAuthoritytableRowClassName" height="460px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row>
+                <el-table el-header :data="PersonnelAuthorityData" :row-class-name="PersonnelAuthoritytableRowClassName" height="420px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row>
                     <el-table-column label="主体名称" prop="MName">
                     </el-table-column>
                     <el-table-column label="类型" prop="Type">
@@ -90,8 +93,8 @@
             <!-- 新增窗体权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="Closedialog" width="30%">
                 <el-form ref="form" :model="form" status-icon label-width="80px">
-                    <el-form-item label="权限类型" prop="Type">
-                        <el-select v-model="AuthorityType" multiple placeholder="请选择">
+                    <el-form-item label="权限类型" class="g-select-width" prop="Type">
+                        <el-select v-model="AuthorityType" class="g-select-width" multiple placeholder="请选择">
                             <el-option label="新增" value="新增"></el-option>
                             <el-option label="修改" value="修改"></el-option>
                             <el-option label="删除" value="删除"></el-option>
@@ -149,11 +152,14 @@
 
             <!-- 新增角色用户弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="RoleUserdialogFormVisible" :before-close="RUClosedialog" width="45%">
-                <el-input type="search" v-model="search" style="width:50%" placeholder="请输入组织机构关键字"></el-input>
-                <!-- <el-input type="search" v-model="search1" style="width:50%" placeholder="请输入姓名关键字"></el-input> -->
-                <div style="margin-top:10px">
-                    <el-input placeholder="请输入姓名关键字" type="search" v-model="search1" style="width:50%"></el-input>
-                    <el-button type="primary" style="margin-left:10px" @click="RoleUserSelect()">搜 索</el-button>
+                <div>
+                    <div class="g-left-search">
+                        <el-input type="search" v-model="search" style="width:100%" placeholder="模糊匹配组织机构关键字"></el-input>
+                    </div>                            
+                    <div class="g-right-search">
+                        <el-input placeholder="请准确输入姓名" type="search" v-model="search1" class="g-right-search-input"></el-input>
+                        <el-button type="primary" @click="RoleUserSelect()">搜 索</el-button>
+                    </div>
                 </div>
                 <el-table ref="roleUser" :data="RoleUserOU1" @expand-change="RoleUserRowChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" height="450px">
                     <el-table-column prop="OU" label="组织机构">
@@ -833,6 +839,13 @@ export default {
             DeletePermissionByJs(this);
         },
 
+        //点击链接跳转到资源要素管理
+        ResourceElement() {
+            this.$router.push({
+                path: '/index'
+            })
+        },
+
     }
 
 }
@@ -883,17 +896,46 @@ export default {
 .elem_footer {
     display: flex;
 }
-
+/* 调整样式 */
+.g-select-width{
+    width: 90%;
+}
 .tabletitle {
     color: #999999;
     font-size: 1.5rem;
 }
 
 .ttop {
-    margin: 11px 3px;
+    margin: 8px 3px;
 }
 
 .tbuttom {
     margin: 4px 3px 11px 3px;
+}
+.g-left{
+    float: left;
+    font-size: 24px;
+    font-weight: 1000;
+}
+.g-right{
+    float: right;
+    margin: 3px 1rem;
+    cursor: pointer;
+    border: 1px solid #e4e5e3;
+    border-radius: 4px;
+    padding: 5px;
+    background-color:#f8f8f7;
+    color: #999999;
+    font-size: 1.2rem;
+}
+.g-left-search{
+    float: left;
+}
+.g-right-search{
+    float: right;
+}
+.g-right-search-input{
+    width: 70%;
+    margin: 0 .2rem;
 }
 </style>

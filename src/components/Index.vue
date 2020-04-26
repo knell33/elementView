@@ -4,7 +4,8 @@
     <el-container>
         <!-- 资源目录树形表格 -->
         <el-aside width="350px">
-            <el-table :data="ResourceTableData" style="width: 100%;margin-bottom: 20px;" height="913px" row-key="ID" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" @row-click="elementlink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" highlight-current-row @current-change="ResourceTableChange" @row-contextmenu="rightClick" @header-contextmenu="rightHeaderClick">
+            <h3 class="tabletitle ttop">资源目录</h3>
+            <el-table :data="ResourceTableData" style="width: 100%;margin-bottom: 20px;" height="870px" row-key="ID" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" @row-click="elementlink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" highlight-current-row @current-change="ResourceTableChange" @row-contextmenu="rightClick" @header-contextmenu="rightHeaderClick">
                 <el-table-column prop="Name" label="资源名称">
                 </el-table-column>
                 <el-table-column prop="Type" label="类型">
@@ -15,7 +16,9 @@
         <el-main>
             <el-row>
                 <el-tabs v-model="activeName" type="card">
-                    <el-table :data="ElementTableData" height="380px" @row-click="elementrangelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick">
+                    <div class="tabletitle g-element">要素目录</div>
+                    <div class="g-permission" @click="Permission()">权限管理</div>
+                    <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick">
                         <el-table-column label="序号" prop="Numbera">
                         </el-table-column>
                         <el-table-column label="分类名称" prop="ClassifyName">
@@ -52,7 +55,7 @@
                 <el-tabs v-model="activeName" type="card">
                     <el-tab-pane label="要素分类" name="first">
                         <!-- 要素分类表格 -->
-                        <el-table :data="ElementClassifyTableData" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyRightClick">
+                        <el-table :data="ElementClassifyTableData" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyRightClick">
                             <el-table-column label="分类名称" prop="Name">
                             </el-table-column>
                             <el-table-column label="备注" prop="Note">
@@ -65,7 +68,7 @@
                     </el-tab-pane>
                     <el-tab-pane label="统计指标定义" name="second">
                         <!-- 统计指标关联表格 -->
-                        <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightClickNorm" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName">
+                        <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightClickNorm" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName">
                             <el-table-column label="指标名称" prop="NormName">
                             </el-table-column>
                             <el-table-column label="计算类型" prop="CalculateType">
@@ -86,7 +89,7 @@
                     </el-tab-pane>
                     <el-tab-pane label="要素值域选项" name="third">
                         <!-- 要素值域选项表格 -->
-                        <el-table :data="ElementRangeTableData" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementRangeTableChange">
+                        <el-table :data="ElementRangeTableData" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementRangeTableChange">
                             <el-table-column label="选项名称" prop="Name">
                             </el-table-column>
                             <el-table-column label="备注" prop="Note">
@@ -99,7 +102,7 @@
                     </el-tab-pane>
                     <!-- 资源明细 -->
                     <el-tab-pane label="资源明细" name="fourth">
-                        <el-table :data="DetailTableData" height="220px" @row-click="detaillink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="DetailTableChange">
+                        <el-table :data="DetailTableData" height="250px" @row-click="detaillink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="DetailTableChange">
                             <el-table-column label="明细名称" prop="DetailName">
                             </el-table-column>
                             <el-table-column label="上级明细名称" prop="PDetailName">
@@ -114,7 +117,7 @@
                             </el-table-column>
                         </el-table>
                         <!-- 角色权限 -->
-                        <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClickMainAuthority" height="230px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName">
+                        <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClickMainAuthority" height="190px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName">
                             <el-table-column label="角色名称" prop="RoleName">
                             </el-table-column>
                             <el-table-column label="类型" prop="Type">
@@ -1780,5 +1783,32 @@ export default {
 
 .el-main {
     padding-top: 0px;
+}
+/* 调整样式 */
+.tabletitle {
+    color: #999999;
+    font-size: 1.5rem;
+}
+
+.ttop {
+    margin: 3px;
+    padding: 5px;
+}
+.g-element{
+    float: left;
+    font-size: 24px;
+    font-weight: 1000;
+    padding: 7px;
+}
+.g-permission{
+    float: right;
+    margin: 0 1rem;
+    cursor: pointer;
+    border: 1px solid #e4e5e3;
+    border-radius: 4px;
+    padding: 5px;
+    background-color:#f8f8f7;
+    color: #999999;
+    font-size: 1.2rem;
 }
 </style>
