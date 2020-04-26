@@ -1,102 +1,92 @@
 <template>
-<el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-    <el-form-item label="密码" prop="pass">
-        <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
-    </el-form-item>
-    <el-form-item label="确认密码" prop="checkPass">
-        <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-    </el-form-item>
-    <el-form-item label="年龄" prop="age">
-        <el-input v-model.number="ruleForm.age"></el-input>
-    </el-form-item>
-    <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
-    </el-form-item>
-</el-form>
+ <div class="">
+  <div class="top">
+  <!-- 筛选 -->
+   <div class="screen">
+    <div style="width:30%">筛选：</div>
+    <el-input type="search" v-model="search" style="width:70%" placeholder="请输入关键字"></el-input>
+   </div>
+  </div>
+  <!-- 表格 -->
+  <div class="table">
+   <el-table
+    :data="tables"
+    style="width: 100%"
+    max-height=500>
+   <!-- 地址 -->
+    <el-table-column label="时间">
+     <template slot-scope="scope">
+      <span class="col-cont" v-html="scope.row.date" ></span>
+     </template>
+    </el-table-column>
+    <!-- 用户名 -->
+    <el-table-column label="用户名">
+     <template slot-scope="scope">
+      <span class="col-cont" v-html="scope.row.name" ></span>
+     </template>
+    </el-table-column>
+    <!-- 地址 -->
+    <el-table-column label="地址">
+     <template slot-scope="scope">
+      <span class="col-cont" v-html="scope.row.address" ></span>
+     </template>
+    </el-table-column>
+   </el-table>
+  </div>
+ </div>
 </template>
 
 <script>
-export default {
-    data() {
-        var checkAge = (rule, value, callback) => {
-            console.log("age");
-            if (!value) {
-                return callback(new Error('年龄不能为空'));
-            }
-            setTimeout(() => {
-                
-                if (!Number.isInteger(value)) {
-                    callback(new Error('请输入数字值'));
-                } else {
-                    if (value < 18) {
-                        callback(new Error('必须年满18岁'));
-                    } else {
-                        callback();
-                    }
-                }
-            }, 1000);
-        };
-        var validatePass = (rule, value, callback) => {
-            console.log("validatePass");
-            if (value === '') {
-                callback(new Error('请输入密码'));
-            } else {
-                if (this.ruleForm.checkPass !== '') {
-                    this.$refs.ruleForm.validateField('checkPass');
-                }
-                callback();
-            }
-        };
-        var validatePass2 = (rule, value, callback) => {
-            console.log("validatePass2");
-            if (value === '') {
-                callback(new Error('请再次输入密码'));
-            } else if (value !== this.ruleForm.pass) {
-                callback(new Error('两次输入密码不一致!'));
-            } else {
-                callback();
-            }
-        };
-        return {
-            ruleForm: {
-                pass: '',
-                checkPass: '',
-                age: ''
-            },
-            rules: {
-                pass: [{
-                    required: true,
-                    validator: validatePass,
-                    trigger: 'blur'
-                }],
-                checkPass: [{
-                    required: true,
-                    validator: validatePass2,
-                    trigger: 'blur'
-                }],
-                age: [{
-                    required: true,
-                    validator: checkAge,
-                    trigger: 'blur'
-                }]
-            }
-        };
-    },
-    methods: {
-        submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    alert('submit!');
-                } else {
-                    console.log('error submit!!');
-                    return false;
-                }
-            });
-        },
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
-        }
+ export default {
+  data() {
+   return {
+    search: '',
+    tableData: [{
+     date: '2016-05-02',
+     name: '张三',
+     address: '上海市普陀区金沙江路 1518 弄'
+    }, {
+     date: '2016-05-04',
+     name: '李四',
+     address: '上海市普陀区金沙江路 1517 弄'
+    }, {
+     date: '2016-05-01',
+     name: '王五',
+     address: '上海市普陀区金沙江路 1519 弄'
+    }, {
+     date: '2016-05-03',
+     name: '赵六',
+     address: '上海市普陀区金沙江路 1516 弄'
+    }]
+   }
+  },
+  components: {},
+  computed: {
+  // 实时监听表格
+   tables: function() {
+    const search = this.search;
+    console.log("aaa");
+    if (search) {
+     return this.tableData.filter(dataNews => {
+      return Object.keys(dataNews).some(key => {
+       return String(dataNews[key]).toLowerCase().indexOf(search) > -1
+      })
+     })
     }
-}
+    console.log(this.tableData);
+    return this.tableData;
+   }
+  },
+  methods: {
+   // 筛选变色
+   showDate(val) {
+    val = val + '';
+    if (val.indexOf(this.search) !== -1 && this.search !== '') {
+     return val.replace(this.search, '<font color="#409EFF">' + this.search + '</font>')
+    } else {
+     return val
+    }
+   }
+  }
+ }
 </script>

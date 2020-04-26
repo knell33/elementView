@@ -794,7 +794,7 @@ export default {
                     //树形下拉框参数 item.label item.id
                     item.label = item.Name;
                     item.id = item.ID
-                    // 以当前遍历项，的pid,去map对象中找到索引的id
+                    // 以当前遍历项的pid,去map对象中找到索引的id
                     var parent = map[item.PID];
                     // 如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
                     if (parent) {

@@ -1,11 +1,9 @@
 let self;
 //新增统计指标
 export function countNormAdd(_this) {
-    //console.log("新增统计指标");
     self = _this; //将指向vue的this赋值给全局变量self
     console.log(_this.resouceData.Type == "事务" || _this.resouceData.Type == "资源关系");
     if (_this.resouceData.Type == "事务" || _this.resouceData.Type == "资源关系") {
-
         _this.choosetitle = "新增统计指标";
         _this.dialogFormVisibleCountNorm = true;
         _this.mark = 3; //编辑标识
@@ -23,16 +21,19 @@ export function countNormAdd(_this) {
 //修改统计指标
 export function countNormUpdate(_this) {
     self = _this; //将指向vue的this赋值给全局变量self
-    if (self.CountNormTableData == "" || self.CountNormTableData == undefined || self.CountNormTableData == null) {
-        self.$message("该资源没有统计指标的数据，不能修改！");
+    if (self.srow.ID == "" || self.srow.ID == null) {
+        self.$message({
+            message: '未选中相应的统计指标数据',
+            type: 'warning',
+            duration: 4000,
+            offset: 40
+        });
     } else {
         self.choosetitle = "修改统计指标";
         self.mark = 4;
         self.dialogFormVisibleCountNorm = true;
         self.form = self.srow;
         self.form.Name = self.resouceData.Name;
-        //console.log("修改时form数据");
-        //console.log(self.form);
     }
 
 }
@@ -41,8 +42,6 @@ export function countNormUpdate(_this) {
 export function submitCountNorm(_this) {
     self = _this; //将指向vue的this赋值给全局变量self
     var that = _this;
-    console.log("统计指标确认");
-    //console.log(that.form);
     if (that.form.NormName == "") {
         that.message.error("指标名称不能为空");
     } else {
@@ -56,7 +55,15 @@ export function submitCountNorm(_this) {
                         duration: 4000,
                         offset: 40
                     });
-                    that.CountNormTableData.push(that.form);
+                    //局部刷新-统计指标
+                    that.$ajax.post('GetAllCountNormByRID',
+                            that.$qs.stringify({
+                                RID: that.form.RID
+                            }))
+                        .then(function(res) {
+                            that.CountNormTableData = res.data;
+                        })
+                        .catch(function(res) {})
                     that.dialogFormVisibleCountNorm = false;
                     that.form = {};
                     that.mark = null;
@@ -73,11 +80,7 @@ export function submitCountNorm(_this) {
                     that.form = {};
                     that.mark = null;
                 });
-            //实现局部刷新
-            // location.reload();
-
         } else if (that.mark === 4) {
-            console.log("进入修改");
             that.$ajax.put('PutCountNormByID', that.form)
                 //返回成功调用
                 .then((res) => {
@@ -113,13 +116,10 @@ export function countNormcolse(_this) {
     self.dialogFormVisibleCountNorm = false;
     self.title = "";
     self.form = {};
-    //self.$refs['form'].resetFields();
-
 }
 //点击X关闭模态框
 export function countNormclosedialog(done, _this) {
     self = _this; //将指向vue的this赋值给全局变量self
-
     done();
     self.form = {};
     self.mark = null;

@@ -8,6 +8,7 @@ export function cfoo() {
     self.menuVisibleMainAuthority = false;
     self.RoleVisible = false;
     self.PermissionVisible = false;
+    self.RoleUserVisible = false;
     document.removeEventListener('click', cfoo); // 要及时关掉监听
 };
 
@@ -178,6 +179,34 @@ export function rightPermission(_this, row) {
 
 //权限 右键菜单布局
 export function stylePermission(menu) {
+    event.preventDefault();
+    if (event.clientX > 1800) {
+        menu.style.left = event.clientX - 100 + 'px';
+    } else {
+        menu.style.left = event.clientX + 1 + 'px';
+    }
+    document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行foo方法
+    if (event.clientY > 700) {
+        menu.style.top = event.clientY - 30 + 'px';
+    } else {
+        menu.style.top = event.clientY - 10 + 'px';
+    }
+}
+
+//角色用户右键菜单
+export function rightRoleUser(_this, row) {
+    self = _this; //将指向vue的this赋值给全局变量self
+    _this.RoleUserVisible = false;
+    _this.RoleUserVisible = true;
+    var menu = document.querySelector('#roleusermenu');
+    styleRoleUser(menu);
+    //保存当前行数据
+    _this.RoleUserRowData = JSON.parse(JSON.stringify(row));
+    console.log(_this.RoleUserRowData);
+}
+
+//角色用户右键菜单布局
+export function styleRoleUser(menu) {
     event.preventDefault();
     if (event.clientX > 1800) {
         menu.style.left = event.clientX - 100 + 'px';

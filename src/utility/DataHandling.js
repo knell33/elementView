@@ -1,22 +1,20 @@
-import{guid} from './Guid'
-import{NowDate} from './date'
-//var newguid= guid();
-export function DataH(a, b,row,) {
-    // for (let i in x) {
-    //     for (let j in s) {
-    //         form.push({})
-    //     }
-    //var c =a.length
-
-    // }
-    var c= [];
-    for(let i=0;i<b.length;i++){
-        for(let j=0;j<a.length;j++){
-            c.push({AID:guid(),RoleID:row.ID,RoleName:row.Name,MID:b[i].Code,MainName:b[i].Name,Type:"页面",AuthorityType:a[j],LastDate:NowDate()});
-           
-            
+import { guid } from './Guid'
+import { NowDate } from './date'
+//窗体权限新增保存数据处理
+export function DataH(a, b, row) {
+    var c = [];
+    for (let i = 0; i < b.length; i++) {
+        for (let j = 0; j < a.length; j++) {
+            c.push({ AID: guid(), RoleID: row.ID, RoleName: row.Name, MID: b[i].Code, MainName: b[i].Name, Type: "页面", AuthorityType: a[j], LastDate: NowDate() });
         }
     }
     return c;
 };
-
+//角色用户新增保存数据处理
+export function DataRoleUser(a, row) {
+    var b = [];
+    for (let i = 0; i < a.length; i++) {
+        b.push({ RUID: guid(), RID: row, UserID: a[i].AccountName, LastModify: "User", LastDate: NowDate(), UserName: a[i].UserName, Code: a[i].AccountName, Organization: a[i].OU, EmailAddress: a[i].Email });
+    }
+    return b;
+};

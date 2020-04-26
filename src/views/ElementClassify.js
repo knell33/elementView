@@ -50,7 +50,16 @@ export function ClassifysubmitForm(_this) {
                     duration: 4000,
                     offset: 40
                 });
-                that.ElementClassifyTableData.push(that.cform);
+                //that.ElementClassifyTableData.push(that.cform);
+                //局部刷新-要素分类
+                that.$ajax.post('GetAllElementClassifyByRID',
+                        that.$qs.stringify({
+                            RID: that.cform.RID
+                        }))
+                    .then(function(res) {
+                        that.ElementClassifyTableData = res.data;
+                    })
+                    .catch();
                 that.ClassifydialogFormVisible = false;
                 that.cform = {};
                 that.cmark = null;

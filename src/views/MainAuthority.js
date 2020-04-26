@@ -2,42 +2,59 @@ import { NowDate } from "../utility/date"
 let self;
 //新增角色权限
 export function mainAuthorityAdd(_this) {
-    //console.log("新增角色权限");
-    self = _this; //将指向vue的this赋值给全局变量self
-    //self.aform.AuthorityType = ['新增'];
-    _this.choosetitle = "新增角色权限";
-    _this.dialogFormVisibleMainAuthority = true;
-    _this.mark = 7; //编辑标识
-
+    if (_this.aform.DID == "" || _this.aform.DID == undefined) {
+        _this.$message({
+            type: 'warning',
+            message: '未选择相应的资源明细数据',
+            duration: 4000,
+            offset: 40
+        });
+    } else {
+        self = _this;
+        _this.choosetitle = "新增角色权限";
+        _this.dialogFormVisibleMainAuthority = true;
+        _this.mark = 7; //编辑标识
+    }
 }
 //修改角色权限
 export function mainAuthorityUpdate(_this) {
-    self = _this; //将指向vue的this赋值给全局变量self
-    self.choosetitle = "修改角色权限";
-    self.aform = self.srow;
-    self.mark = 8;
-    //修改 权限类型
-    let arr = [];
-    arr = self.aform.AuthorityType;
-    self.aform.AuthorityType = arr.split(',');
-    console.log("修改时form数据");
-    console.log(self.srow);
-    //console.log(arr);
-    self.dialogFormVisibleMainAuthority = true;
+    if (_this.aform.DID == "" || _this.aform.DID == null) {
+        _this.$message({
+            message: '未选中相应的资源明细数据',
+            type: 'warning',
+            duration: 4000,
+            offset: 40
+        });
+    } else if (_this.aid == "" || _this.aid == null) {
+        _this.$message({
+            message: '未选中相应的角色权限数据',
+            type: 'warning',
+            duration: 4000,
+            offset: 40
+        });
+    } else {
+        self = _this;
+        self.choosetitle = "修改角色权限";
+        self.aform = self.srow;
+        self.mark = 8;
+        //修改 权限类型
+        let arr = [];
+        arr = self.aform.AuthorityType;
+        self.aform.AuthorityType = arr.split(',');
+        self.dialogFormVisibleMainAuthority = true;
+    }
+
 }
 
 //角色权限 点击确认
 export function submitMainAuthority(_this) {
     self = _this; //将指向vue的this赋值给全局变量self
     var that = _this;
-    console.log("角色权限点击确认")
-    console.log(that.aform);
     that.aform.LastDate = NowDate();
     if (that.mark === 7) {
         //权限类型-格式化  将数组转换为字符串
         let totalType = that.aform.AuthorityType.join(",");
         that.aform.AuthorityType = totalType;
-        console.log(that.aform);
         that.$ajax.post('CreateMainAuthority', that.aform)
             //返回成功调用
             .then(function(res) {
@@ -50,13 +67,22 @@ export function submitMainAuthority(_this) {
                 for (let i = 0; i < that.RoleInfo.length; i++) {
                     if (that.RoleInfo[i].RoleID == that.aform.RoleID) {
                         that.aform.RoleName = that.RoleInfo[i].RoleName;
-                        console.log(that.RoleInfo[i].RoleID);
                         break;
                     }
                 }
-                that.MainAuthorityTableData.push(that.aform);
+                //局部刷新-角色权限
+                that.$ajax.post('GetAllMainAuthorityByDetailID',
+                        that.$qs.stringify({
+                            DID: that.aform.DID
+                        }))
+                    .then(function(res) {
+                        that.MainAuthorityTableData = res.data;
+                    })
+                    .catch(function(res) {})
+                    //关闭模态框 清空数据
                 that.dialogFormVisibleMainAuthority = false;
                 that.aform = {};
+                that.isMainName = true;
                 that.mark = null;
             })
             //返回失败调用
@@ -73,12 +99,9 @@ export function submitMainAuthority(_this) {
             });
 
     } else if (that.mark === 8) {
-        console.log("进入修改");
-        console.log(that.aform.AuthorityType);
         //权限类型-格式化   方便保存到数据库
         let totalType = that.aform.AuthorityType.join(",");
         that.aform.AuthorityType = totalType;
-        console.log(that.aform.AuthorityType);
         that.$ajax.put('PutMainAuthorityByAID', that.aform)
             //返回成功调用
             .then((res) => {
@@ -91,6 +114,7 @@ export function submitMainAuthority(_this) {
                 that.$set(that.MainAuthorityTableData, _this.srow.row_index, _this.srow);
                 that.dialogFormVisibleMainAuthority = false;
                 that.aform = {};
+                that.isMainName = true;
                 that.mark = null;
 
             })
@@ -117,8 +141,7 @@ export function mainAuthoritycolse(_this) {
     //保存取消前的数据
     self.aform.DID = oldaform.DID;
     self.aform.RID = oldaform.RID;
-    console.log("取消生效1");
-    //self.$refs['form'].resetFields();
+    console.log("关闭并清空模态框");
 
 }
 //点击X关闭模态框
@@ -133,64 +156,66 @@ export function mainAuthorityclosedialog(done, _this) {
     self.isMainName = true;
     self.mark = null;
     self.title = "";
-    console.log("取消生效2");
-    // self.$refs['form'].resetFields();
+    console.log("点击X关闭模态框");
 
 }
 
 //角色权限 右键删除
 export function mainAuthorityDelete(_this) {
-    self = _this; //将指向vue的this赋值给全局变量self
-    console.log(self);
-    self.$confirm('是否要删除当前角色权限？', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-        })
-        .then(() => {
-            console.log(self.aid);
-            self.$ajax.delete('DeleteMainAuthorityByAID', {
-                    params: ({
-                        AID: self.aid
+    if (_this.aid == "" || _this.aid == undefined) {
+        _this.$message({
+            type: 'warning',
+            message: '未选中相应的角色信息数据',
+            duration: 4000,
+            offset: 40
+        });
+    } else {
+        self = _this; //将指向vue的this赋值给全局变量self
+        self.$confirm('是否要删除当前角色权限？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            })
+            .then(() => {
+                self.$ajax.delete('DeleteMainAuthorityByAID', {
+                        params: ({
+                            AID: self.aid
+                        })
                     })
-                })
-                //返回成功调用
-                .then((res) => {
-                    if (self.aid == "" || self.aid == null) {
+                    //返回成功调用
+                    .then((res) => {
+                        if (self.aid == "" || self.aid == null) {
+                            self.$message({
+                                type: 'error',
+                                message: '选中删除数据为空，删除失败！'
+                            });
+                        } else {
+                            self.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            _this.$delete(_this.MainAuthorityTableData, _this.srow.row_index);
+                        }
+                    })
+                    //返回失败调用
+                    .catch((res) => {
                         self.$message({
                             type: 'error',
-                            message: '选中删除数据为空，删除失败！'
+                            message: '删除失败!'
                         });
-                    } else {
-                        self.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
-                        _this.$delete(_this.MainAuthorityTableData, _this.srow.row_index);
-                    }
-                })
-                //返回失败调用
-                .catch((res) => {
-                    self.$message({
-                        type: 'error',
-                        message: '删除失败!'
-                    });
 
-                });
-        })
-        .catch(() => {});
+                    });
+            })
+            .catch(() => {});
+    }
 }
 
 //角色权限-获取主体名称
 export function getDetailname(_this, val) {
     let that = _this;
-    console.log("getDetailname被调用了");
-    console.log(val);
-
     if (val == "资源明细") {
         that.aform.MainName = that.detailName;
         that.isMainName = true;
-        console.log(that.aform);
     } else if (val == "要素") {
         that.isMainName = false;
         that.aform.MainName = "";
