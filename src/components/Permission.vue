@@ -5,7 +5,7 @@
             <!-- 角色信息表格 -->
             <el-row>
                 <h3 class="tabletitle ttop">角色信息</h3>
-                <el-table el-header :data="RoleData" height="460px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick">
+                <el-table el-header :data="RoleData" height="460px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick">
                     <el-table-column label="角色名称" prop="Name">
                     </el-table-column>
                     <el-table-column label="备注" prop="Note">
@@ -40,7 +40,7 @@
             <!-- 角色用户表格 -->
             <el-row>
                 <h3 class="tabletitle ttop">用户信息</h3>
-                <el-table el-header :data="RoleUesrData" height="460px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserRightClick">
+                <el-table el-header :data="RoleUesrData" height="460px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
                     <el-table-column label="用户名" prop="UserName">
                     </el-table-column>
                     <el-table-column label="最后修改人" prop="LastModify">
@@ -84,7 +84,7 @@
             <div v-show="RoleUserVisible">
                 <ul id="roleusermenu" class="menu">
                     <li class="ms-item wrap-ms-right" @click="AddRoleuser()"><i class="el-icon-circle-plus icon1"></i>新增用户关系</li>
-                    <li class="ms-item wrap-ms-right" @click="DeleteRoleUser()"><i class="el-icon-s-order icon1"></i>删除用户关系</li>
+                    <li v-show = "disabledvalue" class="ms-item wrap-ms-right" @click="DeleteRoleUser()"><i class="el-icon-s-order icon1"></i>删除用户关系</li>
                 </ul>
             </div>
             <!-- 新增窗体权限弹窗 -->
@@ -320,6 +320,8 @@ export default {
             expands: [],
             //角色用户搜索标识
             symbol: "",
+            //右键菜单项是否可见
+            disabledvalue:"",
         }
     },
     components: {
@@ -604,7 +606,12 @@ export default {
 
         //角色用户右键菜单
         RoleUserRightClick(row, event) {
-            rightRoleUser(this, row, event);
+            rightRoleUser(this, row, event,'normal');
+        },
+
+        //角色用户右键表头菜单
+        RoleUserheaderRightClick(row, event) {
+            rightRoleUser(this, row, event,'header');
         },
         //新增角色用户
         AddRoleuser() {

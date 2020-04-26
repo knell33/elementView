@@ -137,7 +137,7 @@ export function Classifyclosedialog(done, _this) {
 
 //右键删除
 export function ClassifyhandleDelete(_this) {
-    _this.$confirm('是否要删除当前资源目录？', '提示', {
+    _this.$confirm('是否要删除当前要素分类？', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'

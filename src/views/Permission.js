@@ -34,8 +34,7 @@ export function PermissionsubmitForm(_this) {
                 _this.PermissionData.push(m[i]);
             }
             _this.dialogFormVisible = false;
-            _this.multipleSelection = []; //清空选择器
-            _this.AuthorityType = []; //清空被选中页面权限
+            this.$refs.PagePermission.clearSelection();
 
         })
         .catch(function(obj) {
@@ -94,7 +93,6 @@ export function OPermissionsubmitForm(_this) {
             that.PermissionData.push(_this.oform);
             that.oform = {};
             that.OtherdialogFormVisible = false;
-
         })
         .catch(function(obj) {
             console.log("新增失败");

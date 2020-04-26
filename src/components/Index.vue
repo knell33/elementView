@@ -52,7 +52,7 @@
                 <el-tabs v-model="activeName" type="card">
                     <el-tab-pane label="要素分类" name="first">
                         <!-- 要素分类表格 -->
-                        <el-table :data="ElementClassifyTableData" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyRightClick">
+                        <el-table :data="ElementClassifyTableData" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyheaderRightClick">
                             <el-table-column label="分类名称" prop="Name">
                             </el-table-column>
                             <el-table-column label="备注" prop="Note">
@@ -65,7 +65,7 @@
                     </el-tab-pane>
                     <el-tab-pane label="统计指标定义" name="second">
                         <!-- 统计指标关联表格 -->
-                        <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightClickNorm" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName">
+                        <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightheaderClickNorm" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName">
                             <el-table-column label="指标名称" prop="NormName">
                             </el-table-column>
                             <el-table-column label="计算类型" prop="CalculateType">
@@ -114,7 +114,7 @@
                             </el-table-column>
                         </el-table>
                         <!-- 角色权限 -->
-                        <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClickMainAuthority" height="230px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName">
+                        <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClicheaderkMainAuthority" height="230px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName">
                             <el-table-column label="角色名称" prop="RoleName">
                             </el-table-column>
                             <el-table-column label="类型" prop="Type">
@@ -187,7 +187,7 @@
                             <!-- <el-select v-model="form.PID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择上级" style="width:100%">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select> -->
-                            <treeselect v-model="form.PID" placeholder="请选择或搜索" :options="ResourceTableData" />
+                            <treeselect v-model="form.PID" placeholder="请选择或搜索"   :options="ResourceTableData" />
                         </el-form-item>
                         <el-form-item label="类型" prop="Type">
                             <el-select v-model="form.Type" placeholder="请选择资源类型" style="width:100%">
@@ -313,7 +313,7 @@
                 <el-dialog :title="choosetitle" :visible.sync="ClassifydialogFormVisible" :before-close="ElementClassifyother" width="30%" id="classifyiframe">
                     <el-form ref="cform" :model="cform" status-icon label-width="8%">
                         <el-form-item label="资源" prop="RID">
-                            <el-select v-model="cform.RID" filterable :default-first-option="true" placeholder="请选择资源" style="width: 100%">
+                            <el-select  :disabled="true "v-model="cform.RID" filterable :default-first-option="true" placeholder="请选择资源" style="width: 100%">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
@@ -325,7 +325,9 @@
                         </el-form-item>
                     </el-form>
                     <span slot="footer" class="dialog-footer">
-                        <el-button type="primary" @click="ElementClassify('submit')">确 定</el-button>
+                        <el-button type="primary" @click="ElementClassify
+                        
+                        ('submit')">确 定</el-button>
                         <el-button @click="ElementClassify('cancel')">取 消</el-button>
                     </span>
                 </el-dialog>
@@ -408,43 +410,54 @@
     <div v-show="menuVisible">
         <ul id="menu" class="menu">
             <li class="ms-item wrap-ms-right" @click="handleAdd()"><i class="el-icon-circle-plus icon1"></i>新增资源事务</li>
-            <li class="ms-item wrap-ms-right" @click="handleXAdd()"><i class="el-icon-circle-plus icon1"></i>新增下级事务</li>
-            <li class="ms-item wrap-ms-right" @click="handleUpdate()"><i class="el-icon-s-order icon1"></i>修改资源事务</li>
-            <li class="ms-item wrap-ms-right" @click="handleDelete()"><i class="el-icon-delete-solid icon1"></i>删除资源事务</li>
+            <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="handleXAdd()"><i class="el-icon-circle-plus icon1"></i>新增下级事务</li>
+            <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="handleUpdate()"><i class="el-icon-s-order icon1"></i>修改资源事务</li>
+            <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="handleDelete()"><i class="el-icon-delete-solid icon1"></i>删除资源事务</li>
             <li class="ms-item wrap-ms-right" @click="Permission()"><i class="el-icon-s-order icon1"></i>权限管理</li>
         </ul>
     </div>
+
     <!-- 要素目录右键菜单 -->
     <div v-show="elmenuVisible">
         <ul id="elmenu" class="menu">
-            <li class="ms-item wrap-ms-right" @click="AddElement()"><i class="el-icon-circle-plus icon1"></i>新增要素</li>
-            <li class="ms-item wrap-ms-right" @click="UpdateElement()"><i class="el-icon-s-order icon1"></i>修改要素</li>
-            <li class="ms-item wrap-ms-right" @click="DeleteElement()"><i class="el-icon-delete-solid icon1"></i>删除要素</li>
+            <li  class="ms-item wrap-ms-right" @click="AddElement()"><i class="el-icon-circle-plus icon1"></i>新增要素</li>
+            <li v-show="disabledvalue"class="ms-item wrap-ms-right" @click="UpdateElement()"><i class="el-icon-s-order icon1"></i>修改要素</li>
+            <li v-show="disabledvalue"class="ms-item wrap-ms-right" @click="DeleteElement()"><i class="el-icon-delete-solid icon1"></i>删除要素</li>
         </ul>
     </div>
+
+  
+    
+
     <!-- 统计指标右键菜单 -->
     <div v-show="menuVisibleCountNorm">
         <ul id="menuCountNorm" class="menu">
             <!-- 统计指标 -->
             <li class="ms-item wrap-ms-right" @click="CountNorm('add')"><i class="el-icon-circle-plus icon1"></i>新增统计</li>
-            <li class="ms-item wrap-ms-right" @click="CountNorm('update')"><i class="el-icon-s-order icon1"></i>修改统计</li>
-            <li class="ms-item wrap-ms-right" @click="CountNorm('delete')"><i class="el-icon-delete-solid icon1"></i>删除统计</li>
+            <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="CountNorm('update')"><i class="el-icon-s-order icon1"></i>修改统计</li>
+            <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="CountNorm('delete')"><i class="el-icon-delete-solid icon1"></i>删除统计</li>
         </ul>
     </div>
+
+
+
+    
     <!-- 要素分类右键菜单 -->
     <div v-show="cmenuVisible">
         <ul id="cmenu" class="menu">
             <li class="ms-item wrap-ms-right" @click="ElementClassify('add')"><i class="el-icon-circle-plus icon1"></i>新增要素分类</li>
-            <li class="ms-item wrap-ms-right" @click="ElementClassify('update')"><i class="el-icon-s-order icon1"></i>修改要素分类</li>
-            <li class="ms-item wrap-ms-right" @click="ElementClassify('delete')"><i class="el-icon-delete-solid icon1"></i>删除要素分类</li>
+            <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="ElementClassify('update')"><i class="el-icon-s-order icon1"></i>修改要素分类</li>
+            <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="ElementClassify('delete')"><i class="el-icon-delete-solid icon1"></i>删除要素分类</li>
         </ul>
     </div>
-    <!-- 角色权限右键菜单 -->
+
+    
+    <!-- 角色权限右键表头菜单 -->
     <div v-show="menuVisibleMainAuthority">
         <ul id="menuMainAuthority" class="menu">
             <li class="ms-item wrap-ms-right" @click="MainAuthority('add')"><i class="el-icon-circle-plus icon1"></i>新增角色权限</li>
-            <li class="ms-item wrap-ms-right" @click="MainAuthority('update')"><i class="el-icon-s-order icon1"></i>修改角色权限</li>
-            <li class="ms-item wrap-ms-right" @click="MainAuthority('delete')"><i class="el-icon-delete-solid icon1"></i>删除角色权限</li>
+            <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="MainAuthority('update')"><i class="el-icon-s-order icon1"></i>修改角色权限</li>
+            <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="MainAuthority('delete')"><i class="el-icon-delete-solid icon1"></i>删除角色权限</li>
         </ul>
     </div>
 </el-container>
@@ -559,9 +572,13 @@ export default {
             //资源目录编辑标识
             mark: null,
             loading: false,
+            //上级是否禁用
+            disabledvalue:"",
 
             //资源目录右键菜单模态框
             menuVisible: false,
+            //资源目录右键菜单模态框
+            btmenuVisible:false,
             //要素目录右键菜单模态框
             elmenuVisible: false,
 
@@ -625,7 +642,7 @@ export default {
             //单击树形后的当前行ID
             treedata: "",
             //右键要素目录后的当前行的数据
-            crow: '',
+            crow:[],
             ////右键要素目录后的当前行的ID
             cid: '',
             //统计指标 弹出窗参数
@@ -654,6 +671,7 @@ export default {
             menuVisibleMainAuthority: false,
             detailName: "",
             isMainName: true,
+            
         };
 
     },
@@ -936,6 +954,7 @@ export default {
         },
         //资源目录右键点击事件
         rightClick(row, event) {
+            this.disabledvalue = true;
             this.menuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
             this.menuVisible = true; // 显示模态窗口，跳出自定义菜单栏
             var menu = document.querySelector('#menu');
@@ -945,6 +964,7 @@ export default {
         },
         //要素目录右键点击事件
         elrightClick(row, event) {
+            this.disabledvalue = true;
             this.elmenuVisible = false;
             this.elmenuVisible = true;
             var elmenu = document.querySelector('#elmenu');
@@ -958,13 +978,16 @@ export default {
             console.log("进入资源目录表头事件");
             console.log(column);
             console.log(event);
+            this.disabledvalue = false;
             this.menuVisible = false;
             this.menuVisible = true;
+            
             var menu = document.querySelector('#menu');
             this.styleMenu(menu);
         },
         //要素目录右键点击表头事件
         elrightHeaderClick(column, event) {
+            this.disabledvalue = false;
             this.elmenuVisible = false;
             this.elmenuVisible = true;
             var elmenu = document.querySelector('#elmenu');
@@ -976,6 +999,7 @@ export default {
             this.menuVisible = false;
             //取消要素目录鼠标监听事件
             this.elmenuVisible = false;
+            this.btmenuVisible = false;
             document.removeEventListener('click', this.foo); //及时关掉监听
         },
         styleMenu(menu) {
@@ -995,10 +1019,12 @@ export default {
 
         //资源目录新增本级
         handleAdd() {
+            
             this.choosetitle = "新增资源事务";
             this.dialogFormVisible = true;
             this.mark = 1; //编辑标识
             //   this.form = {}; //清空表单
+            
         },
 
         //资源目录新增下级
@@ -1612,9 +1638,16 @@ export default {
         //要素分类右键
         ElementClassifyRightClick(row, column, event) {
             let _this = this;
-            crightClick(_this, row, column, event);
+            crightClick(_this, row, column, event, 'normal');
 
         },
+        //要素分类表头右键
+        ElementClassifyheaderRightClick(row, column, event){
+            let _this = this;
+            crightClick(_this, row, column, event, 'header');
+
+        },
+ 
         //要素分类 打开不同编辑类型的模态框
         ElementClassify(state) {
             let _this = this;
@@ -1657,12 +1690,24 @@ export default {
         //统计指标右键
         rightClickNorm(row, event) {
             let _this = this;
-            rightClickCountNorm(_this, row, event);
+            rightClickCountNorm(_this, row, event,'normal');
+        },
+
+        //统计指标表头右键
+        rightheaderClickNorm(row, event) {
+            let _this = this;
+            rightClickCountNorm(_this, row, event,'header');
         },
         //角色权限右键
         rightClickMainAuthority(row, event) {
             let _this = this;
-            rightClickMainAuthority(_this, row, event);
+            rightClickMainAuthority(_this, row, event,'normal');
+        },
+
+        //角色权限表头右键
+        rightClicheaderkMainAuthority(row, event) {
+            let _this = this;
+            rightClickMainAuthority(_this, row, event,'header');
         },
 
         //统计指标 打开不同编辑类型的模态框
