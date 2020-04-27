@@ -224,16 +224,16 @@
                     </span>
                 </el-dialog>
                 <!-- 要素目录新增、修改弹窗 -->
-                <el-dialog :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedrawer" width="45%">
-                    <el-form ref="elform" :model="elform" status-icon label-width="150px" :inline="true">
-                        <el-form-item label="序号">
+                <el-dialog :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedrawer" width="42.5%">
+                    <el-form ref="elform" :label-position="position" :model="elform" status-icon label-width="150px" :inline="true">
+                        <el-form-item label="序号" >
                             <el-input v-model="elform.Numbera" :disabled="true"></el-input>
                         </el-form-item>
-                        <el-form-item label="资源" style="margin-left:20px" clearable>
+                        <el-form-item label="资源"  style="margin-left:20px" clearable>
                             <!-- <el-select v-model="elform.RID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择资源" @change="resourceChange">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select> -->
-                            <treeselect v-model="elform.RID" placeholder="请选择资源" :options="ResourceTableData" @change="resourceChange" style="width:203px"/>
+                            <treeselect v-model="elform.RID" placeholder="请选择资源" :options="ResourceTableData" @change="resourceChange" style="width:215px"/>
                         </el-form-item>
                         <el-form-item label="要素名称">
                             <el-input v-model="elform.Name"></el-input>
@@ -541,6 +541,8 @@ const authorityOptions = ['新增', '修改', '删除', '查询'];
 export default {
     data() {
         return {
+            //要素目录左对齐
+            position: 'left',
             //表格初始化赋值
             ResourceTableData: [],
             ElementTableData: [],
@@ -1321,26 +1323,27 @@ export default {
         },
         //要素目录新增
         AddElement() {
+            if (this.lrid == "" || this.lrid == undefined) {
+            this.$message({
+                type: 'warning',
+                message: '未选择相应的资源目录数据',
+                duration: 4000,
+                offset: 40
+            });
+        } else {
             this.elchoosetitle = "新增要素";
-            this.eldialogFormVisible = true;
-            this.mark = 1;
-            this.elform.RID = this.lrid;
-            //设置名称是否展示禁用
-            // for (let i in this.ResourceTableData) {
-            //     if (this.ResourceTableData[i].id == this.elform.RID) {
-            //         if (this.ResourceTableData[i].Type == "资源") {
-            //             this.zsmcdis = true;
-            //         }
-            //     }
-            // };
-            //单位、长度、选项类型、值域资源、编码目录字段禁用
-            this.unitdis = true;
-            this.lengthdis = true;
-            this.optiondis = true;
-            this.drdis = true;
-            this.cddis = true;
-            //设置初始序号
-            this.elform.Numbera = (this.ElementTableData.length + 1).toString();
+                this.eldialogFormVisible = true;
+                this.mark = 1;
+                this.elform.RID = this.lrid;
+                //单位、长度、选项类型、值域资源、编码目录字段禁用
+                this.unitdis = true;
+                this.lengthdis = true;
+                this.optiondis = true;
+                this.drdis = true;
+                this.cddis = true;
+                //设置初始序号
+                this.elform.Numbera = (this.ElementTableData.length + 1).toString();
+        }
         },
         //要素目录修改
         UpdateElement() {
@@ -1786,6 +1789,7 @@ export default {
 .elcochoose {
     margin-top: 10px;
 }
+/* 要素目录弹窗样式 */
 
 .menu {
     width: 145px;
@@ -1860,4 +1864,5 @@ export default {
 .g-permission:hover{
     background-color:#e4e5e3;
 }
+
 </style>

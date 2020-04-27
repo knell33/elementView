@@ -44,6 +44,7 @@
                 <div>
                     <el-button type="info" class="g-right" plain @click="ResourceElement()">资源要素管理</el-button>
                 </div>
+                <h3 class="tabletitle ttop">用户信息</h3>
                 <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
                     <el-table-column label="用户名" prop="UserName">
                     </el-table-column>

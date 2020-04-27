@@ -2,7 +2,6 @@ let self;
 //新增统计指标
 export function countNormAdd(_this) {
     self = _this; //将指向vue的this赋值给全局变量self
-    console.log(_this.resouceData.Type == "事务" || _this.resouceData.Type == "资源关系");
     if (_this.resouceData.Type == "事务" || _this.resouceData.Type == "资源关系") {
         _this.choosetitle = "新增统计指标";
         _this.dialogFormVisibleCountNorm = true;

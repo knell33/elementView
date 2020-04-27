@@ -52,7 +52,8 @@ export function crightClick(_this,row, column, event,state) {
     var menu = document.querySelector('#cmenu');
     cstyleMenu(menu);
     if (state == 'header') {
-        _this.disabledvalue = false
+        _this.disabledvalue = false;
+        _this.rid = _this.treedata; ////将单击树形后的当前ID赋值给表单的rid
     }
     else {
         _this.disabledvalue = true

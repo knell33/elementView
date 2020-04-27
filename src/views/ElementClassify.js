@@ -1,11 +1,21 @@
 import { NowDate } from "../utility/date"
 export function ClassifyhandleAdd(_this) {
-    _this.choosetitle = "新增要素分类";
-    _this.ClassifydialogFormVisible = true;
-    //console.log(this.srow);
-    _this.cform.RID = _this.rid; //将单击树形后的当前ID赋值给表单的RID
-    _this.mark = 1; //编辑标识
-    _this.form = {}; //清空表单
+    if (_this.rid == "" || _this.rid == undefined) {
+        _this.$message({
+            type: 'warning',
+            message: '未选择相应的资源目录数据',
+            duration: 4000,
+            offset: 40
+        });
+    } else {
+        _this.choosetitle = "新增要素分类";
+        _this.ClassifydialogFormVisible = true;
+        //console.log(this.srow);
+        _this.cform.RID = _this.rid; //将单击树形后的当前ID赋值给表单的RID
+        _this.mark = 1; //编辑标识
+        _this.form = {}; //清空表单
+    }
+
 }
 //修改
 export function ClassifyhandleUpdate(_this) {
