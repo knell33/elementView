@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <template>
 <el-container>
     <el-container>
@@ -5,8 +6,8 @@
             <!-- 角色信息表格 -->
             <el-row>
                 <h3 class="tabletitle ttop">角色信息</h3>
-                <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick">
-                <el-table el-header :data="RoleData" height="460px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick">
+                <!-- <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick"> -->
+                <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick">
                     <el-table-column label="角色名称" prop="Name">
                     </el-table-column>
                     <el-table-column label="备注" prop="Note">
@@ -44,9 +45,9 @@
                     <div class="tabletitle ttop g-left">用户信息</div>
                     <div class="g-right" @click="ResourceElement()">资源要素管理</div>
                 </div>
-                <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserRightClick">
+                <!-- <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserRightClick"> -->
                 <h3 class="tabletitle ttop">用户信息</h3>
-                <el-table el-header :data="RoleUesrData" height="460px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
+                <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
                     <el-table-column label="用户名" prop="UserName">
                     </el-table-column>
                     <el-table-column label="最后修改人" prop="LastModify">
@@ -96,10 +97,8 @@
             <!-- 新增窗体权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="Closedialog" width="30%">
                 <el-form ref="form" :model="form" status-icon label-width="80px">
-                    <el-form-item label="权限类型" class="g-select-width" prop="Type">
-                        <el-select v-model="AuthorityType" class="g-select-width" multiple placeholder="请选择">
                     <el-form-item label="权限类型">
-                        <el-select v-model="AuthorityType" multiple placeholder="请选择">
+                        <el-select v-model="AuthorityType" class="g-select-width" multiple placeholder="请选择">
                             <el-option label="新增" value="新增"></el-option>
                             <el-option label="修改" value="修改"></el-option>
                             <el-option label="删除" value="删除"></el-option>
@@ -107,10 +106,10 @@
                             <el-option label="设计" value="设计"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-table ref="PagePermission" :data="PermissionAllData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" max-height="400">
-                        <el-table-column type="selection" width="55">
+                    <el-table ref="PagePermission" :data="PermissionAllData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" max-height="400px">
+                        <el-table-column type="selection" width="55px">
                         </el-table-column>
-                        <el-table-column prop="Name" label="名称" width="210">
+                        <el-table-column prop="Name" label="名称" width="210px">
                         </el-table-column>
                         <el-table-column prop="Description" label="描述" show-overflow-tooltip>
                         </el-table-column>
@@ -145,7 +144,7 @@
                             <el-option v-for="(item,index) in PList" :key="index" :label="item.Name" :value="item.ID">
                             </el-option>
                         </el-select> -->
-                        <treeselect v-model="ResourceTree.ID" :options="ResourceTree" @input="ChangeMain" placeholder="请选择" noResultsText="没有搜索到该选项" />
+                        <treeselect v-model="ResourceTree.ID" :options="ResourceTree" @input="ChangeMain" placeholder="请选择" noresultstext="没有搜索到该选项" />
                     </el-form-item>
 
                 </el-form>

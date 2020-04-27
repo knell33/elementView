@@ -55,8 +55,8 @@
                 <el-tabs v-model="activeName" type="card">
                     <el-tab-pane label="要素分类" name="first">
                         <!-- 要素分类表格 -->
-                        <el-table :data="ElementClassifyTableData" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyRightClick">
-                        <el-table :data="ElementClassifyTableData" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyheaderRightClick">
+                        <!-- <el-table :data="ElementClassifyTableData" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyRightClick"> -->
+                        <el-table :data="ElementClassifyTableData" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyheaderRightClick">
                             <el-table-column label="分类名称" prop="Name">
                             </el-table-column>
                             <el-table-column label="备注" prop="Note">
@@ -69,8 +69,8 @@
                     </el-tab-pane>
                     <el-tab-pane label="统计指标定义" name="second">
                         <!-- 统计指标关联表格 -->
-                        <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightClickNorm" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName">
-                        <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightheaderClickNorm" height="450px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName">
+                        <!-- <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightClickNorm" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName"> -->
+                        <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightheaderClickNorm" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName">
                             <el-table-column label="指标名称" prop="NormName">
                             </el-table-column>
                             <el-table-column label="计算类型" prop="CalculateType">
@@ -119,8 +119,8 @@
                             </el-table-column>
                         </el-table>
                         <!-- 角色权限 -->
-                        <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClickMainAuthority" height="190px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName">
-                        <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClicheaderkMainAuthority" height="230px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName">
+                        <!-- <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClickMainAuthority" height="190px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName"> -->
+                        <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClicheaderkMainAuthority" height="190px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName">
                             <el-table-column label="角色名称" prop="RoleName">
                             </el-table-column>
                             <el-table-column label="类型" prop="Type">
@@ -319,7 +319,7 @@
                 <el-dialog :title="choosetitle" :visible.sync="ClassifydialogFormVisible" :before-close="ElementClassifyother" width="30%" id="classifyiframe">
                     <el-form ref="cform" :model="cform" status-icon label-width="8%">
                         <el-form-item label="资源" prop="RID">
-                            <el-select  :disabled="true "v-model="cform.RID" filterable :default-first-option="true" placeholder="请选择资源" style="width: 100%">
+                            <el-select :disabled="true" v-model="cform.RID" filterable :default-first-option="true" placeholder="请选择资源" style="width: 100%">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
@@ -427,8 +427,8 @@
     <div v-show="elmenuVisible">
         <ul id="elmenu" class="menu">
             <li  class="ms-item wrap-ms-right" @click="AddElement()"><i class="el-icon-circle-plus icon1"></i>新增要素</li>
-            <li v-show="disabledvalue"class="ms-item wrap-ms-right" @click="UpdateElement()"><i class="el-icon-s-order icon1"></i>修改要素</li>
-            <li v-show="disabledvalue"class="ms-item wrap-ms-right" @click="DeleteElement()"><i class="el-icon-delete-solid icon1"></i>删除要素</li>
+            <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="UpdateElement()"><i class="el-icon-s-order icon1"></i>修改要素</li>
+            <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="DeleteElement()"><i class="el-icon-delete-solid icon1"></i>删除要素</li>
         </ul>
     </div>
 
