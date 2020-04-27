@@ -194,7 +194,7 @@
                             <!-- <el-select v-model="form.PID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择上级" style="width:100%">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select> -->
-                            <treeselect v-model="form.PID" placeholder="请选择或搜索"   :options="ResourceTableData" />
+                            <treeselect v-model="form.PID" placeholder="请选择或搜索" :options="ResourceTableData" />
                         </el-form-item>
                         <el-form-item label="类型" prop="Type">
                             <el-select v-model="form.Type" placeholder="请选择资源类型" style="width:100%">
@@ -227,8 +227,8 @@
                     </span>
                 </el-dialog>
                 <!-- 要素目录新增、修改弹窗 -->
-                <el-dialog :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedrawer" width="45%">
-                    <el-form ref="elform" :model="elform" status-icon label-width="150px" :inline="true">
+                <el-dialog :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedrawer" width="43%">
+                    <el-form ref="elform" :model="elform" :label-position="positiona" status-icon label-width="150px" :inline="true">
                         <el-form-item label="序号">
                             <el-input v-model="elform.Numbera" :disabled="true"></el-input>
                         </el-form-item>
@@ -236,7 +236,7 @@
                             <!-- <el-select v-model="elform.RID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择资源" @change="resourceChange">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select> -->
-                            <treeselect v-model="elform.RID" placeholder="请选择资源" :options="ResourceTableData" @change="resourceChange" style="width:203px"/>
+                            <treeselect v-model="elform.RID" placeholder="请选择资源" :options="ResourceTableData" @change="resourceChange" style="width:215px"/>
                         </el-form-item>
                         <el-form-item label="要素名称">
                             <el-input v-model="elform.Name"></el-input>
@@ -678,6 +678,7 @@ export default {
             menuVisibleMainAuthority: false,
             detailName: "",
             isMainName: true,
+            positiona: 'left',
             
         };
 
