@@ -54,8 +54,7 @@
             <el-row class="elcochoose">
                 <el-tabs v-model="activeName" type="card">
                     <el-tab-pane label="要素分类" name="first">
-                        <!-- 要素分类表格 -->
-                        <!-- <el-table :data="ElementClassifyTableData" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyRightClick"> -->
+                        <!-- 要素分类表格 -->                       
                         <el-table :data="ElementClassifyTableData" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyheaderRightClick">
                             <el-table-column label="分类名称" prop="Name">
                             </el-table-column>
@@ -69,7 +68,6 @@
                     </el-tab-pane>
                     <el-tab-pane label="统计指标定义" name="second">
                         <!-- 统计指标关联表格 -->
-                        <!-- <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightClickNorm" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName"> -->
                         <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightheaderClickNorm" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName">
                             <el-table-column label="指标名称" prop="NormName">
                             </el-table-column>
@@ -118,8 +116,7 @@
                             <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
                             </el-table-column>
                         </el-table>
-                        <!-- 角色权限 -->
-                        <!-- <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClickMainAuthority" height="190px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName"> -->
+                        <!-- 角色权限 -->                    
                         <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClicheaderkMainAuthority" height="190px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName">
                             <el-table-column label="角色名称" prop="RoleName">
                             </el-table-column>
@@ -1858,5 +1855,8 @@ export default {
     background-color:#f8f8f7;
     color: #999999;
     font-size: 1.2rem;
+}
+.g-permission:hover{
+    background-color:#e4e5e3;
 }
 </style>

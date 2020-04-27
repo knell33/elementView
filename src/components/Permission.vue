@@ -45,8 +45,6 @@
                     <div class="tabletitle ttop g-left">用户信息</div>
                     <div class="g-right" @click="ResourceElement()">资源要素管理</div>
                 </div>
-                <!-- <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserRightClick"> -->
-                <h3 class="tabletitle ttop">用户信息</h3>
                 <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
                     <el-table-column label="用户名" prop="UserName">
                     </el-table-column>
@@ -946,6 +944,9 @@ export default {
     background-color:#f8f8f7;
     color: #999999;
     font-size: 1.2rem;
+}
+.g-right:hover{
+    background-color:#e4e5e3;
 }
 .g-left-search{
     float: left;
