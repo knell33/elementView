@@ -6,9 +6,9 @@
         <el-aside width="350px">
             <h3 class="tabletitle ttop">资源目录</h3>
             <el-table :data="ResourceTableData" style="width: 100%;margin-bottom: 20px;" height="870px" row-key="ID" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" @row-click="elementlink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" highlight-current-row @current-change="ResourceTableChange" @row-contextmenu="rightClick" @header-contextmenu="rightHeaderClick">
-                <el-table-column prop="Name" label="资源名称">
+                <el-table-column prop="Name" label="资源名称" header-align="center">
                 </el-table-column>
-                <el-table-column prop="Type" label="类型">
+                <el-table-column prop="Type" label="类型" align="center">
                 </el-table-column>
             </el-table>
         </el-aside>
@@ -19,34 +19,34 @@
                     <div class="tabletitle g-element">要素目录</div>
                     <el-button type="info" class="g-permission" plain @click="Permission()">权限管理</el-button>
                     <!-- <div class="g-permission" @click="Permission()">权限管理</div> -->
-                    <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick">
-                        <el-table-column label="序号" prop="Numbera">
+                    <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick"  :default-sort = "{prop: 'Numbera',order: 'descending'}">
+                        <el-table-column label="序号" prop="Numbera" align="center" sortable>
                         </el-table-column>
-                        <el-table-column label="分类名称" prop="ClassifyName">
+                        <el-table-column label="分类名称" prop="ClassifyName" align="center">
                         </el-table-column>
-                        <el-table-column label="要素名称" prop="Name">
+                        <el-table-column label="要素名称" prop="Name" align="center">
                         </el-table-column>
-                        <el-table-column label="要素类型" prop="Type">
+                        <el-table-column label="要素类型" prop="Type" align="center">
                         </el-table-column>
-                        <el-table-column label="选项类型" prop="OptionType">
+                        <el-table-column label="选项类型" prop="OptionType" align="center">
                         </el-table-column>
-                        <el-table-column label="定义指标个数" prop="DYZBGS" width="110px">
+                        <el-table-column label="定义指标个数" prop="DYZBGS" align="center" width="110px">
                         </el-table-column>
-                        <el-table-column label="单位" prop="Unit">
+                        <el-table-column label="单位" prop="Unit" align="center">
                         </el-table-column>
-                        <el-table-column label="长度" prop="Length">
+                        <el-table-column label="长度" prop="Length" align="center">
                         </el-table-column>
-                        <el-table-column label="精度" prop="Precision">
+                        <el-table-column label="精度" prop="Precision" align="center">
                         </el-table-column>
-                        <el-table-column label="要素分类" prop="ElementClassify">
+                        <el-table-column label="要素分类" prop="ElementClassify" align="center">
                         </el-table-column>
-                        <el-table-column label="选项" prop="OptionType">
+                        <el-table-column label="选项" prop="OptionType" align="center">
                         </el-table-column>
-                        <el-table-column label="备注" prop="Note">
+                        <el-table-column label="备注" prop="Note" align="center">
+                        </el-table-column>                      
+                        <el-table-column label="最后修改人" prop="LastModify" align="center">
                         </el-table-column>
-                        <el-table-column label="最后修改人" prop="LastModify">
-                        </el-table-column>
-                        <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px">
+                        <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" min-width="165px" align="center" sortable>
                         </el-table-column>
                     </el-table>
                 </el-tabs>
@@ -57,79 +57,79 @@
                     <el-tab-pane label="要素分类" name="first">
                         <!-- 要素分类表格 -->                       
                         <el-table :data="ElementClassifyTableData" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyheaderRightClick">
-                            <el-table-column label="分类名称" prop="Name">
+                            <el-table-column label="分类名称" prop="Name" align="center" sortable>
                             </el-table-column>
-                            <el-table-column label="备注" prop="Note">
+                            <el-table-column label="备注" prop="Note" align="center">
                             </el-table-column>
-                            <el-table-column label="最后修改人" prop="LastModify">
+                            <el-table-column label="最后修改人" prop="LastModify" align="center">
                             </el-table-column>
-                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
+                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" align="center" sortable>
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
                     <el-tab-pane label="统计指标定义" name="second">
                         <!-- 统计指标关联表格 -->
                         <el-table :data="CountNormTableData" @row-contextmenu="rightClickNorm" @header-contextmenu="rightheaderClickNorm" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="CountNormTableChange" :row-class-name="CountNormtableRowClassName">
-                            <el-table-column label="指标名称" prop="NormName">
+                            <el-table-column label="指标名称" prop="NormName" align="center" sortable>
                             </el-table-column>
-                            <el-table-column label="计算类型" prop="CalculateType">
+                            <el-table-column label="计算类型" prop="CalculateType" align="center" sortable>
                             </el-table-column>
-                            <el-table-column label="运算符" prop="Operator">
+                            <el-table-column label="运算符" prop="Operator" align="center">
                             </el-table-column>
-                            <el-table-column label="运算值" prop="Ovalue">
+                            <el-table-column label="运算值" prop="Ovalue" align="center">
                             </el-table-column>
-                            <el-table-column label="关联类型" prop="AssociationType">
+                            <el-table-column label="关联类型" prop="AssociationType" align="center">
                             </el-table-column>
-                            <el-table-column label="备注" prop="Note">
+                            <el-table-column label="备注" prop="Note" align="center">
                             </el-table-column>
-                            <el-table-column label="最后修改人" prop="LastModify">
+                            <el-table-column label="最后修改人" prop="LastModify" align="center">
                             </el-table-column>
-                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
+                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" align="center" sortable>
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
                     <el-tab-pane label="要素值域选项" name="third">
                         <!-- 要素值域选项表格 -->
                         <el-table :data="ElementRangeTableData" height="440px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementRangeTableChange">
-                            <el-table-column label="选项名称" prop="Name">
+                            <el-table-column label="选项名称" prop="Name" align="center" sortable>
                             </el-table-column>
-                            <el-table-column label="备注" prop="Note">
+                            <el-table-column label="备注" prop="Note" align="center">
                             </el-table-column>
-                            <el-table-column label="最后修改人" prop="LastModify">
+                            <el-table-column label="最后修改人" prop="LastModify" align="center">
                             </el-table-column>
-                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
+                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" align="center" sortable>
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
                     <!-- 资源明细 -->
                     <el-tab-pane label="资源明细" name="fourth">
                         <el-table :data="DetailTableData" height="250px" @row-click="detaillink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="DetailTableChange">
-                            <el-table-column label="明细名称" prop="DetailName">
+                            <el-table-column label="明细名称" prop="DetailName" align="center" sortable>
                             </el-table-column>
-                            <el-table-column label="上级明细名称" prop="PDetailName">
+                            <el-table-column label="上级明细名称" prop="PDetailName" align="center">
                             </el-table-column>
-                            <el-table-column label="事务时间" prop="TransactionDate" :formatter="dateFormat">
+                            <el-table-column label="事务时间" prop="TransactionDate" :formatter="dateFormat" align="center" sortable>
                             </el-table-column>
-                            <el-table-column label="备注" prop="Note">
+                            <el-table-column label="备注" prop="Note" align="center">
                             </el-table-column>
-                            <el-table-column label="最后修改人" prop="LastModify">
+                            <el-table-column label="最后修改人" prop="LastModify" align="center">
                             </el-table-column>
-                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
+                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" align="center" sortable>
                             </el-table-column>
                         </el-table>
                         <!-- 角色权限 -->                    
                         <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClicheaderkMainAuthority" height="190px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName">
-                            <el-table-column label="角色名称" prop="RoleName">
+                            <el-table-column label="角色名称" prop="RoleName" align="center" sortable>
                             </el-table-column>
-                            <el-table-column label="类型" prop="Type">
+                            <el-table-column label="类型" prop="Type" align="center">
                             </el-table-column>
-                            <el-table-column label="权限类型" prop="AuthorityType">
+                            <el-table-column label="权限类型" prop="AuthorityType" align="center" sortable>
                             </el-table-column>
-                            <el-table-column label="主体名称" prop="MainName">
+                            <el-table-column label="主体名称" prop="MainName" align="center">
                             </el-table-column>
-                            <el-table-column label="最后修改人" prop="LastModify">
+                            <el-table-column label="最后修改人" prop="LastModify" align="center">
                             </el-table-column>
-                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat">
+                            <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" align="center" sortable>
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
@@ -191,7 +191,7 @@
                             <!-- <el-select v-model="form.PID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择上级" style="width:100%">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select> -->
-                            <treeselect v-model="form.PID" placeholder="请选择或搜索"   :options="ResourceTableData" />
+                            <treeselect v-model="form.PID" placeholder="请选择或搜索" :options="ResourceTableData" />
                         </el-form-item>
                         <el-form-item label="类型" prop="Type">
                             <el-select v-model="form.Type" placeholder="请选择资源类型" style="width:100%">
@@ -677,6 +677,7 @@ export default {
             menuVisibleMainAuthority: false,
             detailName: "",
             isMainName: true,
+            positiona: 'left',
             
         };
 
@@ -1860,6 +1861,7 @@ export default {
     background-color:#f8f8f7;
     color: #999999;
     font-size: 20px;
+    margin-top: 7px;
 }
 .g-permission:hover{
     background-color:#e4e5e3;
