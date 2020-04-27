@@ -17,7 +17,8 @@
             <el-row>
                 <el-tabs v-model="activeName" type="card">
                     <div class="tabletitle g-element">要素目录</div>
-                    <div class="g-permission" @click="Permission()">权限管理</div>
+                    <el-button type="info" class="g-permission" plain @click="Permission()">权限管理</el-button>
+                    <!-- <div class="g-permission" @click="Permission()">权限管理</div> -->
                     <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick">
                         <el-table-column label="序号" prop="Numbera">
                         </el-table-column>
@@ -1854,7 +1855,7 @@ export default {
     padding: 5px;
     background-color:#f8f8f7;
     color: #999999;
-    font-size: 1.2rem;
+    font-size: 20px;
 }
 .g-permission:hover{
     background-color:#e4e5e3;
