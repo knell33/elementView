@@ -6,8 +6,8 @@
             <!-- 角色信息表格 -->
             <el-row>
                 <h3 class="tabletitle ttop">角色信息</h3>
-                <!-- <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick"> -->
-                <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick">
+                <!-- <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick"> -->
+                <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick">
                     <el-table-column label="角色名称" prop="Name" header-align="center" sortable>
                     </el-table-column>
                     <el-table-column label="备注" prop="Note" align="center">
@@ -21,7 +21,7 @@
             <!-- 角色权限表格 -->
             <el-row>
                 <h3 class="tabletitle tbuttom">角色权限</h3>
-                <el-table el-header :data="PermissionData" height="420px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="PermissionRightClick" :row-class-name="MainAuthoritytableRowClassName">
+                <el-table el-header :data="PermissionData" height="420px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="PermissionRightClick" :row-class-name="MainAuthoritytableRowClassName">
                     <el-table-column label="主体名称" prop="MainName" header-align="center" sortable>
                     </el-table-column>
                     <el-table-column label="类型" prop="Type" header-align="center" sortable>
@@ -42,10 +42,10 @@
             <!-- 角色用户表格 -->
             <el-row>
                 <div>
-                    <el-button type="info" class="g-right" plain @click="ResourceElement()">资源要素管理</el-button>
+                    <el-button type="info" icon="el-icon-setting" class="g-right" plain @click="ResourceElement()">资源要素管理</el-button>
                 </div>
                 <h3 class="tabletitle ttop">用户信息</h3>
-                <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
+                <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
                     <el-table-column label="用户名" prop="UserName" header-align="center" sortable>
                     </el-table-column>
                     <el-table-column label="最后修改人" prop="LastModify" header-align="center">
@@ -58,7 +58,7 @@
             <!-- 用户权限表格 -->
             <el-row>
                 <h3 class="tabletitle tbuttom">用户权限</h3>
-                <el-table el-header :data="PersonnelAuthorityData" :row-class-name="PersonnelAuthoritytableRowClassName" height="420px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row>
+                <el-table el-header :data="PersonnelAuthorityData" :row-class-name="PersonnelAuthoritytableRowClassName" height="420px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row>
                     <el-table-column label="主体名称" prop="MName" header-align="center" sortable>
                     </el-table-column>
                     <el-table-column label="类型" prop="Type" header-align="center">
@@ -918,7 +918,7 @@ export default {
     width: 90%;
 }
 .tabletitle {
-    color: #999999;
+    color: #3a87ad;
     font-size: 1.5rem;
 }
 
@@ -938,16 +938,18 @@ export default {
     float: right;
     margin: 3px 1rem;
     cursor: pointer;
-    border: 1px solid #e4e5e3;
+
+    border: none;
     border-radius: 4px;
     padding: 5px;
-    background-color:#f8f8f7;
-    color: #999999;
+    background-color:white;
+    color: #3a87ad;
     margin-top: 10px;
     font-size: 20px;
 }
 .g-right:hover{
-    background-color:#e4e5e3;
+    background-color:white;
+    color:#3a87ad;
 }
 .g-left-search{
     float: left;
@@ -958,5 +960,8 @@ export default {
 .g-right-search-input{
     width: 70%;
     margin: 0 .2rem;
+} 
+.has-gutter th{
+    background-color: #FFF !important;
 }
 </style>
