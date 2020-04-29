@@ -223,9 +223,21 @@ export function RoleUserSubmit1(_this) {
                     duration: 4000,
                     offset: 40
                 });
-                for (let i in m) {
-                    _this.RoleUesrData.push(m[i]);
-                }
+                // for (let i in m) {
+                //     _this.RoleUesrData.push(m[i]);
+                // }
+
+                that.$ajax.post('GetAllRoleUserByRID',
+                        that.$qs.stringify({
+                            RID: that.RoleIDvue
+                        }))
+                    //返回成功调用
+                    .then((res) => {
+                        console.log(res.data)
+                        that.RoleUesrData = res.data;
+                    })
+
+
                 _this.RoleUserSelection = []; //清空角色用户子表格选择器
                 _this.RoleUserSelection1 = []; //清空角色用户父表格选择器
                 //角色用户父搜索框重置

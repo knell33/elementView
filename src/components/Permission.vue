@@ -95,7 +95,7 @@
 
             <!-- 新增窗体权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="Closedialog" width="30%">
-                <el-form ref="form" :model="form" status-icon label-width="80px" :rules="Comrules">
+                <el-form ref="form" :model="form" status-icon label-width="80px">
                     <el-row>
                         <el-form-item label="权限类型" prop="AuthorityType">
                             <el-select v-model="AuthorityType" class="g-select-width" multiple placeholder="请选择">
@@ -352,7 +352,7 @@ export default {
             test: "",
             //角色用户子表格默认是否创建多选框
             childSelect: true,
-
+            PagedisabledValue: true,
         }
     },
     components: {
