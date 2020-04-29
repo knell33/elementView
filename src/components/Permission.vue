@@ -89,21 +89,24 @@
             <div v-show="RoleUserVisible">
                 <ul id="roleusermenu" class="menu">
                     <li class="ms-item wrap-ms-right" @click="AddRoleuser()"><i class="el-icon-circle-plus icon1"></i>新增用户关系</li>
-                    <li v-show = "disabledvalue" class="ms-item wrap-ms-right" @click="DeleteRoleUser()"><i class="el-icon-s-order icon1"></i>删除用户关系</li>
+                    <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="DeleteRoleUser()"><i class="el-icon-s-order icon1"></i>删除用户关系</li>
                 </ul>
             </div>
+
             <!-- 新增窗体权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="Closedialog" width="30%">
-                <el-form ref="form" :model="form" status-icon label-width="80px">
-                    <el-form-item label="权限类型">
-                        <el-select v-model="AuthorityType" class="g-select-width" multiple placeholder="请选择">
-                            <el-option label="新增" value="新增"></el-option>
-                            <el-option label="修改" value="修改"></el-option>
-                            <el-option label="删除" value="删除"></el-option>
-                            <el-option label="查询" value="查询"></el-option>
-                            <el-option label="设计" value="设计"></el-option>
-                        </el-select>
-                    </el-form-item>
+                <el-form ref="form" :model="form" status-icon label-width="80px" :rules="Comrules">
+                    <el-row>
+                        <el-form-item label="权限类型" prop="AuthorityType">
+                            <el-select v-model="AuthorityType" class="g-select-width" multiple placeholder="请选择">
+                                <el-option label="新增" value="新增"></el-option>
+                                <el-option label="修改" value="修改"></el-option>
+                                <el-option label="删除" value="删除"></el-option>
+                                <el-option label="查询" value="查询"></el-option>
+                                <el-option label="设计" value="设计"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-row>
                     <el-table ref="PagePermission" :data="PermissionAllData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" max-height="400px">
                         <el-table-column type="selection" width="55px">
                         </el-table-column>
@@ -125,7 +128,7 @@
 
             <!-- 新增其他权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="OtherdialogFormVisible" :before-close="OClosedialog" width="30%">
-                <el-form ref="oform" :model="oform" status-icon label-width="80px">
+                <el-form ref="oform" :model="oform" status-icon label-width="80px" rules="Otherrules">
                     <el-form-item label="分类类型">
                         <el-select v-model="oform.Type" placeholder="请选择" @change="ChangeType">
                             <el-option label="页面" value="页面"></el-option>
@@ -142,7 +145,7 @@
                             <el-option v-for="(item,index) in PList" :key="index" :label="item.Name" :value="item.ID">
                             </el-option>
                         </el-select> -->
-                        <treeselect v-model="ResourceTree.ID" :options="ResourceTree" @input="ChangeMain" placeholder="请选择" />
+                        <treeselect v-model="oform.MainName" placeholder="请选择或搜索" :options="ResourceTree" @input="ChangeMain" :disabled="PagedisabledValue"></treeselect>
                     </el-form-item>
 
                 </el-form>
@@ -157,7 +160,7 @@
                 <div>
                     <div class="g-left-search">
                         <el-input type="search" v-model="search" style="width:100%" placeholder="模糊匹配组织机构关键字"></el-input>
-                    </div>                            
+                    </div>
                     <div class="g-right-search">
                         <el-input placeholder="请准确输入姓名" type="search" v-model="search1" class="g-right-search-input"></el-input>
                         <el-button type="primary" @click="RoleUserSelect()">搜 索</el-button>
@@ -289,7 +292,7 @@ export default {
                 RoleID: "",
                 RoleName: "",
                 MID: "",
-                MainName: "",
+                MainName: null,
                 Type: "",
                 AuthorityType: "",
                 RID: "",
@@ -329,9 +332,11 @@ export default {
             //角色用户搜索标识
             symbol: "",
             //右键菜单项是否可见
-            disabledvalue:"",
+            disabledvalue: "",
             //资源目录树形数据保存
             resoursedata: [],
+            //禁用状态
+            PagedisabledValue: true,
         }
     },
     components: {
@@ -420,6 +425,15 @@ export default {
                 that.Resource = res.data; //先保存无树形结构的数据
                 var AllData = res.data;
 
+                let Rtree = AllData;
+                for (let i in Rtree) {
+                    if (Rtree[i].Type != "资源" || Rtree[i].Type != "附加资源") {
+                        Rtree.splice(i, 1)
+                    }
+
+                }
+                // console.log(Rtree);
+
                 // 删除所有 children,以防止数据出现异常（看情况可删除）
                 AllData.forEach(function (item) {
                     delete item.children;
@@ -449,11 +463,41 @@ export default {
                     }
                 });
 
-                //console.log(treeData);
+                // 只带有资源的树形
+                // 删除所有 children,以防止数据出现异常（看情况可删除）
+                Rtree.forEach(function (item) {
+                    delete item.children;
+                });
+
+                // 将数据存储为以 id 为 KEY 的 map 索引数据列
+                var map1 = {};
+                Rtree.forEach(function (item) {
+                    //item.Children = [] // 1
+                    map1[item.ID] = item;
+                });
+                //console.log(map);
+                var treeData1 = [];
+                Rtree.forEach(function (item) {
+                    item.label = item.Name;
+                    item.id = item.ID
+                    // 以当前遍历项，的pid,去map对象中找到索引的id
+                    var parent = map1[item.PID];
+                    // 如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
+                    if (parent) {
+                        (parent.children || (parent.children = [])).push(item);
+                        //parent.Children.push(item) //1
+                    } else {
+                        //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
+
+                        treeData1.push(item);
+                    }
+                });
+
+                //console.log(treeData1);
                 that.resoursedata = treeData;
-                that.ResourceTree = treeData;
-                console.log(that.resoursedata);
-                console.log(that.ResourceTree);
+                that.ResourceTree = treeData1; //只含资源的数据
+                //console.log(that.resoursedata);
+                //console.log(that.ResourceTree);
             });
         },
         //创建时获取数据
@@ -619,12 +663,12 @@ export default {
 
         //角色用户右键菜单
         RoleUserRightClick(row, event) {
-            rightRoleUser(this, row, event,'normal');
+            rightRoleUser(this, row, event, 'normal');
         },
 
         //角色用户右键表头菜单
         RoleUserheaderRightClick(row, event) {
-            rightRoleUser(this, row, event,'header');
+            rightRoleUser(this, row, event, 'header');
         },
         //新增角色用户
         AddRoleuser() {
@@ -636,7 +680,7 @@ export default {
         },
         //角色用户取消
         ColseRoleUser() {
-            ColseRoleUser1(this);          
+            ColseRoleUser1(this);
         },
         //点击其他区域关闭角色用户弹窗
         RUClosedialog(done) {
@@ -793,8 +837,10 @@ export default {
         ChangeType(val) {
             if (val == '页面') {
                 this.oform.AuthorityType = '新增页面'
+                this.PagedisabledValue = true;
             } else {
                 this.oform.AuthorityType = '新增本级'
+                this.PagedisabledValue = false;
             }
         },
 
@@ -813,13 +859,13 @@ export default {
         PermissionSubmit(state) {
             if (state == 'form') {
                 //提交窗体权限
-                PermissionsubmitForm(this);
+                //console.log(this.AuthorityType);
+                PermissionsubmitForm(this, this.AuthorityType, this.multipleSelection);
                 this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
             } else {
                 //提交其他权限
                 OPermissionsubmitForm(this);
             }
-
         },
         //点击x关闭窗体权限模态框
         Closedialog(done) {
@@ -913,10 +959,12 @@ export default {
 .elem_footer {
     display: flex;
 }
+
 /* 调整样式 */
-.g-select-width{
+.g-select-width {
     width: 90%;
 }
+
 .tabletitle {
     color: #3a87ad;
     font-size: 1.5rem;
@@ -929,12 +977,14 @@ export default {
 .tbuttom {
     margin: 4px 3px 11px 3px;
 }
-.g-left{
+
+.g-left {
     float: left;
     font-size: 24px;
     font-weight: 1000;
 }
-.g-right{
+
+.g-right {
     float: right;
     margin: 3px 1rem;
     cursor: pointer;
@@ -942,26 +992,31 @@ export default {
     border: none;
     border-radius: 4px;
     padding: 5px;
-    background-color:white;
+    background-color: white;
     color: #3a87ad;
     margin-top: 10px;
     font-size: 20px;
 }
-.g-right:hover{
-    background-color:white;
-    color:#3a87ad;
+
+.g-right:hover {
+    background-color: white;
+    color: #3a87ad;
 }
-.g-left-search{
+
+.g-left-search {
     float: left;
 }
-.g-right-search{
+
+.g-right-search {
     float: right;
 }
-.g-right-search-input{
+
+.g-right-search-input {
     width: 70%;
     margin: 0 .2rem;
-} 
-.has-gutter th{
+}
+
+.has-gutter th {
     background-color: #FFF !important;
 }
 </style>
