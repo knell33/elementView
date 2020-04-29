@@ -2,7 +2,6 @@ let self;
 //新增统计指标
 export function countNormAdd(_this) {
     self = _this; //将指向vue的this赋值给全局变量self
-    console.log(_this.resouceData.Type == "事务" || _this.resouceData.Type == "资源关系");
     if (_this.resouceData.Type == "事务" || _this.resouceData.Type == "资源关系") {
         _this.choosetitle = "新增统计指标";
         _this.dialogFormVisibleCountNorm = true;
@@ -14,7 +13,12 @@ export function countNormAdd(_this) {
             AssociationType: _this.resouceData.Type
         };
     } else {
-        _this.$message("只有资源类型为事务或者资源关系的才能新增统计指标");
+        self.$message({
+            message: '只有资源类型为事务或者资源关系的才能新增统计指标',
+            type: 'warning',
+            duration: 4000,
+            offset: 40
+        });
     }
 
 }
@@ -43,7 +47,12 @@ export function submitCountNorm(_this) {
     self = _this; //将指向vue的this赋值给全局变量self
     var that = _this;
     if (that.form.NormName == "") {
-        that.message.error("指标名称不能为空");
+        self.$message({
+            message: '指标名称不能为空',
+            type: 'warning',
+            duration: 4000,
+            offset: 40
+        });
     } else {
         if (that.mark === 3) {
             that.$ajax.post('CreateCountNorm', that.form)

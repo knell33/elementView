@@ -6,8 +6,8 @@
             <!-- 角色信息表格 -->
             <el-row>
                 <h3 class="tabletitle ttop">角色信息</h3>
-                <!-- <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick"> -->
-                <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick">
+                <!-- <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick"> -->
+                <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick">
                     <el-table-column label="角色名称" prop="Name" header-align="center" sortable>
                     </el-table-column>
                     <el-table-column label="备注" prop="Note" align="center">
@@ -21,7 +21,7 @@
             <!-- 角色权限表格 -->
             <el-row>
                 <h3 class="tabletitle tbuttom">角色权限</h3>
-                <el-table el-header :data="PermissionData" height="420px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="PermissionRightClick" :row-class-name="MainAuthoritytableRowClassName">
+                <el-table el-header :data="PermissionData" height="420px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="PermissionRightClick" :row-class-name="MainAuthoritytableRowClassName">
                     <el-table-column label="主体名称" prop="MainName" header-align="center" sortable>
                     </el-table-column>
                     <el-table-column label="类型" prop="Type" header-align="center" sortable>
@@ -42,11 +42,10 @@
             <!-- 角色用户表格 -->
             <el-row>
                 <div>
-                    <el-button type="info" class="g-right" plain @click="ResourceElement()">资源要素管理</el-button>
+                    <el-button type="info" icon="el-icon-setting" class="g-right" plain @click="ResourceElement()">资源要素管理</el-button>
                 </div>
-                <!-- <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserRightClick"> -->
                 <h3 class="tabletitle ttop">用户信息</h3>
-                <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
+                <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
                     <el-table-column label="用户名" prop="UserName" header-align="center" sortable>
                     </el-table-column>
                     <el-table-column label="最后修改人" prop="LastModify" header-align="center">
@@ -59,7 +58,7 @@
             <!-- 用户权限表格 -->
             <el-row>
                 <h3 class="tabletitle tbuttom">用户权限</h3>
-                <el-table el-header :data="PersonnelAuthorityData" :row-class-name="PersonnelAuthoritytableRowClassName" height="420px" :header-cell-style="{background:'rgba(150, 154, 146, 0.26)',color:'#606266'}" border highlight-current-row>
+                <el-table el-header :data="PersonnelAuthorityData" :row-class-name="PersonnelAuthoritytableRowClassName" height="420px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row>
                     <el-table-column label="主体名称" prop="MName" header-align="center" sortable>
                     </el-table-column>
                     <el-table-column label="类型" prop="Type" header-align="center">
@@ -93,18 +92,21 @@
                     <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="DeleteRoleUser()"><i class="el-icon-s-order icon1"></i>删除用户关系</li>
                 </ul>
             </div>
+
             <!-- 新增窗体权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="Closedialog" width="30%">
-                <el-form ref="form" :model="form" status-icon label-width="80px">
-                    <el-form-item label="权限类型">
-                        <el-select v-model="AuthorityType" class="g-select-width" multiple placeholder="请选择">
-                            <el-option label="新增" value="新增"></el-option>
-                            <el-option label="修改" value="修改"></el-option>
-                            <el-option label="删除" value="删除"></el-option>
-                            <el-option label="查询" value="查询"></el-option>
-                            <el-option label="设计" value="设计"></el-option>
-                        </el-select>
-                    </el-form-item>
+                <el-form ref="form" :model="form" status-icon label-width="80px" :rules="Comrules">
+                    <el-row>
+                        <el-form-item label="权限类型" prop="AuthorityType">
+                            <el-select v-model="AuthorityType" class="g-select-width" multiple placeholder="请选择">
+                                <el-option label="新增" value="新增"></el-option>
+                                <el-option label="修改" value="修改"></el-option>
+                                <el-option label="删除" value="删除"></el-option>
+                                <el-option label="查询" value="查询"></el-option>
+                                <el-option label="设计" value="设计"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-row>
                     <el-table ref="PagePermission" :data="PermissionAllData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" max-height="400px">
                         <el-table-column type="selection" width="55px">
                         </el-table-column>
@@ -126,7 +128,7 @@
 
             <!-- 新增其他权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="OtherdialogFormVisible" :before-close="OClosedialog" width="30%">
-                <el-form ref="oform" :model="oform" status-icon label-width="80px">
+                <el-form ref="oform" :model="oform" status-icon label-width="80px" rules="Otherrules">
                     <el-form-item label="分类类型">
                         <el-select v-model="oform.Type" placeholder="请选择" @change="ChangeType">
                             <el-option label="页面" value="页面"></el-option>
@@ -143,7 +145,7 @@
                             <el-option v-for="(item,index) in PList" :key="index" :label="item.Name" :value="item.ID">
                             </el-option>
                         </el-select> -->
-                        <treeselect v-model="ResourceTree.ID" :options="ResourceTree" @input="ChangeMain" placeholder="请选择" />
+                        <treeselect v-model="oform.MainName" placeholder="请选择或搜索" :options="ResourceTree" @input="ChangeMain" :disabled="PagedisabledValue"></treeselect>
                     </el-form-item>
 
                 </el-form>
@@ -298,7 +300,7 @@ export default {
                 RoleID: "",
                 RoleName: "",
                 MID: "",
-                MainName: "",
+                MainName: null,
                 Type: "",
                 AuthorityType: "",
                 RID: "",
@@ -407,6 +409,15 @@ export default {
                 that.Resource = res.data; //先保存无树形结构的数据
                 var AllData = res.data;
 
+                let Rtree = AllData;
+                for (let i in Rtree) {
+                    if (Rtree[i].Type != "资源" || Rtree[i].Type != "附加资源") {
+                        Rtree.splice(i, 1)
+                    }
+
+                }
+                // console.log(Rtree);
+
                 // 删除所有 children,以防止数据出现异常（看情况可删除）
                 AllData.forEach(function (item) {
                     delete item.children;
@@ -435,11 +446,41 @@ export default {
                     }
                 });
 
-                //console.log(treeData);
+                // 只带有资源的树形
+                // 删除所有 children,以防止数据出现异常（看情况可删除）
+                Rtree.forEach(function (item) {
+                    delete item.children;
+                });
+
+                // 将数据存储为以 id 为 KEY 的 map 索引数据列
+                var map1 = {};
+                Rtree.forEach(function (item) {
+                    //item.Children = [] // 1
+                    map1[item.ID] = item;
+                });
+                //console.log(map);
+                var treeData1 = [];
+                Rtree.forEach(function (item) {
+                    item.label = item.Name;
+                    item.id = item.ID
+                    // 以当前遍历项，的pid,去map对象中找到索引的id
+                    var parent = map1[item.PID];
+                    // 如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
+                    if (parent) {
+                        (parent.children || (parent.children = [])).push(item);
+                        //parent.Children.push(item) //1
+                    } else {
+                        //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
+
+                        treeData1.push(item);
+                    }
+                });
+
+                //console.log(treeData1);
                 that.resoursedata = treeData;
-                that.ResourceTree = treeData;
-                console.log(that.resoursedata);
-                console.log(that.ResourceTree);
+                that.ResourceTree = treeData1; //只含资源的数据
+                //console.log(that.resoursedata);
+                //console.log(that.ResourceTree);
             });
         },
         //创建时获取数据
@@ -862,8 +903,10 @@ export default {
         ChangeType(val) {
             if (val == '页面') {
                 this.oform.AuthorityType = '新增页面'
+                this.PagedisabledValue = true;
             } else {
                 this.oform.AuthorityType = '新增本级'
+                this.PagedisabledValue = false;
             }
         },
 
@@ -890,7 +933,6 @@ export default {
                 //提交其他权限
                 OPermissionsubmitForm(this);
             }
-
         },
         //点击x关闭窗体权限模态框
         Closedialog(done) {
@@ -995,7 +1037,7 @@ export default {
 }
 
 .tabletitle {
-    color: #999999;
+    color: #3a87ad;
     font-size: 1.5rem;
 }
 
@@ -1017,13 +1059,19 @@ export default {
     float: right;
     margin: 3px 1rem;
     cursor: pointer;
-    border: 1px solid #e4e5e3;
+
+    border: none;
     border-radius: 4px;
     padding: 5px;
-    background-color: #f8f8f7;
-    color: #999999;
+    background-color: white;
+    color: #3a87ad;
     margin-top: 10px;
     font-size: 20px;
+}
+
+.g-right:hover {
+    background-color: white;
+    color: #3a87ad;
 }
 
 .g-left-search {
@@ -1037,5 +1085,9 @@ export default {
 .g-right-search-input {
     width: 70%;
     margin: 0 .2rem;
+}
+
+.has-gutter th {
+    background-color: #FFF !important;
 }
 </style>

@@ -15,42 +15,60 @@ export function PermissionhandleAdd(_this) {
 
 }
 //窗体权限点击确认
-export function PermissionsubmitForm(_this) {
+export function PermissionsubmitForm(_this, a, b) {
     var that = _this;
-    var m = DataH(_this.AuthorityType, _this.multipleSelection, _this.Rolerow)
-    var m1 = JSON.stringify(m)
-    console.log(m1);
-    that.$ajax.post('CreateMainAuthorities',
-            that.$qs.stringify({
-                maJson: m1
-            }))
-        //返回成功调用
-        .then(function(obj) {
-            that.$message({
-                type: 'success',
-                message: '新增成功',
-                duration: 4000,
-                offset: 40
-            });
-            for (let i in m) {
-                _this.PermissionData.push(m[i]);
-            }
-            // _this.multipleSelection = [];
-            _this.AuthorityType = []; //清空被选中页面权限
-            _this.dialogFormVisible = false;
+    if (a.length != 0) {
+        if (b.length != 0) {
+            var m = DataH(_this.AuthorityType, _this.multipleSelection, _this.Rolerow)
+            var m1 = JSON.stringify(m)
+                //console.log(m1);
+            that.$ajax.post('CreateMainAuthorities',
+                    that.$qs.stringify({
+                        maJson: m1
+                    }))
+                //返回成功调用
+                .then(obj => {
+                    that.$message({
+                        type: 'success',
+                        message: '新增成功',
+                        duration: 4000,
+                        offset: 40
+                    });
+                    for (let i in m) {
+                        _this.PermissionData.push(m[i]);
+                    }
+                    // _this.multipleSelection = [];
+                    _this.dialogFormVisible = false;
 
-        })
-        .catch(function(obj) {
-            console.log("新增失败");
+
+                })
+                .catch(obj => {
+                    console.log("新增失败");
+                    that.$message({
+                        type: 'warning',
+                        message: '出现未知错误！',
+                        duration: 4000,
+                        offset: 40
+                    });
+                    that.OtherdialogFormVisible = false;
+                    _this.AuthorityType = []; //清空被选中页面权限
+                })
+        } else {
             that.$message({
                 type: 'warning',
-                message: '出现未知错误！',
+                message: '至少选择一个页面权限！',
                 duration: 4000,
                 offset: 40
             });
-            that.OtherdialogFormVisible = false;
-            _this.AuthorityType = []; //清空被选中页面权限
-        })
+        }
+    } else {
+        that.$message({
+            type: 'warning',
+            message: '权限类型不能为空！',
+            duration: 4000,
+            offset: 40
+        });
+    }
 }
 
 //点击取消关闭并清空窗体权限模态框
@@ -93,9 +111,8 @@ export function OPermissionsubmitForm(_this) {
             });
             that.PermissionData.push(_this.oform);
             that.oform = {};
+            that.PagedisabledValue = false;
             //that.$refs.oform.clearSelection(); //清空其他权限选择器
-
-            that.ResourceTree = [];
             that.OtherdialogFormVisible = false;
         })
         .catch(function(obj) {
@@ -107,7 +124,7 @@ export function OPermissionsubmitForm(_this) {
                 offset: 40
             });
             that.oform = {};
-            that.ResourceTree = [];
+            that.PagedisabledValue = false;
             that.OtherdialogFormVisible = false;
         })
 
@@ -118,15 +135,15 @@ export function OPermissionsubmitForm(_this) {
 //点击取消关闭并清空其他权限模态框
 export function OPermissioncolse(_this) {
     _this.oform = {};
-    _this.ResourceTree = [];
+    _this.PagedisabledValue = false;
     _this.OtherdialogFormVisible = false;
 }
 
 //点击X关闭其他权限模态框
 export function OPermissionclosedialog(done, _this) {
     _this.oform = {};
-    _this.ResourceTree = [];
     done();
+    _this.PagedisabledValue = false;
     _this.OtherdialogFormVisible = false;
 }
 
