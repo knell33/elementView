@@ -36,8 +36,8 @@ export function PermissionsubmitForm(_this) {
                 _this.PermissionData.push(m[i]);
             }
             // _this.multipleSelection = [];
+            _this.AuthorityType = []; //清空被选中页面权限
             _this.dialogFormVisible = false;
-            this.$refs.PagePermission.clearSelection();
 
         })
         .catch(function(obj) {
@@ -120,7 +120,6 @@ export function OPermissioncolse(_this) {
     _this.oform = {};
     _this.ResourceTree = [];
     _this.OtherdialogFormVisible = false;
-
 }
 
 //点击X关闭其他权限模态框
@@ -177,9 +176,17 @@ export function AddRoleuser1(_this) {
 //角色用户确认
 export function RoleUserSubmit1(_this) {
     var that = _this;
-    var m = DataRoleUser(_this.RoleUserSelection, _this.RoleIDvue);
+    var m = [];
+    console.log(_this.symbol);
+    if (_this.symbol == "fatherSelect") {
+        m = DataRoleUser(_this.RoleUserSelection1, _this.RoleIDvue);
+    } else {
+        m = DataRoleUser(_this.RoleUserSelection, _this.RoleIDvue);
+    }
     var m1 = JSON.stringify(m);
+
     console.log(m1);
+    console.log(_this.RoleUserSelection);
     console.log(_this.RoleIDvue);
     if (_this.RoleIDvue == "") {
         that.$message({
@@ -202,7 +209,8 @@ export function RoleUserSubmit1(_this) {
                 for (let i in m) {
                     _this.RoleUesrData.push(m[i]);
                 }
-                //_this.RoleUserSelection = []; //清空选择器
+                _this.RoleUserSelection = []; //清空角色用户子表格选择器
+                _this.RoleUserSelection1 = []; //清空角色用户父表格选择器
                 //角色用户父搜索框重置
                 _this.search = "";
                 //角色用户子搜索框重置
@@ -222,7 +230,8 @@ export function RoleUserSubmit1(_this) {
                     duration: 4000,
                     offset: 40
                 });
-                _this.RoleUserSelection = []; //清空选择器
+                _this.RoleUserSelection = []; //清空角色用户子表格选择器
+                _this.RoleUserSelection1 = []; //清空角色用户父表格选择器
                 _this.RoleUserdialogFormVisible = false;
             })
     }
@@ -230,7 +239,8 @@ export function RoleUserSubmit1(_this) {
 
 //点击取消关闭并清空角色用户弹窗
 export function ColseRoleUser1(_this) {
-    _this.RoleUserSelection = []; //清空选择器
+    _this.RoleUserSelection = []; //清空角色用户子表格选择器
+    _this.RoleUserSelection1 = []; //清空角色用户父表格选择器
     //角色用户父搜索框重置
     _this.search = "";
     //角色用户子搜索框重置
@@ -245,6 +255,8 @@ export function ColseRoleUser1(_this) {
 //点击X关闭角色用户弹窗
 export function RUClosedialog1(done, _this) {
     done();
+    _this.RoleUserSelection = []; //清空角色用户子表格选择器
+    _this.RoleUserSelection1 = []; //清空角色用户父表格选择器
     //角色用户父搜索框重置
     _this.search = "";
     //角色用户子搜索框重置
@@ -253,7 +265,7 @@ export function RUClosedialog1(done, _this) {
     _this.expands = [];
     //角色用户初始页面值展示重置
     _this.RoleUserOU = _this.RoleUserOUA;
-    _this.RoleUserSelection = []; //清空选择器
+    //_this.RoleUserSelection = []; //清空选择器
     _this.RoleUserdialogFormVisible = false;
 }
 //右键删除角色用户
