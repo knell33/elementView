@@ -559,7 +559,7 @@ export default {
             //资源目录弹框表单
             form: {
                 ID: "",
-                PID: "",
+                PID: null,
                 Name: "",
                 Type: "",
                 Note: "",
