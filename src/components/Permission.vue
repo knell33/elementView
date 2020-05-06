@@ -161,20 +161,27 @@
                 <div>
                     <div class="g-left-search">
                         <el-input type="search" v-model="search" style="width:100%" placeholder="模糊匹配组织机构关键字"></el-input>
+                        <!-- <el-row>
+                        <el-switch v-model="IFCheckAll" @change="RoleUserAllChange" active-text="全选所有人员" inactive-text="放弃全选" style="width:217px" active-color="#ff4949" inactive-color="#13ce66"></el-switch>
+                        </el-row> -->
                     </div>
                     <div class="g-right-search">
                         <el-input placeholder="请准确输入姓名" type="search" v-model="search1" class="g-right-search-input"></el-input>
                         <el-button type="primary" @click="RoleUserSelect()">搜 索</el-button>
                     </div>
                 </div>
-                <el-table ref="roleUser" :data="RoleUserOU1" @expand-change="RoleUserRowChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" height="450px">
+                <el-table ref="roleUser" :data="RoleUserOU1" @expand-change="RoleUserRowChange" :row-key="getRowKeys" :expand-row-keys="expands" @select="RUSelect" @select-all="RUSelectAll" @selection-change="fatherSelectionChange" style="width: 100%" height="450px">
+                    <el-table-column type="selection" width="55">
+                    </el-table-column>
                     <el-table-column prop="OU" label="组织机构">
                     </el-table-column>
                     <el-table-column type="expand" align="center">
-                        <template slot-scope="props">
-                            <el-table :data="props.row.organizationdata" @selection-change="roleuserSelectionChange">
+                        <template v-if="childSelect" slot-scope="props">
+                            <el-table ref="roleuserdata" :data="props.row.organizationdata" @selection-change="roleuserSelectionChange">
+                                <el-row>asassadsadas</el-row>
                                 <el-table-column type="selection" width="55">
                                 </el-table-column>
+                                
                                 <el-table-column prop="OU" label="组织机构">
                                 </el-table-column>
                                 <el-table-column prop="UserName" label="用户名">
@@ -183,6 +190,7 @@
                                 </el-table-column>
                                 <el-table-column prop="Email" label="邮箱地址">
                                 </el-table-column>
+                                <el-input type="hidden" v-model="test"></el-input>
                             </el-table>
                         </template>
                     </el-table-column>
@@ -320,8 +328,12 @@ export default {
             RoleUserVisible: false,
             //新增角色用户弹窗
             RoleUserdialogFormVisible: false,
-            //角色用户选中角色信息
+            //角色用户子表格选中角色信息
             RoleUserSelection: [],
+            //角色用户父表格选中角色信息
+            RoleUserSelection1: [],
+            //角色用户父表格选中信息
+            FatherSelectionChange: [],
             //角色用户当前行数据
             RoleUserRowData: [],
             //角色用户组织机构搜索框
@@ -330,13 +342,17 @@ export default {
             search1: '',
             //角色用户弹窗 要展开的行，数值的元素是row的key值
             expands: [],
-            //角色用户搜索标识
+            //角色用户搜索/多选标识
             symbol: "",
             //右键菜单项是否可见
             disabledvalue: "",
             //资源目录树形数据保存
             resoursedata: [],
-            //禁用状态
+            //角色用户全选人员
+            //IFCheckAll: false,
+            test: "",
+            //角色用户子表格默认是否创建多选框
+            childSelect: true,
             PagedisabledValue: true,
         }
     },
@@ -383,39 +399,7 @@ export default {
                 })
             }
             return this.RoleUserOU;
-        },
-
-        // 实时监听角色用户新增弹窗子表格
-        // RoleUserOU1: function () {
-        //     const search1 = this.search1;
-        //     console.log("进入子搜索");
-        //     console.log(this.RoleUser);
-        //     console.log(this.RoleUserOU);
-        //     console.log(search1);
-
-        //     var ouname = "";
-        //     for(var i = 0;i < this.RoleUser.length - 1;i++){
-        //         if(search1 == this.RoleUser[i].UserName){
-        //             ouname = this.RoleUser[i].OU;
-        //         }
-        //     }
-        //     console.log(ouname);
-        //     for(var i = 0;i < this.RoleUserOU.length - 1;i++){
-        //         if (!this.RoleUserOU[i].organizationdata){
-        //         this.organizationData(ouname);
-
-        //         if (search1) {
-        //             return this.RoleUserOU.filter(dataNews => {
-        //                 return Object.keys(dataNews).some(key => {
-        //                     return String(dataNews[key]).toLowerCase().indexOf(search1) > -1
-        //                 })
-        //             })
-        //         }
-        //     }
-        //     }
-
-        //     return this.RoleUserOU;
-        // },
+        }
     },
 
     methods: {
@@ -459,7 +443,6 @@ export default {
                         //parent.Children.push(item) //1
                     } else {
                         //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
-
                         treeData.push(item);
                     }
                 });
@@ -577,11 +560,6 @@ export default {
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
-        //角色用户多选数据
-        roleuserSelectionChange(val) {
-            this.RoleUserSelection = val;
-            console.log(this.RoleUserSelection);
-        },
 
         //表格日期显示格式转换
         dateFormat(row, column, cellValue) {
@@ -678,14 +656,43 @@ export default {
         //角色用户确定
         RoleUserSubmit() {
             RoleUserSubmit1(this);
+            if(this.RoleUserSelection.length > 0){
+                this.$refs.roleuserdata.clearSelection(); //清空角色用户子表格多选  
+            }else if(this.RoleUserSelection1.length > 0){
+                this.$refs.roleUser.clearSelection(); //清空角色用户父表格多选
+            }
+            //清空标识值
+            this.symbol = "";
+            //子表格多选框
+            this.childSelect = true;
         },
         //角色用户取消
         ColseRoleUser() {
             ColseRoleUser1(this);
+            if(this.RoleUserSelection.length > 0){
+                this.$refs.roleuserdata.clearSelection(); //清空角色用户子表格多选  
+            }else if(this.RoleUserSelection1.length > 0){
+                this.$refs.roleUser.clearSelection(); //清空角色用户父表格多选
+            }
+            console.log(this.RoleUserSelection);
+            //清空标识值
+            this.symbol = "";
+            //子表格多选框
+            this.childSelect = true;
+                
         },
         //点击其他区域关闭角色用户弹窗
         RUClosedialog(done) {
             RUClosedialog1(done, this);
+            if(this.RoleUserSelection.length > 0){
+                this.$refs.roleuserdata.clearSelection(); //清空角色用户子表格多选  
+            }else if(this.RoleUserSelection1.length > 0){
+                this.$refs.roleUser.clearSelection(); //清空角色用户父表格多选
+            }
+            //清空标识值
+            this.symbol = "";
+            //子表格多选框
+            this.childSelect = true;
         },
         //删除角色用户
         DeleteRoleUser() {
@@ -695,6 +702,7 @@ export default {
         getRowKeys(row) {
             return row.OU;
         },
+
         //角色用户表格展开行事件
         RoleUserRowChange(row, expandedRows) {
             console.log("进入行展开");
@@ -702,27 +710,35 @@ export default {
 
             console.log(expandedRows);
             console.log(this.symbol);
+            console.log(this.childSelect);
             console.log(this.RoleUser);
 
             if (this.symbol == "child") {
                 console.log("子搜索标识");
-            } else {
-                if (!row.organizationdata) {
+                return;
+            }else {
+                if (!row.organizationdata) { //这里做了一个判断，首先判断这一行的数据对象有没有organizationdata这个属性，如果没说明没有数据我们需要请求后台，相当于懒加载
                     //this.organizationData(row.OU);
                     var OU = row.OU;
                     var self = this;
                     var arr = [];
+                    //找出部门下所有的人员
                     for (var i = 0; i < this.RoleUser.length; i++) {
                         if (OU == this.RoleUser[i].OU) {
                             arr.push(this.RoleUser[i]);
                         }
                     }
                     this.RoleuserRrganization = arr;
+
                     console.log("组织数据");
                     console.log(this.RoleuserRrganization);
 
-                    const index = self.RoleUserOU.findIndex(data => data.OU === OU);
-                    self.$set(self.RoleUserOU[index], 'organizationdata', this.RoleuserRrganization);
+                    const index = self.RoleUserOU.findIndex(data => data.OU === OU); //首先RoleUserOU绑定的是父表格的数据，那么我们要把子表格数据塞到对应的父分组，那我们要知道是哪一个分组，这里的findIndex就是通过id去查找对应的父分组在数据数组里的下标
+                    //         if (rspData.data && rspData.data.length) {
+                    //             rspData.data.forEach(item => { //这里我是给每个子分组信息里都加上父分组的id，以方便后面操作子表格每一行后，回调函数里刷新数据时需要用到，要知道他的父亲是谁，哈哈
+                    //                 item.labelId = id
+                    //             })
+                    self.$set(self.RoleUserOU[index], 'organizationdata', this.RoleuserRrganization); //这里就是给父表格数据数组RoleUserOU第index个对象加上organizationdata这个属性，然后把this.RoleuserRrganization数据绑定到organizationdata这个key里
                     console.log("AAA");
                     console.log(self.RoleUserOU);
                 }
@@ -739,7 +755,10 @@ export default {
             if (search1 == "") {
                 this.expands = [];
                 this.RoleUserOU = this.RoleUserOUA;
+                //置空搜索标识
+                this.symbol = "";
             } else {
+                //通过姓名查找部门名称
                 var ouname = "";
                 for (var i = 0; i < this.RoleUser.length; i++) {
                     if (search1 == this.RoleUser[i].UserName) {
@@ -750,16 +769,6 @@ export default {
                 for (var i = 0; i < this.RoleUserOU.length; i++) {
                     //if (!this.RoleUserOU[i].organizationdata) {
                     this.organizationData(ouname);
-
-                    // if (search1) {
-                    //     return this.RoleUserOU.filter(dataNews => {
-                    //         return Object.keys(dataNews).some(key => {
-                    //             return String(dataNews[key]).toLowerCase().indexOf(search1) > -1
-                    //         })
-                    //     })
-                    // }
-
-                    // }
                 }
 
                 return this.RoleUserOU;
@@ -786,10 +795,12 @@ export default {
             self.$set(self.RoleUserOU[index], 'organizationdata', this.RoleuserRrganization);
             console.log(self.RoleUserOU);
 
+            
             for (var j = 0; j < self.RoleUserOU.length; j++) {
                 if (OU == self.RoleUserOU[j].OU) {
                     for (var k = 0; k < self.RoleUserOU[j].organizationdata.length; k++) {
                         if (self.search1 == self.RoleUserOU[j].organizationdata[k].UserName) {
+                            //将organizationdata对象转换为数组
                             var arr2 = [];
                             arr2.push(self.RoleUserOU[j].organizationdata[k]);
                             arr1.push({
@@ -806,6 +817,7 @@ export default {
             this.symbol = "child";
 
             //this.$refs.roleUser.toggleRowExpansion(index, true);
+            //搜索姓名后展开行
             this.expands = [];
             this.expands.push(OU);
             // console.log(this.expands);
@@ -813,26 +825,80 @@ export default {
             console.log("BBB");
             console.log(self.RoleUserOU);
         },
-        // handleExpendRow(row, expandedRows) { //这里是点击每一行会触发的方法
-        //     if (!row.dicts) { //这里做了一个判断，首先判断这一行的数据对象有没有dicts这个属性，如果没说明没有数据我们需要请求后台，相当于懒加载
-        //         this.queryDictData(row.id, row.labelType) //关键就是这个方法，row.id是父分组的id需要传给后台查询该子分组的信息
-        //     }
-        // },
-        // queryDictData(id, labelType) {
-        //     let self = this
-        //     labelService.getLabels({
-        //         groupCode: labelType
-        //     }).then(rspData => { //这里是我们项目里封装的ajax请求方法，相当于axios.post()
-        //         console.log(rspData)
-        //         const index = self.pageData.results.findIndex(data => data.id === id) //首先pageData.results绑定的是父表格的数据，那么我们要把子表格数据塞到对应的父分组，那我们要知道是哪一个分组，这里的findIndex就是通过id去查找对应的父分组在数据数组里的下标
-        //         if (rspData.data && rspData.data.length) {
-        //             rspData.data.forEach(item => { //这里我是给每个子分组信息里都加上父分组的id，以方便后面操作子表格每一行后，回调函数里刷新数据时需要用到，要知道他的父亲是谁，哈哈
-        //                 item.labelId = id
-        //             })
-        //         }
-        //         self.$set(self.pageData.results[index], 'dicts', rspData.data) //这里就是给父表格数据数组self.pageData.results第index个对象加上dicts这个属性，然后把rspData.data我们从后台拿到的数据绑定到dicts这个key里
-        //     })
-        // },
+
+        //角色用户多选数据
+        roleuserSelectionChange(val) {
+            this.RoleUserSelection = val;
+            console.log(this.RoleUserSelection);
+        },
+        //角色用户父表格多选数据
+        fatherSelectionChange(val){
+            this.FatherSelectionChange = val;
+            console.log(this.FatherSelectionChange);
+            if(this.FatherSelectionChange.length == 0){
+                this.childSelect = true;
+            }
+        },
+        //角色用户父表格 手动多选触发事件
+        RUSelect(selection, row){
+            console.log("父表多选");
+            console.log(selection);
+            console.log(row);
+
+            this.symbol = "fatherSelect";
+            this.childSelect = false;
+            
+            // if(selection.length == 0){
+            //     //父表多选标识改变
+            //     this.symbol = "";
+            // }
+            //父表多选后展开行置空
+            //this.expands = [];
+            var arr = [];
+            for(var i = 0;i < selection.length;i++){
+                    var OU = selection[i].OU;
+                    var self = this;
+                    
+
+                    console.log("进入多选部门名称");
+                    console.log(OU);
+
+                    for (var j = 0; j < this.RoleUser.length; j++) {
+                        if (OU == this.RoleUser[j].OU) {
+                            arr.push(this.RoleUser[j]);
+                        }
+                    }
+
+                    this.RoleuserRrganization = arr;
+                    console.log("父表多选组织数据");
+                    console.log(this.RoleuserRrganization);
+
+                    //const index = self.RoleUserOU.findIndex(data => data.OU === OU); 
+                    //self.$set(self.RoleUserOU[index], 'organizationdata', this.RoleuserRrganization);
+                    //添加展开行信息
+                    //this.expands.push(OU);
+                    
+                    // if(row){
+                    //     self.test = "1";
+                    //     console.log(self.$refs.roleuserdata);
+                    //    // self.$refs.roleuserdata.toggleAllSelection();
+                    // }
+                    //console.log("AAA");
+                    //console.log(self.RoleUserOU);
+                }
+                this.RoleUserSelection1 = arr;
+
+        },
+        RUSelectAll(selection){
+            console.log(selection);
+            if(selection.length > 0){
+                this.childSelect = false;
+            }else{
+                this.childSelect = true;
+            }
+            
+        },
+
 
         //新增其他权限时选择分类类型联动
         ChangeType(val) {
@@ -860,9 +926,10 @@ export default {
         PermissionSubmit(state) {
             if (state == 'form') {
                 //提交窗体权限
-                //console.log(this.AuthorityType);
-                PermissionsubmitForm(this, this.AuthorityType, this.multipleSelection);
-                this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
+                PermissionsubmitForm(this);
+                if(this.multipleSelection.length > 0){
+                    this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
+                }    
             } else {
                 //提交其他权限
                 OPermissionsubmitForm(this);
@@ -871,7 +938,9 @@ export default {
         //点击x关闭窗体权限模态框
         Closedialog(done) {
             Permissionclosedialog(done, this);
-            this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
+            if(this.multipleSelection.length > 0){
+                this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
+            } 
         },
         //点击x关闭其他权限模态框
         OClosedialog(done) {
@@ -884,7 +953,9 @@ export default {
             if (state == 'form') {
                 //关闭窗体权限
                 Permissioncolse(this);
-                this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
+                if(this.multipleSelection.length > 0){
+                    this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
+                } 
             } else {
                 //关闭其他权限
                 OPermissioncolse(this);
