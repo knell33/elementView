@@ -17,7 +17,9 @@
             <el-row>
                 <el-tabs v-model="activeName" type="card">
                     <div class="tabletitle g-element">要素目录</div>
-                    <el-button type="info" icon="el-icon-user-solid" class="g-permission" plain @click="Permission()">权限管理</el-button>
+                    <el-popover placement="top-start"  width="200" trigger="hover" content="点击链接跳转到权限管理界面">                        
+                        <el-button slot="reference" type="info" icon="el-icon-user-solid" class="g-permission" plain @click="Permission()">权限管理</el-button>
+                    </el-popover>
                     <!-- <div class="g-permission" @click="Permission()">权限管理</div> -->
                     <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick"  :default-sort = "{prop: 'Numbera',order: 'descending'}">
                         <el-table-column label="序号" prop="Numbera" align="center" sortable>
@@ -685,7 +687,7 @@ export default {
     components: {
         Treeselect
     }, //注册组件
-    created: function () {
+    activated: function () {
         this.treeList();
     },
     computed: {
@@ -1868,6 +1870,16 @@ export default {
     /* background-color:#e4e5e3; */
     background-color:white !important;
     color: #3a87ad !important;
+}
+.el-dialog /deep/  {
+    position: relative;
+    margin: 0 auto 50px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.3);
+    box-shadow: 0 1px 3px rgba(0,0,0,.3);
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 50%;
 }
 
 

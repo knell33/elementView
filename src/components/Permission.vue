@@ -6,7 +6,6 @@
             <!-- 角色信息表格 -->
             <el-row>
                 <h3 class="tabletitle ttop">角色信息</h3>
-                <!-- <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick"> -->
                 <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick">
                     <el-table-column label="角色名称" prop="Name" header-align="center" sortable>
                     </el-table-column>
@@ -16,7 +15,8 @@
                     </el-table-column>
                     <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" align="center" sortable>
                     </el-table-column>
-                </el-table>
+                </el-table> -->
+                <!-- <vxe-grid border resizable show-footer highlight-current-row ref="xGrid" :formatter="dateFormat" :footer-method="footerMethod" :columns="tableColumn" :data="RoleData" :context-menu="tableMenu" @cell-context-menu="cellContextMenuEvent" @context-menu-click="contextMenuClickEvent"></vxe-grid>-->
             </el-row>
             <!-- 角色权限表格 -->
             <el-row>
@@ -41,9 +41,10 @@
         <el-header>
             <!-- 角色用户表格 -->
             <el-row>
-                <div>
-                    <el-button type="info" icon="el-icon-setting" class="g-right" plain @click="ResourceElement()">资源要素管理</el-button>
-                </div>
+                <el-popover placement="top-start" width="210" trigger="hover" content="点击链接跳转到资源要素管理界面">
+                    <el-button slot="reference" type="info" icon="el-icon-setting" class="g-right" plain @click="ResourceElement()">
+                        资源要素管理</el-button>
+                </el-popover>
                 <h3 class="tabletitle ttop">用户信息</h3>
                 <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
                     <el-table-column label="用户名" prop="UserName" header-align="center" sortable>
@@ -95,7 +96,7 @@
 
             <!-- 新增窗体权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="Closedialog" width="30%">
-                <el-form ref="form" :model="form" status-icon label-width="80px" :rules="Comrules">
+                <el-form ref="form" :model="form" status-icon label-width="80px" >
                     <el-row>
                         <el-form-item label="权限类型" prop="AuthorityType">
                             <el-select v-model="AuthorityType" class="g-select-width" multiple placeholder="请选择">
@@ -128,7 +129,7 @@
 
             <!-- 新增其他权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="OtherdialogFormVisible" :before-close="OClosedialog" width="30%">
-                <el-form ref="oform" :model="oform" status-icon label-width="80px" rules="Otherrules">
+                <el-form ref="oform" :model="oform" status-icon label-width="80px" >
                     <el-form-item label="分类类型">
                         <el-select v-model="oform.Type" placeholder="请选择" @change="ChangeType">
                             <el-option label="页面" value="页面"></el-option>
@@ -342,7 +343,7 @@ export default {
     components: {
         Treeselect
     }, //注册组件
-    created: function () {
+    activated: function () {
         this.RoleAllData();
         this.treeList();
         this.RoleUserData();
@@ -908,6 +909,7 @@ export default {
                 path: '/index'
             })
         },
+       
 
     }
 
