@@ -193,7 +193,7 @@
                             <!-- <el-select v-model="form.PID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择上级" style="width:100%">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select> -->
-                            <treeselect v-model="form.PID" placeholder="请选择或搜索" :options="ResourceTableData" />
+                            <treeselect v-model="form.PID" placeholder="请选择或搜索" :options="ResourceTableData"/>
                         </el-form-item>
                         <el-form-item label="类型" prop="Type">
                             <el-select v-model="form.Type" placeholder="请选择资源类型" style="width:100%">
@@ -679,6 +679,7 @@ export default {
             menuVisibleMainAuthority: false,
             detailName: "",
             isMainName: true,
+            //要素目录新增弹窗左对齐参数
             positiona: 'left',
             
         };

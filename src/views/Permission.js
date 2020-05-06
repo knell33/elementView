@@ -15,19 +15,19 @@ export function PermissionhandleAdd(_this) {
 
 }
 //窗体权限点击确认
-export function PermissionsubmitForm(_this,a,b) {
+export function PermissionsubmitForm(_this, a, b) {
     var that = _this;
-    if (a.length!=0) {
-        if (b.length!=0) {
+    if (a.length != 0) {
+        if (b.length != 0) {
             var m = DataH(_this.AuthorityType, _this.multipleSelection, _this.Rolerow)
             var m1 = JSON.stringify(m)
-            //console.log(m1);
+                //console.log(m1);
             that.$ajax.post('CreateMainAuthorities',
-                that.$qs.stringify({
-                    maJson: m1
-                }))
+                    that.$qs.stringify({
+                        maJson: m1
+                    }))
                 //返回成功调用
-                .then(obj=>{
+                .then(obj => {
                     that.$message({
                         type: 'success',
                         message: '新增成功',
@@ -39,10 +39,10 @@ export function PermissionsubmitForm(_this,a,b) {
                     }
                     // _this.multipleSelection = [];
                     _this.dialogFormVisible = false;
-                    
+
 
                 })
-                .catch(obj =>{
+                .catch(obj => {
                     console.log("新增失败");
                     that.$message({
                         type: 'warning',
@@ -111,7 +111,7 @@ export function OPermissionsubmitForm(_this) {
             });
             that.PermissionData.push(_this.oform);
             that.oform = {};
-            that.PagedisabledValue= false;
+            that.PagedisabledValue = false;
             //that.$refs.oform.clearSelection(); //清空其他权限选择器
             that.OtherdialogFormVisible = false;
         })
@@ -124,7 +124,7 @@ export function OPermissionsubmitForm(_this) {
                 offset: 40
             });
             that.oform = {};
-            that.PagedisabledValue= false;
+            that.PagedisabledValue = false;
             that.OtherdialogFormVisible = false;
         })
 
@@ -135,16 +135,15 @@ export function OPermissionsubmitForm(_this) {
 //点击取消关闭并清空其他权限模态框
 export function OPermissioncolse(_this) {
     _this.oform = {};
-    _this.PagedisabledValue= false;
+    _this.PagedisabledValue = false;
     _this.OtherdialogFormVisible = false;
-
 }
 
 //点击X关闭其他权限模态框
 export function OPermissionclosedialog(done, _this) {
     _this.oform = {};
     done();
-    _this.PagedisabledValue= false;
+    _this.PagedisabledValue = false;
     _this.OtherdialogFormVisible = false;
 }
 
@@ -194,9 +193,17 @@ export function AddRoleuser1(_this) {
 //角色用户确认
 export function RoleUserSubmit1(_this) {
     var that = _this;
-    var m = DataRoleUser(_this.RoleUserSelection, _this.RoleIDvue);
+    var m = [];
+    console.log(_this.symbol);
+    if (_this.symbol == "fatherSelect") {
+        m = DataRoleUser(_this.RoleUserSelection1, _this.RoleIDvue);
+    } else {
+        m = DataRoleUser(_this.RoleUserSelection, _this.RoleIDvue);
+    }
     var m1 = JSON.stringify(m);
+
     console.log(m1);
+    console.log(_this.RoleUserSelection);
     console.log(_this.RoleIDvue);
     if (_this.RoleIDvue == "") {
         that.$message({
@@ -216,10 +223,23 @@ export function RoleUserSubmit1(_this) {
                     duration: 4000,
                     offset: 40
                 });
-                for (let i in m) {
-                    _this.RoleUesrData.push(m[i]);
-                }
-                //_this.RoleUserSelection = []; //清空选择器
+                // for (let i in m) {
+                //     _this.RoleUesrData.push(m[i]);
+                // }
+
+                that.$ajax.post('GetAllRoleUserByRID',
+                        that.$qs.stringify({
+                            RID: that.RoleIDvue
+                        }))
+                    //返回成功调用
+                    .then((res) => {
+                        console.log(res.data)
+                        that.RoleUesrData = res.data;
+                    })
+
+
+                _this.RoleUserSelection = []; //清空角色用户子表格选择器
+                _this.RoleUserSelection1 = []; //清空角色用户父表格选择器
                 //角色用户父搜索框重置
                 _this.search = "";
                 //角色用户子搜索框重置
@@ -239,7 +259,8 @@ export function RoleUserSubmit1(_this) {
                     duration: 4000,
                     offset: 40
                 });
-                _this.RoleUserSelection = []; //清空选择器
+                _this.RoleUserSelection = []; //清空角色用户子表格选择器
+                _this.RoleUserSelection1 = []; //清空角色用户父表格选择器
                 _this.RoleUserdialogFormVisible = false;
             })
     }
@@ -247,7 +268,8 @@ export function RoleUserSubmit1(_this) {
 
 //点击取消关闭并清空角色用户弹窗
 export function ColseRoleUser1(_this) {
-    _this.RoleUserSelection = []; //清空选择器
+    _this.RoleUserSelection = []; //清空角色用户子表格选择器
+    _this.RoleUserSelection1 = []; //清空角色用户父表格选择器
     //角色用户父搜索框重置
     _this.search = "";
     //角色用户子搜索框重置
@@ -262,6 +284,8 @@ export function ColseRoleUser1(_this) {
 //点击X关闭角色用户弹窗
 export function RUClosedialog1(done, _this) {
     done();
+    _this.RoleUserSelection = []; //清空角色用户子表格选择器
+    _this.RoleUserSelection1 = []; //清空角色用户父表格选择器
     //角色用户父搜索框重置
     _this.search = "";
     //角色用户子搜索框重置
@@ -270,7 +294,7 @@ export function RUClosedialog1(done, _this) {
     _this.expands = [];
     //角色用户初始页面值展示重置
     _this.RoleUserOU = _this.RoleUserOUA;
-    _this.RoleUserSelection = []; //清空选择器
+    //_this.RoleUserSelection = []; //清空选择器
     _this.RoleUserdialogFormVisible = false;
 }
 //右键删除角色用户
