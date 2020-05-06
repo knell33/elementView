@@ -679,6 +679,7 @@ export default {
             MainAuthorityTableData: [],
             aform: {
                 RoleID: "",
+                MID: "",
                 MainName: "",
                 Type: "",
                 AuthorityType: [],
@@ -688,6 +689,7 @@ export default {
             RoleInfo: [],
             dialogFormVisibleMainAuthority: false,
             menuVisibleMainAuthority: false,
+            detailID: "",
             detailName: "",
             isMainName: true,
             //要素目录新增弹窗左对齐参数
@@ -941,6 +943,7 @@ export default {
             that.aform.DID = row.DID;
             that.aform.RID = row.RID;
             console.log(that.aform);
+            that.detailID = row.DID;
             that.detailName = row.DetailName;
             //角色权限
             this.$ajax.post('GetAllMainAuthorityByDetailID',
