@@ -196,7 +196,7 @@
                             <treeselect v-model="form.PID" placeholder="请选择或搜索" :options="ResourceTableData"/>
                         </el-form-item>
                         <el-form-item label="类型" prop="Type">
-                            <el-select v-model="form.Type" placeholder="请选择资源类型" style="width:100%">
+                            <el-select v-model="form.Type" placeholder="请选择资源类型" @change="relationResourceChange" style="width:100%">
                                 <el-option label="目录" value="目录"></el-option>
                                 <el-option label="资源" value="资源"></el-option>
                                 <el-option label="附加资源" value="附加资源"></el-option>
@@ -216,6 +216,13 @@
                         <el-form-item label="是否树形">
                             <el-switch v-model="form.TreeForm" :active-value="1" :inactive-value="0"></el-switch>
                         </el-form-item>
+                        <el-form-item label="关系资源" v-if="isRelationResource">
+                            <el-select v-model="form.RelationID" placeholder="请选择关系资源"  style="width: 100%">
+                                <el-option v-for="(item,index) in RelationResourceTableData" :label="item.Name" :value="item.ID" :key="index"></el-option>
+                            </el-select>
+                            <!-- <treeselect v-model="form.RelationID" placeholder="请选择关系资源" :options="ResourceTableData"></treeselect> -->
+                        </el-form-item>
+                        
                         <el-form-item label="备注">
                             <el-input type="textarea" v-model="form.Note"></el-input>
                         </el-form-item>
@@ -568,11 +575,15 @@ export default {
                 LastModify: "",
                 ShowName: "",
                 TreeForm: 0,
-                RelationID: "",
+                RelationID: null,
                 //统计指标 需要用到的数据
                 RID: "",
                 NormName: ""
             },
+            //关系资源字段
+            isRelationResource : false,
+            //关系资源下拉选择框
+            RelationResourceTableData: [],
             //资源目录修改时保存当前行的数据
             srow: [],
             //资源目录修改时保存当前行的ID
@@ -804,7 +815,6 @@ export default {
             var that = this;
             axios.post("GetAllResources").then(function (res) {
                 var AllData = res.data;
-
                 // 删除所有 children,以防止数据出现异常（看情况可删除）
                 AllData.forEach(function (item) {
                     delete item.children;
@@ -818,8 +828,13 @@ export default {
                 });
                 //console.log(map);
                 var treeData = [];
+                var relationResource = [];
+                var count = 0
                 AllData.forEach(function (item) {
                     //树形下拉框参数 item.label item.id
+                    if(item.Type == "资源" || item.Type == "附加资源"){
+                        relationResource.push(item);
+                    }
                     item.label = item.Name;
                     item.id = item.ID
                     // 以当前遍历项的pid,去map对象中找到索引的id
@@ -837,6 +852,7 @@ export default {
                 console.log("进入树形");
                 console.log(treeData);
                 that.ResourceTableData = treeData;
+                that.RelationResourceTableData = relationResource;
             });
         },
         //资源--要素--分类--统计指标 联动
@@ -1464,6 +1480,16 @@ export default {
                 .catch(function (res) {
                     console.log("出错了")
                 });
+        },
+        //根据资源目录类型决定是否显示资源关系字段
+        relationResourceChange(){
+            if(this.form.Type == "资源关系"){
+                this.isRelationResource = true;
+                console.log(this.form.Type == "资源关系");
+            }else{
+                this.isRelationResource = false;
+                console.log(this.form.Type == "资源关系");
+            }
         },
         //根据要素类型改变单位、长度、选项类型、值域资源、编码目录字段禁用
         typeChange() {
