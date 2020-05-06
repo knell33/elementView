@@ -46,7 +46,7 @@
                         资源要素管理</el-button>
                 </el-popover>
                 <h3 class="tabletitle ttop">用户信息</h3>
-                <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
+                <el-table ref="RoleUesrTable" el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick" @current-change="RoleUserCuChange">
                     <el-table-column label="用户名" prop="UserName" header-align="center" sortable>
                     </el-table-column>
                     <el-table-column label="最后修改人" prop="LastModify" header-align="center">
@@ -96,7 +96,7 @@
 
             <!-- 新增窗体权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="dialogFormVisible" :before-close="Closedialog" width="30%">
-                <el-form ref="form" :model="form" status-icon label-width="80px" >
+                <el-form ref="form" :model="form" status-icon label-width="80px">
                     <el-row>
                         <el-form-item label="权限类型" prop="AuthorityType">
                             <el-select v-model="AuthorityType" class="g-select-width" multiple placeholder="请选择">
@@ -129,7 +129,7 @@
 
             <!-- 新增其他权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="OtherdialogFormVisible" :before-close="OClosedialog" width="30%">
-                <el-form ref="oform" :model="oform" status-icon label-width="80px" >
+                <el-form ref="oform" :model="oform" status-icon label-width="80px">
                     <el-form-item label="分类类型">
                         <el-select v-model="oform.Type" placeholder="请选择" @change="ChangeType">
                             <el-option label="页面" value="页面"></el-option>
@@ -146,7 +146,7 @@
                             <el-option v-for="(item,index) in PList" :key="index" :label="item.Name" :value="item.ID">
                             </el-option>
                         </el-select> -->
-                        <treeselect v-model="oform.MainName" placeholder="请选择或搜索" :options="ResourceTree" @input="ChangeMain" :disabled="PagedisabledValue"></treeselect>
+                        <treeselect v-model="oform.MID" placeholder="请选择或搜索" :options="ResourceTree" @input="ChangeMain" :disabled="PagedisabledValue"></treeselect>
                     </el-form-item>
 
                 </el-form>
@@ -181,7 +181,7 @@
                                 <el-row>asassadsadas</el-row>
                                 <el-table-column type="selection" width="55">
                                 </el-table-column>
-                                
+
                                 <el-table-column prop="OU" label="组织机构">
                                 </el-table-column>
                                 <el-table-column prop="UserName" label="用户名">
@@ -286,7 +286,7 @@ export default {
                 RoleID: "",
                 RoleName: "",
                 MID: "",
-                MainName: "",
+                MainName:"",
                 Type: "",
                 AuthorityType: "",
                 RID: "",
@@ -300,8 +300,8 @@ export default {
                 AID: "",
                 RoleID: "",
                 RoleName: "",
-                MID: "",
-                MainName: null,
+                MID: null,
+                MainName: "",
                 Type: "",
                 AuthorityType: "",
                 RID: "",
@@ -311,7 +311,7 @@ export default {
             },
             //树形下拉选择框
             ResourceTree: {
-                ID: "",
+                ID: null,
                 PID: "",
                 Name: ""
             },
@@ -401,6 +401,17 @@ export default {
             return this.RoleUserOU;
         }
     },
+    watch: {
+        RoleUesrData: function (newval, oldval) {
+            var that = this;
+            if (newval != oldval) {
+                that.selectfirst(newval[0]);
+
+            }
+
+        }
+
+    },
 
     methods: {
         //资源目录树形网格
@@ -410,14 +421,22 @@ export default {
                 that.Resource = res.data; //先保存无树形结构的数据
                 var AllData = res.data;
 
-                let Rtree = AllData;
-                for (let i in Rtree) {
-                    if (Rtree[i].Type != "资源" || Rtree[i].Type != "附加资源") {
-                        Rtree.splice(i, 1)
+                // let Rtree = AllData;
+                // for (let i in Rtree) {
+                //     if (Rtree[i].Type != "资源" || Rtree[i].Type != "附加资源") {
+                //         Rtree.splice(i, 1)
+                //     }
+
+                // }
+                var Rtree2 = AllData;
+                var Rtree = [];
+                for (let i in Rtree2) {
+                    if (Rtree2[i].Type == "资源" || Rtree2[i].Type == "附加资源") {
+                        Rtree.push(Rtree2[i]);
                     }
 
                 }
-                // console.log(Rtree);
+                console.log(Rtree);
 
                 // 删除所有 children,以防止数据出现异常（看情况可删除）
                 AllData.forEach(function (item) {
@@ -605,7 +624,35 @@ export default {
         //角色用户--用户权限 联动
         RoleUesrlink(row, event) {
             //用户权限联动
-            //this.PersonnelAuthorityData = [];
+            this.PersonnelAuthorityData = [];
+            console.log(row);
+            this.$ajax.post('GetAllPersonnelAuthorityByUID',
+                    this.$qs.stringify({
+                        UserID: row.UserID
+                    }))
+                //返回成功调用
+                .then((res) => {
+                    console.log(res.data)
+                    this.PersonnelAuthorityData = res.data;
+                })
+                //返回失败调用
+                .catch((res) => {
+                    console.log("出错了")
+                });
+
+        },
+        //默认选中角色用户第一行数据
+
+        selectfirst: function (row) {
+            setTimeout(() => {
+                this.$refs.RoleUesrTable.setCurrentRow(row);
+            }, 10)
+        },
+
+        //选中第一行后重新请求数据
+        RoleUserCuChange(row) {
+            //用户权限联动
+            this.PersonnelAuthorityData = [];
             console.log(row);
             this.$ajax.post('GetAllPersonnelAuthorityByUID',
                     this.$qs.stringify({
@@ -656,9 +703,9 @@ export default {
         //角色用户确定
         RoleUserSubmit() {
             RoleUserSubmit1(this);
-            if(this.RoleUserSelection.length > 0){
+            if (this.RoleUserSelection.length > 0) {
                 this.$refs.roleuserdata.clearSelection(); //清空角色用户子表格多选  
-            }else if(this.RoleUserSelection1.length > 0){
+            } else if (this.RoleUserSelection1.length > 0) {
                 this.$refs.roleUser.clearSelection(); //清空角色用户父表格多选
             }
             //清空标识值
@@ -669,9 +716,9 @@ export default {
         //角色用户取消
         ColseRoleUser() {
             ColseRoleUser1(this);
-            if(this.RoleUserSelection.length > 0){
+            if (this.RoleUserSelection.length > 0) {
                 this.$refs.roleuserdata.clearSelection(); //清空角色用户子表格多选  
-            }else if(this.RoleUserSelection1.length > 0){
+            } else if (this.RoleUserSelection1.length > 0) {
                 this.$refs.roleUser.clearSelection(); //清空角色用户父表格多选
             }
             console.log(this.RoleUserSelection);
@@ -679,14 +726,14 @@ export default {
             this.symbol = "";
             //子表格多选框
             this.childSelect = true;
-                
+
         },
         //点击其他区域关闭角色用户弹窗
         RUClosedialog(done) {
             RUClosedialog1(done, this);
-            if(this.RoleUserSelection.length > 0){
+            if (this.RoleUserSelection.length > 0) {
                 this.$refs.roleuserdata.clearSelection(); //清空角色用户子表格多选  
-            }else if(this.RoleUserSelection1.length > 0){
+            } else if (this.RoleUserSelection1.length > 0) {
                 this.$refs.roleUser.clearSelection(); //清空角色用户父表格多选
             }
             //清空标识值
@@ -716,7 +763,7 @@ export default {
             if (this.symbol == "child") {
                 console.log("子搜索标识");
                 return;
-            }else {
+            } else {
                 if (!row.organizationdata) { //这里做了一个判断，首先判断这一行的数据对象有没有organizationdata这个属性，如果没说明没有数据我们需要请求后台，相当于懒加载
                     //this.organizationData(row.OU);
                     var OU = row.OU;
@@ -795,7 +842,6 @@ export default {
             self.$set(self.RoleUserOU[index], 'organizationdata', this.RoleuserRrganization);
             console.log(self.RoleUserOU);
 
-            
             for (var j = 0; j < self.RoleUserOU.length; j++) {
                 if (OU == self.RoleUserOU[j].OU) {
                     for (var k = 0; k < self.RoleUserOU[j].organizationdata.length; k++) {
@@ -832,22 +878,22 @@ export default {
             console.log(this.RoleUserSelection);
         },
         //角色用户父表格多选数据
-        fatherSelectionChange(val){
+        fatherSelectionChange(val) {
             this.FatherSelectionChange = val;
             console.log(this.FatherSelectionChange);
-            if(this.FatherSelectionChange.length == 0){
+            if (this.FatherSelectionChange.length == 0) {
                 this.childSelect = true;
             }
         },
         //角色用户父表格 手动多选触发事件
-        RUSelect(selection, row){
+        RUSelect(selection, row) {
             console.log("父表多选");
             console.log(selection);
             console.log(row);
 
             this.symbol = "fatherSelect";
             this.childSelect = false;
-            
+
             // if(selection.length == 0){
             //     //父表多选标识改变
             //     this.symbol = "";
@@ -855,56 +901,55 @@ export default {
             //父表多选后展开行置空
             //this.expands = [];
             var arr = [];
-            for(var i = 0;i < selection.length;i++){
-                    var OU = selection[i].OU;
-                    var self = this;
-                    
+            for (var i = 0; i < selection.length; i++) {
+                var OU = selection[i].OU;
+                var self = this;
 
-                    console.log("进入多选部门名称");
-                    console.log(OU);
+                console.log("进入多选部门名称");
+                console.log(OU);
 
-                    for (var j = 0; j < this.RoleUser.length; j++) {
-                        if (OU == this.RoleUser[j].OU) {
-                            arr.push(this.RoleUser[j]);
-                        }
+                for (var j = 0; j < this.RoleUser.length; j++) {
+                    if (OU == this.RoleUser[j].OU) {
+                        arr.push(this.RoleUser[j]);
                     }
-
-                    this.RoleuserRrganization = arr;
-                    console.log("父表多选组织数据");
-                    console.log(this.RoleuserRrganization);
-
-                    //const index = self.RoleUserOU.findIndex(data => data.OU === OU); 
-                    //self.$set(self.RoleUserOU[index], 'organizationdata', this.RoleuserRrganization);
-                    //添加展开行信息
-                    //this.expands.push(OU);
-                    
-                    // if(row){
-                    //     self.test = "1";
-                    //     console.log(self.$refs.roleuserdata);
-                    //    // self.$refs.roleuserdata.toggleAllSelection();
-                    // }
-                    //console.log("AAA");
-                    //console.log(self.RoleUserOU);
                 }
-                this.RoleUserSelection1 = arr;
+
+                this.RoleuserRrganization = arr;
+                console.log("父表多选组织数据");
+                console.log(this.RoleuserRrganization);
+
+                //const index = self.RoleUserOU.findIndex(data => data.OU === OU); 
+                //self.$set(self.RoleUserOU[index], 'organizationdata', this.RoleuserRrganization);
+                //添加展开行信息
+                //this.expands.push(OU);
+
+                // if(row){
+                //     self.test = "1";
+                //     console.log(self.$refs.roleuserdata);
+                //    // self.$refs.roleuserdata.toggleAllSelection();
+                // }
+                //console.log("AAA");
+                //console.log(self.RoleUserOU);
+            }
+            this.RoleUserSelection1 = arr;
 
         },
-        RUSelectAll(selection){
+        RUSelectAll(selection) {
             console.log(selection);
-            if(selection.length > 0){
+            if (selection.length > 0) {
                 this.childSelect = false;
-            }else{
+            } else {
                 this.childSelect = true;
             }
-            
-        },
 
+        },
 
         //新增其他权限时选择分类类型联动
         ChangeType(val) {
             if (val == '页面') {
                 this.oform.AuthorityType = '新增页面'
                 this.PagedisabledValue = true;
+                this.oform.MID= null;
             } else {
                 this.oform.AuthorityType = '新增本级'
                 this.PagedisabledValue = false;
@@ -926,10 +971,10 @@ export default {
         PermissionSubmit(state) {
             if (state == 'form') {
                 //提交窗体权限
-                PermissionsubmitForm(this,this.AuthorityType,this.multipleSelection);
-                if(this.multipleSelection.length > 0){
+                PermissionsubmitForm(this);
+                if (this.multipleSelection.length > 0) {
                     this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
-                }    
+                }
             } else {
                 //提交其他权限
                 OPermissionsubmitForm(this);
@@ -938,9 +983,9 @@ export default {
         //点击x关闭窗体权限模态框
         Closedialog(done) {
             Permissionclosedialog(done, this);
-            if(this.multipleSelection.length > 0){
+            if (this.multipleSelection.length > 0) {
                 this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
-            } 
+            }
         },
         //点击x关闭其他权限模态框
         OClosedialog(done) {
@@ -953,9 +998,9 @@ export default {
             if (state == 'form') {
                 //关闭窗体权限
                 Permissioncolse(this);
-                if(this.multipleSelection.length > 0){
+                if (this.multipleSelection.length > 0) {
                     this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
-                } 
+                }
             } else {
                 //关闭其他权限
                 OPermissioncolse(this);
@@ -972,6 +1017,7 @@ export default {
         //删除主体权限
         DeletePermission() {
             DeletePermissionByJs(this);
+            
         },
 
         //点击链接跳转到资源要素管理
@@ -980,7 +1026,6 @@ export default {
                 path: '/index'
             })
         },
-       
 
     }
 

@@ -15,10 +15,10 @@ export function PermissionhandleAdd(_this) {
 
 }
 //窗体权限点击确认
-export function PermissionsubmitForm(_this, a, b) {
+export function PermissionsubmitForm(_this) {
     var that = _this;
-    if (a.length != 0) {
-        if (b.length != 0) {
+    if (_this.AuthorityType != 0) {
+        if (_this.multipleSelection.length != 0) {
             var m = DataH(_this.AuthorityType, _this.multipleSelection, _this.Rolerow)
             var m1 = JSON.stringify(m)
                 //console.log(m1);
@@ -39,6 +39,8 @@ export function PermissionsubmitForm(_this, a, b) {
                     }
                     // _this.multipleSelection = [];
                     _this.dialogFormVisible = false;
+                    _this.RoleUserCuChange(_this.RoleUesrData[0]);
+
 
 
                 })
@@ -167,6 +169,7 @@ export function DeletePermissionByJs(_this) {
                         message: '删除成功!'
                     });
                     _this.$delete(_this.PermissionData, _this.Prow.row_index);
+                    _this.RoleUserCuChange(_this.RoleUesrData[0]);
                 })
                 //返回失败调用
                 .catch((res) => {
