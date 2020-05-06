@@ -926,7 +926,7 @@ export default {
         PermissionSubmit(state) {
             if (state == 'form') {
                 //提交窗体权限
-                PermissionsubmitForm(this);
+                PermissionsubmitForm(this,this.AuthorityType,this.multipleSelection);
                 if(this.multipleSelection.length > 0){
                     this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
                 }    
