@@ -1832,21 +1832,23 @@ export default {
 
         //权限页 角色用户树形数据
         RoleUserData() {
-            //测试数据源
-            this.$ajax.post("GetZLAllUser1")
-                .then((res) => {
-                    var arr = [];
-                    for(let i = 0;i < res.data.length;i++){
-                        for(let j = 0;j < res.data[i].children.length;j++){
-                            if(res.data[i].children[j].children == null){
-                                res.data[i].children[j].children = arr;
+            if(this.RoleUserTestData.length == 0){
+                //测试数据源
+                this.$ajax.post("GetZLAllUser1")
+                    .then((res) => {
+                        var arr = [];
+                        for(let i = 0;i < res.data.length;i++){
+                            for(let j = 0;j < res.data[i].children.length;j++){
+                                if(res.data[i].children[j].children == null){
+                                    res.data[i].children[j].children = arr;
+                                }
                             }
                         }
-                    }
-                    this.RoleUserTestData = res.data;
-                    console.log("角色用户树形数据");
-                    console.log(this.RoleUserTestData);
-                });
+                        this.RoleUserTestData = res.data;
+                        console.log("角色用户树形数据");
+                        console.log(this.RoleUserTestData);
+                    });
+            }
         },
         //角色用户数据加载完成提示
         RoleUserTestDataControl(){
@@ -1855,7 +1857,7 @@ export default {
                 showClose: true,
                 message: '角色用户数据加载完成',
                 type: 'success',
-                duration: 0
+                duration: 2000
                 });
                 //设置数据加载完成标识符
                 this.RUTreeDataSymbol = true;
