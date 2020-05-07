@@ -21,7 +21,7 @@
                         <el-button slot="reference" type="info" icon="el-icon-user-solid" class="g-permission" plain @click="Permission()">权限管理</el-button>
                     </el-popover>
                     <!-- <div class="g-permission" @click="Permission()">权限管理</div> -->
-                    <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick"  :default-sort = "{prop: 'Numbera',order: 'descending'}">
+                    <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" :row-style="changeRowColor" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick"  :default-sort = "{prop: 'Numbera',order: 'descending'}">
                         <el-table-column label="序号" prop="Numbera" align="center" sortable>
                         </el-table-column>
                         <el-table-column label="分类名称" prop="ClassifyName" align="center">
@@ -1812,6 +1812,14 @@ export default {
         //解决当element中input标签输入值不能正常输入
         changeMainName() {
             this.$forceUpdate();
+        },
+        //要素目录-定义指标个数大于0样式修改
+        changeRowColor({row,rowIndex}){
+            if(row.DYZBGS == 0){
+                return '' 
+            }else{
+                return {'color': '#409EFF'}
+            }
         },
     }
 }
