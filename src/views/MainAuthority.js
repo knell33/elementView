@@ -214,11 +214,13 @@ export function mainAuthorityDelete(_this) {
 export function getDetailname(_this, val) {
     let that = _this;
     if (val == "资源明细") {
+        that.aform.MID = that.detailID;
         that.aform.MainName = that.detailName;
         that.isMainName = true;
     } else if (val == "要素") {
         that.isMainName = false;
         that.aform.MainName = "";
+        that.aform.MID = "";
 
     }
 }

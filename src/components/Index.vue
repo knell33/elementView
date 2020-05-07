@@ -17,9 +17,11 @@
             <el-row>
                 <el-tabs v-model="activeName" type="card">
                     <div class="tabletitle g-element">要素目录</div>
-                    <el-button type="info" icon="el-icon-user-solid" class="g-permission" plain @click="Permission()">权限管理</el-button>
+                    <el-popover placement="top-start"  width="200" trigger="hover" content="点击链接跳转到权限管理界面">                        
+                        <el-button slot="reference" type="info" icon="el-icon-user-solid" class="g-permission" plain @click="Permission()">权限管理</el-button>
+                    </el-popover>
                     <!-- <div class="g-permission" @click="Permission()">权限管理</div> -->
-                    <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick"  :default-sort = "{prop: 'Numbera',order: 'descending'}">
+                    <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" :row-style="changeRowColor" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick"  :default-sort = "{prop: 'Numbera',order: 'descending'}">
                         <el-table-column label="序号" prop="Numbera" align="center" sortable>
                         </el-table-column>
                         <el-table-column label="分类名称" prop="ClassifyName" align="center">
@@ -194,7 +196,7 @@
                             <treeselect v-model="form.PID" placeholder="请选择或搜索" :options="ResourceTableData"/>
                         </el-form-item>
                         <el-form-item label="类型" prop="Type">
-                            <el-select v-model="form.Type" placeholder="请选择资源类型" style="width:100%">
+                            <el-select v-model="form.Type" placeholder="请选择资源类型" @change="relationResourceChange" style="width:100%">
                                 <el-option label="目录" value="目录"></el-option>
                                 <el-option label="资源" value="资源"></el-option>
                                 <el-option label="附加资源" value="附加资源"></el-option>
@@ -214,6 +216,13 @@
                         <el-form-item label="是否树形">
                             <el-switch v-model="form.TreeForm" :active-value="1" :inactive-value="0"></el-switch>
                         </el-form-item>
+                        <el-form-item label="关系资源" v-if="isRelationResource">
+                            <el-select v-model="form.RelationID" placeholder="请选择关系资源"  style="width: 100%">
+                                <el-option v-for="(item,index) in RelationResourceTableData" :label="item.Name" :value="item.ID" :key="index"></el-option>
+                            </el-select>
+                            <!-- <treeselect v-model="form.RelationID" placeholder="请选择关系资源" :options="ResourceTableData"></treeselect> -->
+                        </el-form-item>
+                        
                         <el-form-item label="备注">
                             <el-input type="textarea" v-model="form.Note"></el-input>
                         </el-form-item>
@@ -566,11 +575,15 @@ export default {
                 LastModify: "",
                 ShowName: "",
                 TreeForm: 0,
-                RelationID: "",
+                RelationID: null,
                 //统计指标 需要用到的数据
                 RID: "",
                 NormName: ""
             },
+            //关系资源字段
+            isRelationResource : false,
+            //关系资源下拉选择框
+            RelationResourceTableData: [],
             //资源目录修改时保存当前行的数据
             srow: [],
             //资源目录修改时保存当前行的ID
@@ -666,6 +679,7 @@ export default {
             MainAuthorityTableData: [],
             aform: {
                 RoleID: "",
+                MID: "",
                 MainName: "",
                 Type: "",
                 AuthorityType: [],
@@ -675,6 +689,7 @@ export default {
             RoleInfo: [],
             dialogFormVisibleMainAuthority: false,
             menuVisibleMainAuthority: false,
+            detailID: "",
             detailName: "",
             isMainName: true,
             //要素目录新增弹窗左对齐参数
@@ -691,7 +706,7 @@ export default {
     components: {
         Treeselect
     }, //注册组件
-    created: function () {
+    activated: function () {
         this.treeList();
         //权限页 角色用户 树形数据
         this.RoleUserData();
@@ -711,7 +726,7 @@ export default {
         //上级资源列表
         PList() {
             var obj = [];
-            axios.post("GetAllResources").then(function (res) {
+            this.$ajax.post("GetAllResources").then(function (res) {
                 var Pdata = res.data;
                 for (let i in Pdata) {
                     obj.push({
@@ -820,7 +835,6 @@ export default {
             var that = this;
             axios.post("GetAllResources").then(function (res) {
                 var AllData = res.data;
-
                 // 删除所有 children,以防止数据出现异常（看情况可删除）
                 AllData.forEach(function (item) {
                     delete item.children;
@@ -834,8 +848,13 @@ export default {
                 });
                 //console.log(map);
                 var treeData = [];
+                var relationResource = [];
+                var count = 0
                 AllData.forEach(function (item) {
                     //树形下拉框参数 item.label item.id
+                    if(item.Type == "资源" || item.Type == "附加资源"){
+                        relationResource.push(item);
+                    }
                     item.label = item.Name;
                     item.id = item.ID
                     // 以当前遍历项的pid,去map对象中找到索引的id
@@ -853,6 +872,7 @@ export default {
                 console.log("进入树形");
                 console.log(treeData);
                 that.ResourceTableData = treeData;
+                that.RelationResourceTableData = relationResource;
             });
         },
         //资源--要素--分类--统计指标 联动
@@ -941,6 +961,7 @@ export default {
             that.aform.DID = row.DID;
             that.aform.RID = row.RID;
             console.log(that.aform);
+            that.detailID = row.DID;
             that.detailName = row.DetailName;
             //角色权限
             this.$ajax.post('GetAllMainAuthorityByDetailID',
@@ -1481,6 +1502,16 @@ export default {
                     console.log("出错了")
                 });
         },
+        //根据资源目录类型决定是否显示资源关系字段
+        relationResourceChange(){
+            if(this.form.Type == "资源关系"){
+                this.isRelationResource = true;
+                console.log(this.form.Type == "资源关系");
+            }else{
+                this.isRelationResource = false;
+                console.log(this.form.Type == "资源关系");
+            }
+        },
         //根据要素类型改变单位、长度、选项类型、值域资源、编码目录字段禁用
         typeChange() {
             if (this.elform.Type != "数字") {
@@ -1835,6 +1866,14 @@ export default {
         changeMainName() {
             this.$forceUpdate();
         },
+        //要素目录-定义指标个数大于0样式修改
+        changeRowColor({row,rowIndex}){
+            if(row.DYZBGS == 0){
+                return '' 
+            }else{
+                return {'color': '#409EFF'}
+            }
+        },
     }
 }
 </script>
@@ -1922,6 +1961,16 @@ export default {
     /* background-color:#e4e5e3; */
     background-color:white !important;
     color: #3a87ad !important;
+}
+.el-dialog /deep/  {
+    position: relative;
+    margin: 0 auto 50px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.3);
+    box-shadow: 0 1px 3px rgba(0,0,0,.3);
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 50%;
 }
 
 

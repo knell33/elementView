@@ -39,6 +39,8 @@ export function PermissionsubmitForm(_this) {
                     }
                     // _this.multipleSelection = [];
                     _this.dialogFormVisible = false;
+                    _this.RoleUserCuChange(_this.RoleUesrData[0]);
+
 
 
                 })
@@ -114,6 +116,7 @@ export function OPermissionsubmitForm(_this) {
             that.PagedisabledValue = false;
             //that.$refs.oform.clearSelection(); //清空其他权限选择器
             that.OtherdialogFormVisible = false;
+            that.RoleUserCuChange(that.RoleUesrData[0]);
         })
         .catch(function(obj) {
             console.log("新增失败");
@@ -167,6 +170,7 @@ export function DeletePermissionByJs(_this) {
                         message: '删除成功!'
                     });
                     _this.$delete(_this.PermissionData, _this.Prow.row_index);
+                    _this.RoleUserCuChange(_this.RoleUesrData[0]);
                 })
                 //返回失败调用
                 .catch((res) => {

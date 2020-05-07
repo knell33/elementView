@@ -6,7 +6,6 @@
             <!-- 角色信息表格 -->
             <el-row>
                 <h3 class="tabletitle ttop">角色信息</h3>
-                <!-- <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick" @header-contextmenu="RoleRightClick"> -->
                 <el-table el-header :data="RoleData" height="420px" @row-click="Rolelink" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleRightClick">
                     <el-table-column label="角色名称" prop="Name" header-align="center" sortable>
                     </el-table-column>
@@ -17,6 +16,7 @@
                     <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" align="center" sortable>
                     </el-table-column>
                 </el-table>
+                <!-- <vxe-grid border resizable show-footer highlight-current-row ref="xGrid" :formatter="dateFormat" :footer-method="footerMethod" :columns="tableColumn" :data="RoleData" :context-menu="tableMenu" @cell-context-menu="cellContextMenuEvent" @context-menu-click="contextMenuClickEvent"></vxe-grid>-->
             </el-row>
             <!-- 角色权限表格 -->
             <el-row>
@@ -24,11 +24,11 @@
                 <el-table el-header :data="PermissionData" height="420px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="PermissionRightClick" :row-class-name="MainAuthoritytableRowClassName">
                     <el-table-column label="主体名称" prop="MainName" header-align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="类型" prop="Type" header-align="center" sortable>
+                    <el-table-column label="类型" prop="Type" align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="权限类型" prop="AuthorityType" header-align="center" sortable>
+                    <el-table-column label="权限类型" prop="AuthorityType" align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="最后修改人" prop="LastModify" header-align="center">
+                    <el-table-column label="最后修改人" prop="LastModify" align="center">
                     </el-table-column>
                     <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" align="center" sortable>
                     </el-table-column>
@@ -41,14 +41,15 @@
         <el-header>
             <!-- 角色用户表格 -->
             <el-row>
-                <div>
-                    <el-button type="info" icon="el-icon-setting" class="g-right" plain @click="ResourceElement()">资源要素管理</el-button>
-                </div>
+                <el-popover placement="top-start" width="210" trigger="hover" content="点击链接跳转到资源要素管理界面">
+                    <el-button slot="reference" type="info" icon="el-icon-setting" class="g-right" plain @click="ResourceElement()">
+                        资源要素管理</el-button>
+                </el-popover>
                 <h3 class="tabletitle ttop">用户信息</h3>
-                <el-table el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick">
-                    <el-table-column label="用户名" prop="UserName" header-align="center" sortable>
+                <el-table ref="RoleUesrTable" el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick" @current-change="RoleUserCuChange">
+                    <el-table-column label="用户名" prop="UserName" align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="最后修改人" prop="LastModify" header-align="center">
+                    <el-table-column label="最后修改人" prop="LastModify" align="center">
                     </el-table-column>
                     <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" align="center" sortable>
                     </el-table-column>
@@ -61,13 +62,13 @@
                 <el-table el-header :data="PersonnelAuthorityData" :row-class-name="PersonnelAuthoritytableRowClassName" height="420px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row>
                     <el-table-column label="主体名称" prop="MName" header-align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="类型" prop="Type" header-align="center">
+                    <el-table-column label="类型" prop="Type" align="center">
                     </el-table-column>
-                    <el-table-column label="权限类型" prop="AuthorityType" header-align="center">
+                    <el-table-column label="权限类型" prop="AuthorityType" align="center">
                     </el-table-column>
-                    <el-table-column label="最后修改人" prop="LastModify" header-align="center">
+                    <el-table-column label="最后修改人" prop="LastModify" align="center">
                     </el-table-column>
-                    <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" header-align="center" sortable>
+                    <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" halign="center" sortable>
                     </el-table-column>
                 </el-table>
             </el-row>
@@ -130,7 +131,7 @@
 
             <!-- 新增其他权限弹窗 -->
             <el-dialog :title="choosetitle" :visible.sync="OtherdialogFormVisible" :before-close="OClosedialog" width="30%">
-                <el-form ref="oform" :model="oform" status-icon label-width="80px" rules="Otherrules">
+                <el-form ref="oform" :model="oform" status-icon label-width="80px">
                     <el-form-item label="分类类型">
                         <el-select v-model="oform.Type" placeholder="请选择" @change="ChangeType">
                             <el-option label="页面" value="页面"></el-option>
@@ -147,7 +148,7 @@
                             <el-option v-for="(item,index) in PList" :key="index" :label="item.Name" :value="item.ID">
                             </el-option>
                         </el-select> -->
-                        <treeselect v-model="oform.MainName" placeholder="请选择或搜索" :options="ResourceTree" @input="ChangeMain" :disabled="PagedisabledValue"></treeselect>
+                        <treeselect v-model="oform.MID" placeholder="请选择或搜索" :options="ResourceTree" @input="ChangeMain" :disabled="PagedisabledValue"></treeselect>
                     </el-form-item>
 
                 </el-form>
@@ -296,7 +297,6 @@ import {
     OPermissioncolse,
     OPermissionclosedialog,
     DeletePermissionByJs,
-
     AddRoleuser1,
     RoleUserSubmit1,
     ColseRoleUser1,
@@ -378,8 +378,8 @@ export default {
                 AID: "",
                 RoleID: "",
                 RoleName: "",
-                MID: "",
-                MainName: null,
+                MID: null,
+                MainName: "",
                 Type: "",
                 AuthorityType: "",
                 RID: "",
@@ -389,7 +389,7 @@ export default {
             },
             //树形下拉选择框
             ResourceTree: {
-                ID: "",
+                ID: null,
                 PID: "",
                 Name: ""
             },
@@ -469,7 +469,8 @@ export default {
     components: {
         Treeselect,
     }, //注册组件
-    created: function () {
+
+    activated: function () {
         this.RoleAllData();
         this.treeList();
         this.RoleUserData();
@@ -486,6 +487,7 @@ export default {
             }
         })
     },
+
     computed: {
         //主体名称
         PList() {
@@ -571,6 +573,17 @@ export default {
         // },
 
     },
+    watch: {
+        RoleUesrData: function (newval, oldval) {
+            var that = this;
+            if (newval != oldval) {
+                that.selectfirst();
+
+            }
+
+        }
+
+    },
 
     methods: {
         //资源目录树形网格
@@ -580,14 +593,22 @@ export default {
                 that.Resource = res.data; //先保存无树形结构的数据
                 var AllData = res.data;
 
-                let Rtree = AllData;
-                for (let i in Rtree) {
-                    if (Rtree[i].Type != "资源" || Rtree[i].Type != "附加资源") {
-                        Rtree.splice(i, 1)
+                // let Rtree = AllData;
+                // for (let i in Rtree) {
+                //     if (Rtree[i].Type != "资源" || Rtree[i].Type != "附加资源") {
+                //         Rtree.splice(i, 1)
+                //     }
+
+                // }
+                var Rtree2 = AllData;
+                var Rtree = [];
+                for (let i in Rtree2) {
+                    if (Rtree2[i].Type == "资源" || Rtree2[i].Type == "附加资源") {
+                        Rtree.push(Rtree2[i]);
                     }
 
                 }
-                // console.log(Rtree);
+                console.log(Rtree);
 
                 // 删除所有 children,以防止数据出现异常（看情况可删除）
                 AllData.forEach(function (item) {
@@ -672,6 +693,16 @@ export default {
                 //返回成功调用
                 .then((res) => {
                     this.Resource = res.data;
+                });
+
+        },
+        RoleUserA() {
+            //中联人员
+            this.$ajax.post('GetZLAllUser1')
+                //返回成功调用
+                .then((res) => {
+                    this.RoleUserOU = res.data;
+                    console.log("完成！" + this.RoleUserOU);
                 });
         },
         //新增角色用户弹窗数据
@@ -759,6 +790,7 @@ export default {
                 });
 
             //角色用户联动
+
             this.$ajax.post('GetAllRoleUserByRID',
                     this.$qs.stringify({
                         RID: row.ID
@@ -775,7 +807,6 @@ export default {
         //角色用户--用户权限 联动
         RoleUesrlink(row, event) {
             //用户权限联动
-            //this.PersonnelAuthorityData = [];
             console.log(row);
             this.$ajax.post('GetAllPersonnelAuthorityByUID',
                     this.$qs.stringify({
@@ -790,6 +821,36 @@ export default {
                 .catch((res) => {
                     console.log("出错了")
                 });
+
+        },
+        //默认选中角色用户第一行数据
+
+        selectfirst: function () {
+            setTimeout(() => {
+                this.$refs.RoleUesrTable.setCurrentRow(this.RoleUesrData[0]);
+            }, 10)
+        },
+
+        //选中第一行后重新请求数据
+        RoleUserCuChange(currentRow, oldCurrentRow) {
+            //用户权限联动
+            if (currentRow != null) {
+                this.$ajax.post('GetAllPersonnelAuthorityByUID',
+                        this.$qs.stringify({
+                            UserID: currentRow.UserID
+                        }))
+                    //返回成功调用
+                    .then((res) => {
+                        console.log(res.data)
+                        this.PersonnelAuthorityData = res.data;
+                    })
+                    //返回失败调用
+                    .catch((res) => {
+                        console.log("出错了")
+                    });
+            } else {
+                this.PersonnelAuthorityData = [];
+            }
 
         },
 

@@ -13,7 +13,10 @@ const routes = [{
     {
         path: '/index',
         // name: 'login',
-        component: Index
+        component: Index,
+        meta: {
+            keepAlive: true // 需要缓存
+          }
     },
     {
         path: '/va',
@@ -23,7 +26,10 @@ const routes = [{
         path: '/permission',
         //name: 'Permission',
         component: () =>
-            import ('@/components/Permission')
+            import('@/components/Permission'),
+        meta: {
+            keepAlive: true // 需要缓存
+        }
     }
     //
     // {
