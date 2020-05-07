@@ -679,6 +679,11 @@ export default {
             isMainName: true,
             //要素目录新增弹窗左对齐参数
             positiona: 'left',
+
+            //权限页 角色用户 树形数据
+            RoleUserTestData: [],
+            //设置树形数据加载完成标识符
+            RUTreeDataSymbol: false,
             
         };
 
@@ -688,6 +693,19 @@ export default {
     }, //注册组件
     created: function () {
         this.treeList();
+        //权限页 角色用户 树形数据
+        this.RoleUserData();
+        //角色用户数据加载完成提示
+       var tips = setInterval(() => {
+           this.RoleUserTestDataControl();
+       },1000);
+
+       setInterval(() => {
+           if(this.RUTreeDataSymbol){
+               clearInterval(tips);
+           }
+       },1000);
+       
     },
     computed: {
         //上级资源列表
@@ -1772,10 +1790,45 @@ export default {
         RolechangeName(val) {
             getDetailname(this, val);
         },
+
+        //权限页 角色用户树形数据
+        RoleUserData() {
+            //测试数据源
+            this.$ajax.post("GetZLAllUser1")
+                .then((res) => {
+                    var arr = [];
+                    for(let i = 0;i < res.data.length;i++){
+                        for(let j = 0;j < res.data[i].children.length;j++){
+                            if(res.data[i].children[j].children == null){
+                                res.data[i].children[j].children = arr;
+                            }
+                        }
+                    }
+                    this.RoleUserTestData = res.data;
+                    console.log("角色用户树形数据");
+                    console.log(this.RoleUserTestData);
+                });
+        },
+        //角色用户数据加载完成提示
+        RoleUserTestDataControl(){
+            if(this.RoleUserTestData.length > 0){
+                this.$message({
+                showClose: true,
+                message: '角色用户数据加载完成',
+                type: 'success',
+                duration: 0
+                });
+                //设置数据加载完成标识符
+                this.RUTreeDataSymbol = true;
+            }
+        },
         //权限管理跳转页面
         Permission() {
             this.$router.push({
-                path: '/Permission'
+                path: '/permission',
+                query:{
+                    RoleUserTestData: this.RoleUserTestData
+                }
             })
         },
         //解决当element中input标签输入值不能正常输入

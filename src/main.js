@@ -12,6 +12,17 @@ import axios from 'axios';
 //qs处理ajaxJSON参数
 import qs from 'qs';
 
+//vxe-table引入
+import 'xe-utils';
+import VXETable from 'vxe-table';
+import 'vxe-table/lib/index.css'
+import XEUtils from 'xe-utils'
+//import VXEUtils from 'vxe-utils'
+Vue.use(VXETable, XEUtils);
+// 给 vue 实例挂载全局窗口对象
+Vue.prototype.$XModal = VXETable.modal;
+
+
 Vue.config.productionTip = false
 
 // new Vue({

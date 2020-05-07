@@ -15,10 +15,10 @@ export function PermissionhandleAdd(_this) {
 
 }
 //窗体权限点击确认
-export function PermissionsubmitForm(_this, a, b) {
+export function PermissionsubmitForm(_this) {
     var that = _this;
-    if (a.length != 0) {
-        if (b.length != 0) {
+    if (_this.AuthorityType.length != 0) {
+        if (_this.multipleSelection.length != 0) {
             var m = DataH(_this.AuthorityType, _this.multipleSelection, _this.Rolerow)
             var m1 = JSON.stringify(m)
                 //console.log(m1);
@@ -190,6 +190,27 @@ export function AddRoleuser1(_this) {
     //console.log(this.srow);
     // _this.form.RoleID = _this.RoleIDvue; //将角色表格当前行的ID传给RoleID
 }
+//新增角色用户测试
+export function AddRoleuserTest1(_this) {
+    _this.choosetitle = "新增角色用户测试";
+    _this.RoleUserdialogFormVisibleTest = true;
+    //console.log(this.srow);
+    // _this.form.RoleID = _this.RoleIDvue; //将角色表格当前行的ID传给RoleID
+}
+//新增角色用户测试1
+export function AddRoleuserTest11(_this) {
+    _this.choosetitle = "新增角色用户";
+    _this.RoleUserdialogFormVisibleTest1 = true;
+    if (_this.RoleUserTestData[0].UserName == null) {
+        _this.$message({
+            showClose: true,
+            message: '请从资源要素管理页重新加载用户数据',
+            type: 'error',
+            duration: 0
+        });
+    }
+}
+
 //角色用户确认
 export function RoleUserSubmit1(_this) {
     var that = _this;
@@ -266,6 +287,100 @@ export function RoleUserSubmit1(_this) {
     }
 }
 
+//测试确认
+export function RoleUserSubmitTest1(_this) {
+
+}
+//测试确认1
+export function RoleUserSubmitTest11(_this) {
+    var that = _this;
+    console.log("进入测试1确认");
+    //确认数据源设置
+    var arr = [];
+    for (let i = 0; i < _this.RoleUserTest1Selection.length; i++) {
+        if (_this.RoleUserTest1Selection[i].children.length == 0) {
+            arr.push(_this.RoleUserTest1Selection[i]);
+        }
+    }
+    var m = DataRoleUser(arr, _this.RoleIDvue);
+    var m1 = JSON.stringify(m);
+
+    console.log(m1);
+    console.log(arr);
+    console.log(_this.RoleIDvue);
+    if (_this.RoleIDvue == "") {
+        that.$message({
+            type: 'warning',
+            message: '请选择角色!'
+        });
+    } else {
+        that.$ajax.post('CreateRoleUser',
+                that.$qs.stringify({
+                    roleUesrJson: m1
+                }))
+            //返回成功调用
+            .then(function(obj) {
+                that.$message({
+                    type: 'success',
+                    message: '新增成功',
+                    duration: 4000,
+                    offset: 40
+                });
+                // for (let i in m) {
+                //     _this.RoleUesrData.push(m[i]);
+                // }
+
+                that.$ajax.post('GetAllRoleUserByRID',
+                        that.$qs.stringify({
+                            RID: that.RoleIDvue
+                        }))
+                    //返回成功调用
+                    .then((res) => {
+                        console.log(res.data)
+                        that.RoleUesrData = res.data;
+                    })
+
+                //清空原始数据源
+                _this.RoleUserTest1Selection = [];
+                //清空重复搜索数据源
+                _this.RoleUserTest1RepeatSelection = [];
+                //清空搜索框
+                _this.vxeFilterName = "";
+                //重置搜索数据源
+                _this.RUvxeSelectData = _this.RoleUserTestData;
+                //清空测试1页面多选框
+                _this.$refs.RoleUservxeTree.clearCheckboxRow();
+                //关闭测试1所有展开节点
+                _this.$refs.RoleUservxeTree.clearTreeExpand();
+                //关闭弹窗
+                _this.RoleUserdialogFormVisibleTest1 = false;
+
+            })
+            .catch(function(obj) {
+                that.$message({
+                    type: 'warning',
+                    message: '新增失败',
+                    duration: 4000,
+                    offset: 40
+                });
+                //清空原始数据源
+                _this.RoleUserTest1Selection = [];
+                //清空重复搜索数据源
+                _this.RoleUserTest1RepeatSelection = [];
+                //清空搜索框
+                _this.vxeFilterName = "";
+                //重置搜索数据源
+                _this.RUvxeSelectData = _this.RoleUserTestData;
+                //清空测试1页面多选框
+                _this.$refs.RoleUservxeTree.clearCheckboxRow();
+                //关闭测试1所有展开节点
+                _this.$refs.RoleUservxeTree.clearTreeExpand();
+                //关闭弹窗
+                _this.RoleUserdialogFormVisibleTest1 = false;
+            })
+    }
+}
+
 //点击取消关闭并清空角色用户弹窗
 export function ColseRoleUser1(_this) {
     _this.RoleUserSelection = []; //清空角色用户子表格选择器
@@ -279,6 +394,29 @@ export function ColseRoleUser1(_this) {
     //角色用户初始页面值展示重置
     _this.RoleUserOU = _this.RoleUserOUA;
     _this.RoleUserdialogFormVisible = false;
+}
+
+//测试取消
+export function ColseRoleUserTest1(_this) {
+    _this.RoleUserSelection = []; //清空角色用户子表格选择器
+    _this.RoleUserSelection1 = []; //清空角色用户父表格选择器
+    //角色用户父搜索框重置
+    _this.searchTest = "";
+    //角色用户子搜索框重置
+    _this.searchTest1 = "";
+    //角色用户默认展开行重置
+    _this.expands = [];
+    //角色用户初始页面值展示重置
+    _this.RoleUserOU = _this.RoleUserOUA;
+    _this.RoleUserdialogFormVisibleTest = false;
+}
+//测试取消1
+export function ColseRoleUserTest11(_this) {
+    _this.RoleUserdialogFormVisibleTest1 = false;
+    //清空搜索框
+    _this.vxeFilterName = "";
+    //重置搜索数据源
+    _this.RUvxeSelectData = _this.RoleUserTestData;
 }
 
 //点击X关闭角色用户弹窗
@@ -297,6 +435,30 @@ export function RUClosedialog1(done, _this) {
     //_this.RoleUserSelection = []; //清空选择器
     _this.RoleUserdialogFormVisible = false;
 }
+//点击X关闭角色用户弹窗测试
+export function RUClosedialogTest1(done, _this) {
+    done();
+    //角色用户父搜索框重置
+    _this.searchTest = "";
+    //角色用户子搜索框重置
+    _this.searchTest1 = "";
+    //角色用户默认展开行重置
+    _this.expands = [];
+    //角色用户初始页面值展示重置
+    _this.RoleUserOU = _this.RoleUserOUA;
+    //_this.RoleUserSelection = []; //清空选择器
+    _this.RoleUserdialogFormVisibleTest = false;
+}
+//点击X关闭角色用户弹窗测试1
+export function RUClosedialogTest11(done, _this) {
+    done();
+    _this.RoleUserdialogFormVisibleTest1 = false;
+    //清空搜索框
+    _this.vxeFilterName = "";
+    //重置搜索数据源
+    _this.RUvxeSelectData = _this.RoleUserTestData;
+}
+
 //右键删除角色用户
 export function DeleteRoleUser1(_this) {
     _this.$confirm('是否要删除当前用户？', '提示', {
