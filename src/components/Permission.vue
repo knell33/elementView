@@ -24,11 +24,11 @@
                 <el-table el-header :data="PermissionData" height="420px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="PermissionRightClick" :row-class-name="MainAuthoritytableRowClassName">
                     <el-table-column label="主体名称" prop="MainName" header-align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="类型" prop="Type" header-align="center" sortable>
+                    <el-table-column label="类型" prop="Type" align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="权限类型" prop="AuthorityType" header-align="center" sortable>
+                    <el-table-column label="权限类型" prop="AuthorityType" align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="最后修改人" prop="LastModify" header-align="center">
+                    <el-table-column label="最后修改人" prop="LastModify" align="center">
                     </el-table-column>
                     <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" align="center" sortable>
                     </el-table-column>
@@ -47,9 +47,9 @@
                 </el-popover>
                 <h3 class="tabletitle ttop">用户信息</h3>
                 <el-table ref="RoleUesrTable" el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick" @current-change="RoleUserCuChange">
-                    <el-table-column label="用户名" prop="UserName" header-align="center" sortable>
+                    <el-table-column label="用户名" prop="UserName" align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="最后修改人" prop="LastModify" header-align="center">
+                    <el-table-column label="最后修改人" prop="LastModify" align="center">
                     </el-table-column>
                     <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" align="center" sortable>
                     </el-table-column>
@@ -62,13 +62,13 @@
                 <el-table el-header :data="PersonnelAuthorityData" :row-class-name="PersonnelAuthoritytableRowClassName" height="420px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row>
                     <el-table-column label="主体名称" prop="MName" header-align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="类型" prop="Type" header-align="center">
+                    <el-table-column label="类型" prop="Type" align="center">
                     </el-table-column>
-                    <el-table-column label="权限类型" prop="AuthorityType" header-align="center">
+                    <el-table-column label="权限类型" prop="AuthorityType" align="center">
                     </el-table-column>
-                    <el-table-column label="最后修改人" prop="LastModify" header-align="center">
+                    <el-table-column label="最后修改人" prop="LastModify" align="center">
                     </el-table-column>
-                    <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" header-align="center" sortable>
+                    <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" halign="center" sortable>
                     </el-table-column>
                 </el-table>
             </el-row>
