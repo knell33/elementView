@@ -24,11 +24,11 @@
                 <el-table el-header :data="PermissionData" height="420px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="PermissionRightClick" :row-class-name="MainAuthoritytableRowClassName">
                     <el-table-column label="主体名称" prop="MainName" header-align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="类型" prop="Type" header-align="center" sortable>
+                    <el-table-column label="类型" prop="Type" align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="权限类型" prop="AuthorityType" header-align="center" sortable>
+                    <el-table-column label="权限类型" prop="AuthorityType" align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="最后修改人" prop="LastModify" header-align="center">
+                    <el-table-column label="最后修改人" prop="LastModify" align="center">
                     </el-table-column>
                     <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" align="center" sortable>
                     </el-table-column>
@@ -47,9 +47,9 @@
                 </el-popover>
                 <h3 class="tabletitle ttop">用户信息</h3>
                 <el-table ref="RoleUesrTable" el-header :data="RoleUesrData" height="420px" @row-click="RoleUesrlink" :row-class-name="RoleUsertableRowClassName" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @row-contextmenu="RoleUserRightClick" @header-contextmenu="RoleUserheaderRightClick" @current-change="RoleUserCuChange">
-                    <el-table-column label="用户名" prop="UserName" header-align="center" sortable>
+                    <el-table-column label="用户名" prop="UserName" align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="最后修改人" prop="LastModify" header-align="center">
+                    <el-table-column label="最后修改人" prop="LastModify" align="center">
                     </el-table-column>
                     <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" align="center" sortable>
                     </el-table-column>
@@ -62,13 +62,13 @@
                 <el-table el-header :data="PersonnelAuthorityData" :row-class-name="PersonnelAuthoritytableRowClassName" height="420px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row>
                     <el-table-column label="主体名称" prop="MName" header-align="center" sortable>
                     </el-table-column>
-                    <el-table-column label="类型" prop="Type" header-align="center">
+                    <el-table-column label="类型" prop="Type" align="center">
                     </el-table-column>
-                    <el-table-column label="权限类型" prop="AuthorityType" header-align="center">
+                    <el-table-column label="权限类型" prop="AuthorityType" align="center">
                     </el-table-column>
-                    <el-table-column label="最后修改人" prop="LastModify" header-align="center">
+                    <el-table-column label="最后修改人" prop="LastModify" align="center">
                     </el-table-column>
-                    <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" header-align="center" sortable>
+                    <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" width="165px" halign="center" sortable>
                     </el-table-column>
                 </el-table>
             </el-row>
@@ -213,6 +213,8 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import axios from 'axios';
 import * as fecha from "element-ui/lib/utils/date";
+import XEUtils from 'xe-utils'
+import VXEUtils from 'vxe-utils'
 import {
     rightRole,
     rightPermission,
@@ -229,7 +231,6 @@ import {
     OPermissioncolse,
     OPermissionclosedialog,
     DeletePermissionByJs,
-
     AddRoleuser1,
     RoleUserSubmit1,
     ColseRoleUser1,
@@ -286,7 +287,7 @@ export default {
                 RoleID: "",
                 RoleName: "",
                 MID: "",
-                MainName:"",
+                MainName: "",
                 Type: "",
                 AuthorityType: "",
                 RID: "",
@@ -354,17 +355,20 @@ export default {
             //角色用户子表格默认是否创建多选框
             childSelect: true,
             PagedisabledValue: true,
+
         }
     },
     components: {
         Treeselect
     }, //注册组件
+
     activated: function () {
         this.RoleAllData();
         this.treeList();
         this.RoleUserData();
-
+        
     },
+
     computed: {
         //主体名称
         PList() {
@@ -405,7 +409,7 @@ export default {
         RoleUesrData: function (newval, oldval) {
             var that = this;
             if (newval != oldval) {
-                that.selectfirst(newval[0]);
+                that.selectfirst();
 
             }
 
@@ -522,6 +526,16 @@ export default {
                 .then((res) => {
                     this.Resource = res.data;
                 });
+
+        },
+        RoleUserA() {
+            //中联人员
+            this.$ajax.post('GetZLAllUser1')
+                //返回成功调用
+                .then((res) => {
+                    this.RoleUserOU = res.data;
+                    console.log("完成！" + this.RoleUserOU);
+                });
         },
         //新增角色用户弹窗数据
         RoleUserData() {
@@ -608,6 +622,7 @@ export default {
                 });
 
             //角色用户联动
+
             this.$ajax.post('GetAllRoleUserByRID',
                     this.$qs.stringify({
                         RID: row.ID
@@ -624,7 +639,6 @@ export default {
         //角色用户--用户权限 联动
         RoleUesrlink(row, event) {
             //用户权限联动
-            this.PersonnelAuthorityData = [];
             console.log(row);
             this.$ajax.post('GetAllPersonnelAuthorityByUID',
                     this.$qs.stringify({
@@ -643,30 +657,32 @@ export default {
         },
         //默认选中角色用户第一行数据
 
-        selectfirst: function (row) {
+        selectfirst: function () {
             setTimeout(() => {
-                this.$refs.RoleUesrTable.setCurrentRow(row);
+                this.$refs.RoleUesrTable.setCurrentRow(this.RoleUesrData[0]);
             }, 10)
         },
 
         //选中第一行后重新请求数据
-        RoleUserCuChange(row) {
+        RoleUserCuChange(currentRow, oldCurrentRow) {
             //用户权限联动
-            this.PersonnelAuthorityData = [];
-            console.log(row);
-            this.$ajax.post('GetAllPersonnelAuthorityByUID',
-                    this.$qs.stringify({
-                        UserID: row.UserID
-                    }))
-                //返回成功调用
-                .then((res) => {
-                    console.log(res.data)
-                    this.PersonnelAuthorityData = res.data;
-                })
-                //返回失败调用
-                .catch((res) => {
-                    console.log("出错了")
-                });
+            if (currentRow != null) {
+                this.$ajax.post('GetAllPersonnelAuthorityByUID',
+                        this.$qs.stringify({
+                            UserID: currentRow.UserID
+                        }))
+                    //返回成功调用
+                    .then((res) => {
+                        console.log(res.data)
+                        this.PersonnelAuthorityData = res.data;
+                    })
+                    //返回失败调用
+                    .catch((res) => {
+                        console.log("出错了")
+                    });
+            } else {
+                this.PersonnelAuthorityData = [];
+            }
 
         },
 
@@ -949,7 +965,7 @@ export default {
             if (val == '页面') {
                 this.oform.AuthorityType = '新增页面'
                 this.PagedisabledValue = true;
-                this.oform.MID= null;
+                this.oform.MID = null;
             } else {
                 this.oform.AuthorityType = '新增本级'
                 this.PagedisabledValue = false;
@@ -1017,7 +1033,7 @@ export default {
         //删除主体权限
         DeletePermission() {
             DeletePermissionByJs(this);
-            
+
         },
 
         //点击链接跳转到资源要素管理
@@ -1026,7 +1042,7 @@ export default {
                 path: '/index'
             })
         },
-
+        
     }
 
 }

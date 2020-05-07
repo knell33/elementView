@@ -708,7 +708,7 @@ export default {
         //上级资源列表
         PList() {
             var obj = [];
-            axios.post("GetAllResources").then(function (res) {
+            this.$ajax.post("GetAllResources").then(function (res) {
                 var Pdata = res.data;
                 for (let i in Pdata) {
                     obj.push({

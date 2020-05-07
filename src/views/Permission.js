@@ -116,6 +116,7 @@ export function OPermissionsubmitForm(_this) {
             that.PagedisabledValue = false;
             //that.$refs.oform.clearSelection(); //清空其他权限选择器
             that.OtherdialogFormVisible = false;
+            that.RoleUserCuChange(that.RoleUesrData[0]);
         })
         .catch(function(obj) {
             console.log("新增失败");

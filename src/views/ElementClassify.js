@@ -51,68 +51,88 @@ export function ClassifysubmitForm(_this) {
     var that = _this;
     that.cform.LastDate = NowDate();
     if (that.mark == 1) {
-        //console.log("cform:"+that.cform);
-        that.$ajax.post("CreateElementClassify", that.cform)
-            .then(function(obj) {
-                that.$message({
-                    type: 'success',
-                    message: '新增成功',
-                    duration: 4000,
-                    offset: 40
-                });
-                //that.ElementClassifyTableData.push(that.cform);
-                //局部刷新-要素分类
-                that.$ajax.post('GetAllElementClassifyByRID',
+        if (_this.cform.Name != "") {
+            //console.log("cform:"+that.cform);
+            that.$ajax.post("CreateElementClassify", that.cform)
+                .then(function (obj) {
+                    that.$message({
+                        type: 'success',
+                        message: '新增成功',
+                        duration: 4000,
+                        offset: 40
+                    });
+                    //that.ElementClassifyTableData.push(that.cform);
+                    //局部刷新-要素分类
+                    that.$ajax.post('GetAllElementClassifyByRID',
                         that.$qs.stringify({
                             RID: that.cform.RID
                         }))
-                    .then(function(res) {
-                        that.ElementClassifyTableData = res.data;
-                    })
-                    .catch();
-                that.ClassifydialogFormVisible = false;
-                that.cform = {};
-                that.cmark = null;
+                        .then(function (res) {
+                            that.ElementClassifyTableData = res.data;
+                        })
+                        .catch();
+                    that.ClassifydialogFormVisible = false;
+                    that.cform = {};
+                    that.cmark = null;
 
-            })
-            .catch(function(obj) {
-                console.log("新增失败");
-                that.$message({
-                    type: 'warning',
-                    message: '出现未知错误！',
-                    duration: 4000,
-                    offset: 40
-                });
-            })
+                })
+                .catch(function (obj) {
+                    console.log("新增失败");
+                    that.$message({
+                        type: 'warning',
+                        message: '出现未知错误！',
+                        duration: 4000,
+                        offset: 40
+                    });
+                })
+        }
+        else {
+            that.$message({
+                type: 'warning',
+                message: '名称不能为空!',
+                duration: 4000,
+                offset: 40
+            });
+        }
     } else {
         //console.log("进入修改");
-        that.$ajax.put('PutElementClassifyByID', that.cform)
-            //返回成功调用
-            .then((res) => {
-                that.$message({
-                    type: 'success',
-                    message: '修改成功！',
-                    duration: 4000,
-                    offset: 40
-                });
-                console.log(_this.crow.LastDate);
-                //_this.crow.LastDate = NowDate();
-                that.$set(that.ElementClassifyTableData, _this.crow.row_index, _this.crow); //替换要素分类表格中的数据
-                that.ClassifydialogFormVisible = false;
-                that.cform = {};
-                that.mark = null;
+        if (_this.cform.Name != "") {
+            that.$ajax.put('PutElementClassifyByID', that.cform)
+                //返回成功调用
+                .then((res) => {
+                    that.$message({
+                        type: 'success',
+                        message: '修改成功！',
+                        duration: 4000,
+                        offset: 40
+                    });
+                    console.log(_this.crow.LastDate);
+                    //_this.crow.LastDate = NowDate();
+                    that.$set(that.ElementClassifyTableData, _this.crow.row_index, _this.crow); //替换要素分类表格中的数据
+                    that.ClassifydialogFormVisible = false;
+                    that.cform = {};
+                    that.mark = null;
 
 
-            })
-            //返回失败调用
-            .catch((res) => {
-                that.$message({
-                    type: 'warning',
-                    message: '修改失败！',
-                    duration: 4000,
-                    offset: 40
+                })
+                //返回失败调用
+                .catch((res) => {
+                    that.$message({
+                        type: 'warning',
+                        message: '修改失败！',
+                        duration: 4000,
+                        offset: 40
+                    });
                 });
+        }
+        else {
+            that.$message({
+                type: 'warning',
+                message: '名称不能为空!',
+                duration: 4000,
+                offset: 40
             });
+        }
     }
 }
 

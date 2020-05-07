@@ -12,7 +12,8 @@ import axios from 'axios';
 //qs处理ajaxJSON参数
 import qs from 'qs';
 
-import 'xe-utils'
+import XEUtils from 'xe-utils'
+import VXEUtils from 'vxe-utils'
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/index.css'
 
