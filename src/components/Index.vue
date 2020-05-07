@@ -17,11 +17,11 @@
             <el-row>
                 <el-tabs v-model="activeName" type="card">
                     <div class="tabletitle g-element">要素目录</div>
-                    <el-popover placement="top-start"  width="200" trigger="hover" content="点击链接跳转到权限管理界面">                        
+                    <el-popover placement="top-start" width="200" trigger="hover" content="点击链接跳转到权限管理界面">
                         <el-button slot="reference" type="info" icon="el-icon-user-solid" class="g-permission" plain @click="Permission()">权限管理</el-button>
                     </el-popover>
                     <!-- <div class="g-permission" @click="Permission()">权限管理</div> -->
-                    <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" :row-style="changeRowColor" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick"  :default-sort = "{prop: 'Numbera',order: 'descending'}">
+                    <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" :row-style="changeRowColor" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick" @header-contextmenu="elrightHeaderClick" :default-sort="{prop: 'Numbera',order: 'descending'}">
                         <el-table-column label="序号" prop="Numbera" align="center" sortable>
                         </el-table-column>
                         <el-table-column label="分类名称" prop="ClassifyName" align="center">
@@ -45,7 +45,7 @@
                         <el-table-column label="选项" prop="OptionType" align="center">
                         </el-table-column>
                         <el-table-column label="备注" prop="Note" align="center">
-                        </el-table-column>                      
+                        </el-table-column>
                         <el-table-column label="最后修改人" prop="LastModify" align="center">
                         </el-table-column>
                         <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" min-width="165px" align="center" sortable>
@@ -57,7 +57,7 @@
             <el-row class="elcochoose">
                 <el-tabs v-model="activeName" type="card">
                     <el-tab-pane label="要素分类" name="first">
-                        <!-- 要素分类表格 -->                       
+                        <!-- 要素分类表格 -->
                         <el-table :data="ElementClassifyTableData" height="440px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @current-change="ElementClassifyTableChange" :row-class-name="ElementClassifytableRowClassName" @row-contextmenu="ElementClassifyRightClick" @header-contextmenu="ElementClassifyheaderRightClick">
                             <el-table-column label="分类名称" prop="Name" align="center" sortable>
                             </el-table-column>
@@ -119,7 +119,7 @@
                             <el-table-column label="最后修改时间" prop="LastDate" :formatter="dateFormat" align="center" sortable>
                             </el-table-column>
                         </el-table>
-                        <!-- 角色权限 -->                    
+                        <!-- 角色权限 -->
                         <el-table :data="MainAuthorityTableData" @row-contextmenu="rightClickMainAuthority" @header-contextmenu="rightClicheaderkMainAuthority" height="190px" :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row @current-change="MainAuthorityTableChange" :row-class-name="MainAuthoritytableRowClassName">
                             <el-table-column label="角色名称" prop="RoleName" align="center" sortable>
                             </el-table-column>
@@ -193,7 +193,7 @@
                             <!-- <el-select v-model="form.PID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择上级" style="width:100%">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select> -->
-                            <treeselect v-model="form.PID" placeholder="请选择或搜索" :options="ResourceTableData"/>
+                            <treeselect v-model="form.PID" placeholder="请选择或搜索" :options="ResourceTableData" />
                         </el-form-item>
                         <el-form-item label="类型" prop="Type">
                             <el-select v-model="form.Type" placeholder="请选择资源类型" @change="relationResourceChange" style="width:100%">
@@ -217,12 +217,12 @@
                             <el-switch v-model="form.TreeForm" :active-value="1" :inactive-value="0"></el-switch>
                         </el-form-item>
                         <el-form-item label="关系资源" v-if="isRelationResource">
-                            <el-select v-model="form.RelationID" placeholder="请选择关系资源"  style="width: 100%">
+                            <el-select v-model="form.RelationID" placeholder="请选择关系资源" style="width: 100%">
                                 <el-option v-for="(item,index) in RelationResourceTableData" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select>
                             <!-- <treeselect v-model="form.RelationID" placeholder="请选择关系资源" :options="ResourceTableData"></treeselect> -->
                         </el-form-item>
-                        
+
                         <el-form-item label="备注">
                             <el-input type="textarea" v-model="form.Note"></el-input>
                         </el-form-item>
@@ -235,14 +235,14 @@
                 <!-- 要素目录新增、修改弹窗 -->
                 <el-dialog :title="elchoosetitle" :visible.sync="eldialogFormVisible" :before-close="closedrawer" width="42.5%">
                     <el-form ref="elform" :label-position="position" :model="elform" status-icon label-width="150px" :inline="true">
-                        <el-form-item label="序号" >
+                        <el-form-item label="序号">
                             <el-input v-model="elform.Numbera" :disabled="true"></el-input>
                         </el-form-item>
-                        <el-form-item label="资源"  style="margin-left:20px" clearable>
+                        <el-form-item label="资源" style="margin-left:20px" clearable>
                             <!-- <el-select v-model="elform.RID" filterable :filter-method="datafilter" :default-first-option="true" placeholder="请选择资源" @change="resourceChange">
                                 <el-option v-for="(item,index) in PList" :label="item.Name" :value="item.ID" :key="index"></el-option>
                             </el-select> -->
-                            <treeselect v-model="elform.RID" placeholder="请选择资源" :options="ResourceTableData" @change="resourceChange" style="width:215px"/>
+                            <treeselect v-model="elform.RID" placeholder="请选择资源" :options="ResourceTableData" @change="resourceChange" style="width:215px" />
                         </el-form-item>
                         <el-form-item label="要素名称">
                             <el-input v-model="elform.Name"></el-input>
@@ -339,7 +339,7 @@
                     </el-form>
                     <span slot="footer" class="dialog-footer">
                         <el-button type="primary" @click="ElementClassify
-                        
+
                         ('submit')">确 定</el-button>
                         <el-button @click="ElementClassify('cancel')">取 消</el-button>
                     </span>
@@ -433,14 +433,11 @@
     <!-- 要素目录右键菜单 -->
     <div v-show="elmenuVisible">
         <ul id="elmenu" class="menu">
-            <li  class="ms-item wrap-ms-right" @click="AddElement()"><i class="el-icon-circle-plus icon1"></i>新增要素</li>
+            <li class="ms-item wrap-ms-right" @click="AddElement()"><i class="el-icon-circle-plus icon1"></i>新增要素</li>
             <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="UpdateElement()"><i class="el-icon-s-order icon1"></i>修改要素</li>
             <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="DeleteElement()"><i class="el-icon-delete-solid icon1"></i>删除要素</li>
         </ul>
     </div>
-
-  
-    
 
     <!-- 统计指标右键菜单 -->
     <div v-show="menuVisibleCountNorm">
@@ -452,9 +449,6 @@
         </ul>
     </div>
 
-
-
-    
     <!-- 要素分类右键菜单 -->
     <div v-show="cmenuVisible">
         <ul id="cmenu" class="menu">
@@ -464,7 +458,6 @@
         </ul>
     </div>
 
-    
     <!-- 角色权限右键表头菜单 -->
     <div v-show="menuVisibleMainAuthority">
         <ul id="menuMainAuthority" class="menu">
@@ -581,7 +574,7 @@ export default {
                 NormName: ""
             },
             //关系资源字段
-            isRelationResource : false,
+            isRelationResource: false,
             //关系资源下拉选择框
             RelationResourceTableData: [],
             //资源目录修改时保存当前行的数据
@@ -592,12 +585,12 @@ export default {
             mark: null,
             loading: false,
             //上级是否禁用
-            disabledvalue:"",
+            disabledvalue: "",
 
             //资源目录右键菜单模态框
             menuVisible: false,
             //资源目录右键菜单模态框
-            btmenuVisible:false,
+            btmenuVisible: false,
             //要素目录右键菜单模态框
             elmenuVisible: false,
 
@@ -661,7 +654,7 @@ export default {
             //单击树形后的当前行ID
             treedata: "",
             //右键要素目录后的当前行的数据
-            crow:[],
+            crow: [],
             ////右键要素目录后的当前行的ID
             cid: '',
             //统计指标 弹出窗参数
@@ -852,7 +845,7 @@ export default {
                 var count = 0
                 AllData.forEach(function (item) {
                     //树形下拉框参数 item.label item.id
-                    if(item.Type == "资源" || item.Type == "附加资源"){
+                    if (item.Type == "资源" || item.Type == "附加资源") {
                         relationResource.push(item);
                     }
                     item.label = item.Name;
@@ -1004,6 +997,10 @@ export default {
             this.disabledvalue = true;
             this.menuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
             this.menuVisible = true; // 显示模态窗口，跳出自定义菜单栏
+            this.elmenuVisible = false;
+            this.cmenuVisible = false;
+            this.menuVisibleCountNorm = false;
+            this.menuVisibleMainAuthority = false;
             var menu = document.querySelector('#menu');
             this.styleMenu(menu);
             this.srow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
@@ -1014,6 +1011,10 @@ export default {
             this.disabledvalue = true;
             this.elmenuVisible = false;
             this.elmenuVisible = true;
+            this.menuVisible = false;
+            this.cmenuVisible = false;
+            this.menuVisibleCountNorm = false;
+            this.menuVisibleMainAuthority = false;
             var elmenu = document.querySelector('#elmenu');
             this.styleMenu(elmenu);
             this.erow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
@@ -1028,7 +1029,10 @@ export default {
             this.disabledvalue = false;
             this.menuVisible = false;
             this.menuVisible = true;
-            
+            this.elmenuVisible = false;
+            this.cmenuVisible = false;
+            this.menuVisibleCountNorm = false;
+            this.menuVisibleMainAuthority = false;
             var menu = document.querySelector('#menu');
             this.styleMenu(menu);
         },
@@ -1037,6 +1041,10 @@ export default {
             this.disabledvalue = false;
             this.elmenuVisible = false;
             this.elmenuVisible = true;
+            this.menuVisible = false;
+            this.cmenuVisible = false;
+            this.menuVisibleCountNorm = false;
+            this.menuVisibleMainAuthority = false;
             var elmenu = document.querySelector('#elmenu');
             this.styleMenu(elmenu);
         },
@@ -1066,12 +1074,12 @@ export default {
 
         //资源目录新增本级
         handleAdd() {
-            
+
             this.choosetitle = "新增资源事务";
             this.dialogFormVisible = true;
             this.mark = 1; //编辑标识
             //   this.form = {}; //清空表单
-            
+
         },
 
         //资源目录新增下级
@@ -1365,14 +1373,14 @@ export default {
         //要素目录新增
         AddElement() {
             if (this.lrid == "" || this.lrid == undefined) {
-            this.$message({
-                type: 'warning',
-                message: '未选择相应的资源目录数据',
-                duration: 4000,
-                offset: 40
-            });
-        } else {
-            this.elchoosetitle = "新增要素";
+                this.$message({
+                    type: 'warning',
+                    message: '未选择相应的资源目录数据',
+                    duration: 4000,
+                    offset: 40
+                });
+            } else {
+                this.elchoosetitle = "新增要素";
                 this.eldialogFormVisible = true;
                 this.mark = 1;
                 this.elform.RID = this.lrid;
@@ -1384,7 +1392,7 @@ export default {
                 this.cddis = true;
                 //设置初始序号
                 this.elform.Numbera = (this.ElementTableData.length + 1).toString();
-        }
+            }
         },
         //要素目录修改
         UpdateElement() {
@@ -1503,11 +1511,11 @@ export default {
                 });
         },
         //根据资源目录类型决定是否显示资源关系字段
-        relationResourceChange(){
-            if(this.form.Type == "资源关系"){
+        relationResourceChange() {
+            if (this.form.Type == "资源关系") {
                 this.isRelationResource = true;
                 console.log(this.form.Type == "资源关系");
-            }else{
+            } else {
                 this.isRelationResource = false;
                 console.log(this.form.Type == "资源关系");
             }
@@ -1700,12 +1708,12 @@ export default {
 
         },
         //要素分类表头右键
-        ElementClassifyheaderRightClick(row, column, event){
+        ElementClassifyheaderRightClick(row, column, event) {
             let _this = this;
             crightClick(_this, row, column, event, 'header');
 
         },
- 
+
         //要素分类 打开不同编辑类型的模态框
         ElementClassify(state) {
             let _this = this;
@@ -1748,24 +1756,24 @@ export default {
         //统计指标右键
         rightClickNorm(row, event) {
             let _this = this;
-            rightClickCountNorm(_this, row, event,'normal');
+            rightClickCountNorm(_this, row, event, 'normal');
         },
 
         //统计指标表头右键
         rightheaderClickNorm(row, event) {
             let _this = this;
-            rightClickCountNorm(_this, row, event,'header');
+            rightClickCountNorm(_this, row, event, 'header');
         },
         //角色权限右键
         rightClickMainAuthority(row, event) {
             let _this = this;
-            rightClickMainAuthority(_this, row, event,'normal');
+            rightClickMainAuthority(_this, row, event, 'normal');
         },
 
         //角色权限表头右键
         rightClicheaderkMainAuthority(row, event) {
             let _this = this;
-            rightClickMainAuthority(_this, row, event,'header');
+            rightClickMainAuthority(_this, row, event, 'header');
         },
 
         //统计指标 打开不同编辑类型的模态框
@@ -1867,11 +1875,16 @@ export default {
             this.$forceUpdate();
         },
         //要素目录-定义指标个数大于0样式修改
-        changeRowColor({row,rowIndex}){
-            if(row.DYZBGS == 0){
-                return '' 
-            }else{
-                return {'color': '#409EFF'}
+        changeRowColor({
+            row,
+            rowIndex
+        }) {
+            if (row.DYZBGS == 0) {
+                return ''
+            } else {
+                return {
+                    'color': '#409EFF'
+                }
             }
         },
     }
@@ -1883,6 +1896,7 @@ export default {
 .elcochoose {
     margin-top: 10px;
 }
+
 /* 要素目录弹窗样式 */
 
 .menu {
@@ -1928,6 +1942,7 @@ export default {
 .el-main {
     padding-top: 0px;
 }
+
 /* 调整样式 */
 .tabletitle {
     color: #3a87ad;
@@ -1938,40 +1953,42 @@ export default {
     margin: 3px;
     padding: 5px;
 }
-.g-element{
+
+.g-element {
     float: left;
     font-size: 24px;
     font-weight: 1000;
     padding: 7px;
 }
-.g-permission{
+
+.g-permission {
     float: right;
     margin: 0 1rem;
     cursor: pointer;
     /* border: 1px solid #e4e5e3; */
-    border:none;
+    border: none;
     /* border-radius: 4px; */
     padding: 5px;
-    background-color:white !important;
+    background-color: white !important;
     color: #3a87ad !important;
     font-size: 20px;
     margin-top: 7px;
 }
-.g-permission:hover{
+
+.g-permission:hover {
     /* background-color:#e4e5e3; */
-    background-color:white !important;
+    background-color: white !important;
     color: #3a87ad !important;
 }
-.el-dialog /deep/  {
+
+.el-dialog /deep/ {
     position: relative;
     margin: 0 auto 50px;
     border-radius: 5px;
-    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.3);
-    box-shadow: 0 1px 3px rgba(0,0,0,.3);
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     width: 50%;
 }
-
-
 </style>
