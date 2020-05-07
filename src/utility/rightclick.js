@@ -17,6 +17,9 @@ export function rightClick(_this, row, column, event) {
     self = _this; //将指向vue的this赋值给全局变量self
     _this.menuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
     _this.menuVisible = true; // 显示模态窗口，跳出自定义菜单栏
+    _this.cmenuVisible = false;
+    _this.menuVisibleCountNorm = false;
+    
     var menu = document.querySelector('#menu');
     styleMenu(menu);
     _this.srow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
@@ -49,6 +52,10 @@ export function crightClick(_this, row, column, event, state) {
     self = _this; //将指向vue的this赋值给全局变量self
     _this.cmenuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
     _this.cmenuVisible = true; // 显示模态窗口，跳出自定义菜单栏
+    self.menuVisible = false;
+    self.elmenuVisible = false;
+    self.menuVisibleCountNorm = false;
+    self.menuVisibleMainAuthority = false;
     var menu = document.querySelector('#cmenu');
     cstyleMenu(menu);
     if (state == 'header') {
@@ -157,6 +164,8 @@ export function rightRole(_this, row, event) {
     self = _this; //将指向vue的this赋值给全局变量self
     _this.RoleVisible = false;
     _this.RoleVisible = true;
+    self.PermissionVisible = false;
+    self.RoleUserVisible = false;
     var menu = document.querySelector('#romenu');
     styleMenuRole(menu);
     _this.Rolerow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
@@ -187,6 +196,8 @@ export function rightPermission(_this, row) {
     self = _this; //将指向vue的this赋值给全局变量self
     _this.PermissionVisible = false;
     _this.PermissionVisible = true;
+    self.RoleVisible = false;
+    self.RoleUserVisible = false;
     var menu = document.querySelector('#pmmenu');
     stylePermission(menu);
     _this.AIDvue = row.AID;
@@ -215,6 +226,8 @@ export function rightRoleUser(_this, row, event, state) {
     self = _this; //将指向vue的this赋值给全局变量self
     _this.RoleUserVisible = false;
     _this.RoleUserVisible = true;
+    self.RoleVisible = false;
+    self.PermissionVisible = false;
     var menu = document.querySelector('#roleusermenu');
     styleRoleUser(menu);
     if (state == 'header') {
