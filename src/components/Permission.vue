@@ -1247,25 +1247,18 @@ export default {
                     //获取选中行
                     var selectRow = this.$refs.RoleUservxeTree.getCheckboxRecords();
                     console.log("搜索选中行");
-                    console.log(selectRow);
-                    
-                    //剔除搜索数据后重新赋值原始数据源准备
-                    var ruarr1 = [];
+                    //剔除搜索数据后重新赋值原始数据源
                     for(let i = 0; i < this.RoleUserTest1Selection.length; i++){
                         for(let j = 0; j < selectRow.length; j++){
-                            if(this.RoleUserTest1Selection[i].UserName != selectRow[j].UserName){
-                                ruarr1.push(this.RoleUserTest1Selection[i]);
+                            if(this.RoleUserTest1Selection[i].UserName == selectRow[j].UserName){
+                                this.RoleUserTest1Selection.splice(i,1);
                             }
                         }
                     }
-
                     //对重复搜索数据源进行赋值
                     this.RoleUserTest1RepeatSelection = selectRow;
-                    //剔除搜索数据后重新赋值原始数据源
-                    if(selectRow.length > 0){
-                        this.RoleUserTest1Selection = ruarr1;
-                    }
-                    
+                    console.log(this.RoleUserTest1RepeatSelection);
+                    console.log(this.RoleUserTest1Selection);
                 });
 
             } else {
