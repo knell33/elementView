@@ -90,9 +90,9 @@
             <div v-show="RoleUserVisible">
                 <ul id="roleusermenu" class="menu">
                     <!-- <li class="ms-item wrap-ms-right" @click="AddRoleuser()"><i class="el-icon-circle-plus icon1"></i>新增用户关系</li> -->
+                    <li class="ms-item wrap-ms-right" @click="AddRoleuserTest1()"><i class="el-icon-circle-plus icon1"></i>新增用户关系</li>
                     <li v-show="disabledvalue" class="ms-item wrap-ms-right" @click="DeleteRoleUser()"><i class="el-icon-s-order icon1"></i>删除用户关系</li>
                     <!-- <li class="ms-item wrap-ms-right" @click="AddRoleuserTest()"><i class="el-icon-circle-plus icon1"></i>测试页面</li> -->
-                    <li class="ms-item wrap-ms-right" @click="AddRoleuserTest1()"><i class="el-icon-circle-plus icon1"></i>新增用户关系</li>
                 </ul>
             </div>
 
@@ -236,7 +236,7 @@
             <el-dialog :title="choosetitle" :visible.sync="RoleUserdialogFormVisibleTest1" :before-close="RUClosedialogTest1" width="69%">
                 <vxe-toolbar>
                     <template v-slot:buttons>
-                        <input v-model="vxeFilterName" @keyup="vxeSearchEvent" type="type" placeholder="请输入组织机构或人员名称搜索" class="vxeFilterInput">  
+                        <input v-model="vxeFilterName" @keyup="vxeSearchEvent" type="type" placeholder="请输入组织机构或人员名称搜索" class="vxeFilterInput">
                     </template>
                 </vxe-toolbar>
                 <vxe-table 
@@ -248,7 +248,7 @@
                 highlight-current-column 
                 ref="RoleUservxeTree" 
                 max-height="500" 
-                :loading="vxeloading"
+                :loading="vxeloading" 
                 :tree-config="{children: 'children',hasChildren: 'children.length>0'}" 
                 :checkbox-config="{highlight: true, lableField: 'OU'}" 
                 @checkbox-all="RoleUserselectAllChangeEvent" 
@@ -462,7 +462,7 @@ export default {
             //测试1 重复搜索标识符
             searchSymbol: false,
             //测试1 延迟加载
-            vxeloading: false,   //:loading="vxeloading"
+            vxeloading: false, //:loading="vxeloading"
 
         }
     },
@@ -482,7 +482,7 @@ export default {
         this.vxeloading = true;
         this.RUvxeData().then(data => {
             this.handleSearch();
-            if(this.RoleUserTestData.length > 0 && this.RoleUserTestData[0].UserName != null){
+            if (this.RoleUserTestData.length > 0 && this.RoleUserTestData[0].UserName != null) {
                 this.vxeloading = false;
             }
         })
@@ -564,12 +564,11 @@ export default {
         //             this.searchSymbol = false;
         //             this.RUvxeSelectData = this.RoleUserTestData;
         //             // this.$nextTick(() => {
-                        
+
         //             // });
         //             return this.RUvxeSelectData;
         //     }
 
-            
         // },
 
     },
@@ -916,7 +915,17 @@ export default {
 
         //测试1确定
         RoleUserSubmitvxeTest() {
-            RoleUserSubmitTest11(this);
+            if(!this.searchSymbol){
+                RoleUserSubmitTest11(this,this.RoleUserTest1Selection);
+            }else{
+                if(this.RoleUserTest1Selection.length > 0){
+                    for(let i = 0; i < this.RoleUserTest1Selection.length; i++){
+                        this.RoleUserTest1RepeatSelection.push(this.RoleUserTest1Selection[i]);
+                    }
+                }
+                RoleUserSubmitTest11(this,this.RoleUserTest1RepeatSelection);
+            }
+            
         },
 
         //角色用户取消
@@ -948,7 +957,7 @@ export default {
                 //清空测试1 页面多选数据初始数据源
                 this.RoleUserTest1Selection = [];
             }
-            if(this.RoleUserTest1RepeatSelection.length > 0){
+            if (this.RoleUserTest1RepeatSelection.length > 0) {
                 //清空测试1 页面多选数据重复搜索数据源
                 this.RoleUserTest1RepeatSelection = [];
             }
@@ -986,7 +995,7 @@ export default {
                 //清空测试1 页面多选数据初始数据源
                 this.RoleUserTest1Selection = [];
             }
-            if(this.RoleUserTest1RepeatSelection.length > 0){
+            if (this.RoleUserTest1RepeatSelection.length > 0) {
                 //清空测试1 页面多选数据重复搜索数据源
                 this.RoleUserTest1RepeatSelection = [];
             }
@@ -1139,16 +1148,14 @@ export default {
             console.log(this.RoleUserTestSelection);
         },
 
-        
-
         //测试1 全选数据
         RoleUserselectAllChangeEvent({
             checked,
             records
         }) {
-            if(this.searchSymbol){
+            if (this.searchSymbol) {
                 this.RoleUserTest1RepeatSelection = records;
-            }else{
+            } else {
                 this.RoleUserTest1Selection = records;
             }
             //获取选中行
@@ -1168,9 +1175,9 @@ export default {
         }) {
             console.log("多选数据开始 searchSymbol值");
             console.log(this.searchSymbol);
-            if(this.searchSymbol){
+            if (this.searchSymbol) {
                 this.RoleUserTest1RepeatSelection = records;
-            }else{
+            } else {
                 this.RoleUserTest1Selection = records;
             }
             //获取选中行
@@ -1193,16 +1200,16 @@ export default {
             console.log(column, property, order);
         },
         //测试1 数据源设置
-        RUvxeData(){
+        RUvxeData() {
             return new Promise(resolve => {
                 setTimeout(() => {
                     let list = [];
                     list = this.RoleUserTestData;
                     resolve(list);
-                },300)
+                }, 300)
             })
         },
-        handleSearch(){
+        handleSearch() {
             console.log("进入测试11搜索");
             let vxeFilterName = XEUtils.toString(this.vxeFilterName).trim();
             console.log(vxeFilterName);
@@ -1212,69 +1219,104 @@ export default {
             if (vxeFilterName) {
                 //重复搜索标识符
                 this.searchSymbol = true;
-                let options = { children: 'children' };
-                let searchProps = ['OU','UserName'];
+                let options = {
+                    children: 'children'
+                };
+                let searchProps = ['OU', 'UserName'];
                 this.RUvxeSelectData = XEUtils.searchTree(this.RoleUserTestData, item => searchProps.some(key => XEUtils.toString(item[key]).toLowerCase().indexOf(vxeFilterName) > -1), options);
                 // 搜索之后默认展开所有子节点
                 this.$nextTick(() => {
                     //清空测试1页面多选框
                     //this.$refs.RoleUservxeTree.clearCheckboxRow();
                     this.$refs.RoleUservxeTree.setAllTreeExpansion(true);
+                    if (this.RoleUserTest1Selection.length > 0) {
+
+                        for (let i = 0; i < this.RoleUserTest1Selection.length; i++) {
+                            for (let j = 0; j < this.RUvxeSelectData.length; j++) {
+                                for (let k = 0; k < this.RUvxeSelectData[j].children.length; k++) {
+                                    if (this.RoleUserTest1Selection[i].UserName == this.RUvxeSelectData[j].children[k].UserName) {
+                                        console.log(i, j, k);
+                                        //设置行选中
+                                        this.$refs.RoleUservxeTree.toggleCheckboxRow(this.RUvxeSelectData[j].children[k]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    //获取选中行
+                    var selectRow = this.$refs.RoleUservxeTree.getCheckboxRecords();
+                    console.log("搜索选中行");
+                    console.log(selectRow);
+                    
+                    //剔除搜索数据后重新赋值原始数据源准备
+                    var ruarr1 = [];
+                    for(let i = 0; i < this.RoleUserTest1Selection.length; i++){
+                        for(let j = 0; j < selectRow.length; j++){
+                            if(this.RoleUserTest1Selection[i].UserName != selectRow[j].UserName){
+                                ruarr1.push(this.RoleUserTest1Selection[i]);
+                            }
+                        }
+                    }
+
+                    //对重复搜索数据源进行赋值
+                    this.RoleUserTest1RepeatSelection = selectRow;
+                    //剔除搜索数据后重新赋值原始数据源
+                    if(selectRow.length > 0){
+                        this.RoleUserTest1Selection = ruarr1;
+                    }
+                    
                 });
 
-                } else {
-                    //重复搜索标识符
-                    this.searchSymbol = false;
-                    this.RUvxeSelectData = this.RoleUserTestData;
+            } else {
+                //重复搜索标识符
+                this.searchSymbol = false;
+                this.RUvxeSelectData = this.RoleUserTestData;
 
-                    this.$nextTick(() => {
-                        
-                        if(this.RoleUserTest1Selection.length > 0 || this.RoleUserTest1RepeatSelection.length > 0){
-                            //清空行选中
-                            this.$refs.RoleUservxeTree.clearCheckboxRow();
-                        }
+                this.$nextTick(() => {
 
-                        if(this.RoleUserTest1Selection.length > 0){
-                            
-                            for(let i = 0; i < this.RoleUserTest1Selection.length; i++){
-                                for(let j = 0; j < this.RoleUserTestData.length; j++){
-                                    for(let k = 0; k < this.RoleUserTestData[j].children.length; k++){
-                                        if(this.RoleUserTest1Selection[i].UserName == this.RoleUserTestData[j].children[k].UserName){
-                                            console.log(i,j,k);
-                                            //设置行选中
-                                            this.$refs.RoleUservxeTree.toggleCheckboxRow(this.RUvxeSelectData[j].children[k]);
-                                        }
+                    if (this.RoleUserTest1Selection.length > 0 || this.RoleUserTest1RepeatSelection.length > 0) {
+                        //清空行选中
+                        this.$refs.RoleUservxeTree.clearCheckboxRow();
+                    }
+
+                    if (this.RoleUserTest1Selection.length > 0) {
+
+                        for (let i = 0; i < this.RoleUserTest1Selection.length; i++) {
+                            for (let j = 0; j < this.RoleUserTestData.length; j++) {
+                                for (let k = 0; k < this.RoleUserTestData[j].children.length; k++) {
+                                    if (this.RoleUserTest1Selection[i].UserName == this.RoleUserTestData[j].children[k].UserName) {
+                                        console.log(i, j, k);
+                                        //设置行选中
+                                        this.$refs.RoleUservxeTree.toggleCheckboxRow(this.RUvxeSelectData[j].children[k]);
                                     }
                                 }
                             }
-                            //获取选中行
-                            var selectRow = this.$refs.RoleUservxeTree.getCheckboxRecords();
-                            console.log("选中行");
-                            console.log(selectRow);
                         }
+                    }
 
-                        if(this.RoleUserTest1RepeatSelection.length > 0){
+                    if (this.RoleUserTest1RepeatSelection.length > 0) {
 
-                            for(let i = 0; i < this.RoleUserTest1RepeatSelection.length; i++){
-                                for(let j = 0; j < this.RoleUserTestData.length; j++){
-                                    for(let k = 0; k < this.RoleUserTestData[j].children.length; k++){
-                                        if(this.RoleUserTest1RepeatSelection[i].UserName == this.RoleUserTestData[j].children[k].UserName){
-                                            console.log(i,j,k);
-                                            this.$refs.RoleUservxeTree.toggleCheckboxRow(this.RUvxeSelectData[j].children[k]);
-                                        }
+                        for (let i = 0; i < this.RoleUserTest1RepeatSelection.length; i++) {
+                            for (let j = 0; j < this.RoleUserTestData.length; j++) {
+                                for (let k = 0; k < this.RoleUserTestData[j].children.length; k++) {
+                                    if (this.RoleUserTest1RepeatSelection[i].UserName == this.RoleUserTestData[j].children[k].UserName) {
+                                        console.log(i, j, k);
+                                        this.$refs.RoleUservxeTree.toggleCheckboxRow(this.RUvxeSelectData[j].children[k]);
                                     }
                                 }
                             }
-                            //获取选中行
-                            var selectRow = this.$refs.RoleUservxeTree.getCheckboxRecords();
-                            console.log("选中行");
-                            console.log(selectRow);
-                            //将选中行重新赋值给搜索后的原始数据源
-                            this.RoleUserTest1Selection = selectRow;
-                            //清空重复搜索数据源
-                            this.RoleUserTest1RepeatSelection = [];
                         }
-                    });
+                        //获取选中行
+                        var selectRow = this.$refs.RoleUservxeTree.getCheckboxRecords();
+                        console.log("未搜索选中行");
+                        console.log(selectRow);
+                        //将选中行重新赋值给搜索后的原始数据源
+                        this.RoleUserTest1Selection = selectRow;
+                        //清空重复搜索数据源
+                        this.RoleUserTest1RepeatSelection = [];
+                    }
+                });
 
             }
         },
@@ -1286,258 +1328,258 @@ export default {
             trailing: true
         }),
 
-    //测试 设置数据索引值
-    RoleUserTesttableRowClassName({
-        row,
-        rowIndex
-    }) {
-        row.Index = rowIndex; //添加row_index属性
-        //console.log("测试 索引值");
-        //console.log(row);
-        //console.log(rowIndex);
-        //console.log(row.row_index);
-    },
-    //测试名称搜索
-    RoleUserSelectTest() {
-        const searchTest1 = this.searchTest1;
-        console.log("进入测试名称搜索");
-        console.log(searchTest1);
+        //测试 设置数据索引值
+        RoleUserTesttableRowClassName({
+            row,
+            rowIndex
+        }) {
+            row.Index = rowIndex; //添加row_index属性
+            //console.log("测试 索引值");
+            //console.log(row);
+            //console.log(rowIndex);
+            //console.log(row.row_index);
+        },
+        //测试名称搜索
+        RoleUserSelectTest() {
+            const searchTest1 = this.searchTest1;
+            console.log("进入测试名称搜索");
+            console.log(searchTest1);
 
-        //备份数据填充
-        this.RoleUserTestData = this.RoleUserTestDataBackup1;
-        if (searchTest1 == "") {
             //备份数据填充
-            //this.RoleUserTestData = this.RoleUserTestDataBackup1;
+            this.RoleUserTestData = this.RoleUserTestDataBackup1;
+            if (searchTest1 == "") {
+                //备份数据填充
+                //this.RoleUserTestData = this.RoleUserTestDataBackup1;
 
-            if (this.TestToggleRowExpansion.length > 0) {
-                console.log("关闭展开行");
-                for (var k = 0; k < this.TestToggleRowExpansion.length; k++) {
-                    for (var l = 0; l < this.RoleUserTestData.length; l++) {
-                        if (this.TestToggleRowExpansion[k] == this.RoleUserTestData[l].OU) {
-                            //折叠匹配搜索名称后的行
-                            this.$refs.RoleUserTest.toggleRowExpansion(this.RoleUserTestData[l], false);
+                if (this.TestToggleRowExpansion.length > 0) {
+                    console.log("关闭展开行");
+                    for (var k = 0; k < this.TestToggleRowExpansion.length; k++) {
+                        for (var l = 0; l < this.RoleUserTestData.length; l++) {
+                            if (this.TestToggleRowExpansion[k] == this.RoleUserTestData[l].OU) {
+                                //折叠匹配搜索名称后的行
+                                this.$refs.RoleUserTest.toggleRowExpansion(this.RoleUserTestData[l], false);
+                            }
+                        }
+                    }
+                    //置空展开行
+                    this.TestToggleRowExpansion = [];
+                }
+            } else {
+                for (var i = 0; i < this.RoleUserTestData.length; i++) {
+                    if (this.RoleUserTestData[i].children.length > 0) {
+                        for (var j = 0; j < this.RoleUserTestData[i].children.length; j++) {
+                            if (this.RoleUserTestData[i].children[j].UserName.indexOf(searchTest1) > -1) {
+                                console.log("已找到");
+                                let getUserName = this.RoleUserTestData[i].UserName;
+                                console.log(getUserName);
+
+                                //this.testexpands.push(getUserName);
+                                //this.$refs.RoleUserTest.toggleRowSelection(this.RoleUserTestData[i],true);
+
+                                //保存展开行数据
+                                this.TestToggleRowExpansion.push(this.RoleUserTestData[i].OU);
+                                console.log(this.TestToggleRowExpansion);
+                                //展开匹配搜索名称后的行
+                                this.$refs.RoleUserTest.toggleRowExpansion(this.RoleUserTestData[i], true);
+
+                                var arr = [];
+                                arr.push(this.RoleUserTestData[i].children[j]);
+                                //匹配完成后添加备份数据源
+                                this.RoleUserTestDataBackup.push({
+                                    AccountName: this.RoleUserTestData[i].AccountName,
+                                    Email: this.RoleUserTestData[i].Email,
+                                    Index: this.RoleUserTestData[i].Index,
+                                    OU: this.RoleUserTestData[i].OU,
+                                    ParentOU: this.RoleUserTestData[i].ParentOU,
+                                    UserName: this.RoleUserTestData[i].UserName,
+                                    children: arr
+                                });
+                                console.log(this.RoleUserTestDataBackup);
+                                // //保存匹配名称后的索引值
+                                // let tableIdLocation = this.RoleUserTestData[i].children[j].Index;
+                                // console.log(tableIdLocation);
+                                // //获取到表格的节点,获取到表格的所有子节点
+                                // let myTableId = document.getElementById("roleuserTestTable").childNodes;
+                                // //拿到第3个表格内容结构的所有子节点  class = "el-table__body-wrapper is-scrolling-none"
+                                // let myTableIdChildNo3 =  myTableId[2].childNodes;
+                                // //在拿到所有子节点中的第一个
+                                // let myTableIdChildNo3ChildNo1 = myTableIdChildNo3[0].childNodes;
+                                // //再拿到结构为<tboby></tboby>的节点
+                                // let tbobyChildNo2 = myTableIdChildNo3ChildNo1[1];
+                                // //获取到结构为<tboby></tboby>的子节点
+                                // let kk = tbobyChildNo2.childNodes;
+                                // //把遍历处出来有 "userNameId:666" 这个字段的下标赋值给当前表格行
+                                // let kkll = kk[tableIdLocation];
+                                // //给这行表格动态的添加一个id,实现背景颜色的突出显示
+                                // kkll.setAttribute('id','name_select_id');
+                                // //当点击"定位"按钮之后,实现屏幕滚动到这个id的位置,并且在屏幕的中间
+                                // let element = document.getElementById("name_select_id");
+                                // element.scrollIntoView({block:"start"});
+                            }
                         }
                     }
                 }
-                //置空展开行
-                this.TestToggleRowExpansion = [];
-            }
-        } else {
-            for (var i = 0; i < this.RoleUserTestData.length; i++) {
-                if (this.RoleUserTestData[i].children.length > 0) {
-                    for (var j = 0; j < this.RoleUserTestData[i].children.length; j++) {
-                        if (this.RoleUserTestData[i].children[j].UserName.indexOf(searchTest1) > -1) {
-                            console.log("已找到");
-                            let getUserName = this.RoleUserTestData[i].UserName;
-                            console.log(getUserName);
+                //
+                this.RoleUserTestData = this.RoleUserTestDataBackup;
 
-                            //this.testexpands.push(getUserName);
-                            //this.$refs.RoleUserTest.toggleRowSelection(this.RoleUserTestData[i],true);
-
-                            //保存展开行数据
-                            this.TestToggleRowExpansion.push(this.RoleUserTestData[i].OU);
-                            console.log(this.TestToggleRowExpansion);
-                            //展开匹配搜索名称后的行
-                            this.$refs.RoleUserTest.toggleRowExpansion(this.RoleUserTestData[i], true);
-
-                            var arr = [];
-                            arr.push(this.RoleUserTestData[i].children[j]);
-                            //匹配完成后添加备份数据源
-                            this.RoleUserTestDataBackup.push({
-                                AccountName: this.RoleUserTestData[i].AccountName,
-                                Email: this.RoleUserTestData[i].Email,
-                                Index: this.RoleUserTestData[i].Index,
-                                OU: this.RoleUserTestData[i].OU,
-                                ParentOU: this.RoleUserTestData[i].ParentOU,
-                                UserName: this.RoleUserTestData[i].UserName,
-                                children: arr
-                            });
-                            console.log(this.RoleUserTestDataBackup);
-                            // //保存匹配名称后的索引值
-                            // let tableIdLocation = this.RoleUserTestData[i].children[j].Index;
-                            // console.log(tableIdLocation);
-                            // //获取到表格的节点,获取到表格的所有子节点
-                            // let myTableId = document.getElementById("roleuserTestTable").childNodes;
-                            // //拿到第3个表格内容结构的所有子节点  class = "el-table__body-wrapper is-scrolling-none"
-                            // let myTableIdChildNo3 =  myTableId[2].childNodes;
-                            // //在拿到所有子节点中的第一个
-                            // let myTableIdChildNo3ChildNo1 = myTableIdChildNo3[0].childNodes;
-                            // //再拿到结构为<tboby></tboby>的节点
-                            // let tbobyChildNo2 = myTableIdChildNo3ChildNo1[1];
-                            // //获取到结构为<tboby></tboby>的子节点
-                            // let kk = tbobyChildNo2.childNodes;
-                            // //把遍历处出来有 "userNameId:666" 这个字段的下标赋值给当前表格行
-                            // let kkll = kk[tableIdLocation];
-                            // //给这行表格动态的添加一个id,实现背景颜色的突出显示
-                            // kkll.setAttribute('id','name_select_id');
-                            // //当点击"定位"按钮之后,实现屏幕滚动到这个id的位置,并且在屏幕的中间
-                            // let element = document.getElementById("name_select_id");
-                            // element.scrollIntoView({block:"start"});
-                        }
-                    }
-                }
-            }
-            //
-            this.RoleUserTestData = this.RoleUserTestDataBackup;
-
-        }
-
-    },
-
-    //角色用户多选数据
-    roleuserSelectionChange(val) {
-        this.RoleUserSelection = val;
-        console.log(this.RoleUserSelection);
-    },
-    //角色用户父表格多选数据
-    fatherSelectionChange(val) {
-        this.FatherSelectionChange = val;
-        console.log(this.FatherSelectionChange);
-        if (this.FatherSelectionChange.length == 0) {
-            this.childSelect = true;
-        }
-    },
-    //角色用户父表格 手动多选触发事件
-    RUSelect(selection, row) {
-        console.log("父表多选");
-        console.log(selection);
-        console.log(row);
-
-        this.symbol = "fatherSelect";
-        this.childSelect = false;
-
-        // if(selection.length == 0){
-        //     //父表多选标识改变
-        //     this.symbol = "";
-        // }
-        //父表多选后展开行置空
-        //this.expands = [];
-        var arr = [];
-        for (var i = 0; i < selection.length; i++) {
-            var OU = selection[i].OU;
-            var self = this;
-
-            console.log("进入多选部门名称");
-            console.log(OU);
-
-            for (var j = 0; j < this.RoleUser.length; j++) {
-                if (OU == this.RoleUser[j].OU) {
-                    arr.push(this.RoleUser[j]);
-                }
             }
 
-            this.RoleuserRrganization = arr;
-            console.log("父表多选组织数据");
-            console.log(this.RoleuserRrganization);
+        },
 
-            //const index = self.RoleUserOU.findIndex(data => data.OU === OU); 
-            //self.$set(self.RoleUserOU[index], 'organizationdata', this.RoleuserRrganization);
-            //添加展开行信息
-            //this.expands.push(OU);
+        //角色用户多选数据
+        roleuserSelectionChange(val) {
+            this.RoleUserSelection = val;
+            console.log(this.RoleUserSelection);
+        },
+        //角色用户父表格多选数据
+        fatherSelectionChange(val) {
+            this.FatherSelectionChange = val;
+            console.log(this.FatherSelectionChange);
+            if (this.FatherSelectionChange.length == 0) {
+                this.childSelect = true;
+            }
+        },
+        //角色用户父表格 手动多选触发事件
+        RUSelect(selection, row) {
+            console.log("父表多选");
+            console.log(selection);
+            console.log(row);
 
-            // if(row){
-            //     console.log(self.$refs.roleuserdata);
-            //    // self.$refs.roleuserdata.toggleAllSelection();
-            // }
-            //console.log("AAA");
-            //console.log(self.RoleUserOU);
-        }
-        this.RoleUserSelection1 = arr;
-
-    },
-    //角色用户父表格 全选触发
-    RUSelectAll(selection) {
-        console.log(selection);
-        if (selection.length > 0) {
+            this.symbol = "fatherSelect";
             this.childSelect = false;
-        } else {
-            this.childSelect = true;
-        }
 
-    },
+            // if(selection.length == 0){
+            //     //父表多选标识改变
+            //     this.symbol = "";
+            // }
+            //父表多选后展开行置空
+            //this.expands = [];
+            var arr = [];
+            for (var i = 0; i < selection.length; i++) {
+                var OU = selection[i].OU;
+                var self = this;
 
-    //新增其他权限时选择分类类型联动
-    ChangeType(val) {
-        if (val == '页面') {
-            this.oform.AuthorityType = '新增页面'
-            this.PagedisabledValue = true;
-        } else {
-            this.oform.AuthorityType = '新增本级'
-            this.PagedisabledValue = false;
-        }
-    },
+                console.log("进入多选部门名称");
+                console.log(OU);
 
-    //新增其他权限时主体权限变化时查找并放入oform
-    ChangeMain(value) {
-        for (let i in this.Resource) {
-            if (value == this.Resource[i].ID) {
-                this.oform.MID = value;
-                this.oform.MainName = this.Resource[i].Name;
-                break
+                for (var j = 0; j < this.RoleUser.length; j++) {
+                    if (OU == this.RoleUser[j].OU) {
+                        arr.push(this.RoleUser[j]);
+                    }
+                }
+
+                this.RoleuserRrganization = arr;
+                console.log("父表多选组织数据");
+                console.log(this.RoleuserRrganization);
+
+                //const index = self.RoleUserOU.findIndex(data => data.OU === OU); 
+                //self.$set(self.RoleUserOU[index], 'organizationdata', this.RoleuserRrganization);
+                //添加展开行信息
+                //this.expands.push(OU);
+
+                // if(row){
+                //     console.log(self.$refs.roleuserdata);
+                //    // self.$refs.roleuserdata.toggleAllSelection();
+                // }
+                //console.log("AAA");
+                //console.log(self.RoleUserOU);
             }
-        }
-    },
+            this.RoleUserSelection1 = arr;
 
-    //提交权限
-    PermissionSubmit(state) {
-        if (state == 'form') {
-            //提交窗体权限
-            PermissionsubmitForm(this);
+        },
+        //角色用户父表格 全选触发
+        RUSelectAll(selection) {
+            console.log(selection);
+            if (selection.length > 0) {
+                this.childSelect = false;
+            } else {
+                this.childSelect = true;
+            }
+
+        },
+
+        //新增其他权限时选择分类类型联动
+        ChangeType(val) {
+            if (val == '页面') {
+                this.oform.AuthorityType = '新增页面'
+                this.PagedisabledValue = true;
+            } else {
+                this.oform.AuthorityType = '新增本级'
+                this.PagedisabledValue = false;
+            }
+        },
+
+        //新增其他权限时主体权限变化时查找并放入oform
+        ChangeMain(value) {
+            for (let i in this.Resource) {
+                if (value == this.Resource[i].ID) {
+                    this.oform.MID = value;
+                    this.oform.MainName = this.Resource[i].Name;
+                    break
+                }
+            }
+        },
+
+        //提交权限
+        PermissionSubmit(state) {
+            if (state == 'form') {
+                //提交窗体权限
+                PermissionsubmitForm(this);
+                if (this.multipleSelection.length > 0) {
+                    this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
+                }
+            } else {
+                //提交其他权限
+                OPermissionsubmitForm(this);
+            }
+        },
+        //点击x关闭窗体权限模态框
+        Closedialog(done) {
+            Permissionclosedialog(done, this);
             if (this.multipleSelection.length > 0) {
                 this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
             }
-        } else {
-            //提交其他权限
-            OPermissionsubmitForm(this);
-        }
-    },
-    //点击x关闭窗体权限模态框
-    Closedialog(done) {
-        Permissionclosedialog(done, this);
-        if (this.multipleSelection.length > 0) {
-            this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
-        }
-    },
-    //点击x关闭其他权限模态框
-    OClosedialog(done) {
-        OPermissionclosedialog(done, this);
+        },
+        //点击x关闭其他权限模态框
+        OClosedialog(done) {
+            OPermissionclosedialog(done, this);
 
-    },
+        },
 
-    //点击取消关闭模态框
-    ColseByCancel(state) {
-        if (state == 'form') {
-            //关闭窗体权限
-            Permissioncolse(this);
-            if (this.multipleSelection.length > 0) {
-                this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
+        //点击取消关闭模态框
+        ColseByCancel(state) {
+            if (state == 'form') {
+                //关闭窗体权限
+                Permissioncolse(this);
+                if (this.multipleSelection.length > 0) {
+                    this.$refs.PagePermission.clearSelection(); //清空窗体权限表格多选
+                }
+            } else {
+                //关闭其他权限
+                OPermissioncolse(this);
             }
-        } else {
-            //关闭其他权限
-            OPermissioncolse(this);
-        }
 
-    },
+        },
 
-    //权限右键菜单
-    PermissionRightClick(row, event) {
-        rightPermission(this, row, event);
+        //权限右键菜单
+        PermissionRightClick(row, event) {
+            rightPermission(this, row, event);
 
-    },
+        },
 
-    //删除主体权限
-    DeletePermission() {
-        DeletePermissionByJs(this);
-    },
+        //删除主体权限
+        DeletePermission() {
+            DeletePermissionByJs(this);
+        },
 
-    //点击链接跳转到资源要素管理
-    ResourceElement() {
-        this.$router.push({
-            path: '/index'
-        })
-    },
+        //点击链接跳转到资源要素管理
+        ResourceElement() {
+            this.$router.push({
+                path: '/index'
+            })
+        },
 
-}
+    }
 
 }
 </script>
@@ -1666,16 +1708,17 @@ input.vxeFilterInput {
     padding: 10px 15px;
     width: 260px;
     font-size: 14px;
-    outline-style: none ;
-    border: 1px solid #ccc; 
+    outline-style: none;
+    border: 1px solid #ccc;
     border-radius: 3px;
     /* font-weight: 700; */
     font-family: "Microsoft soft";
 }
-input.vxeFilterInput:focus{
+
+input.vxeFilterInput:focus {
     border-color: #66afe9;
     outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6)
 }
 </style>

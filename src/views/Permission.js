@@ -31,7 +31,7 @@ export function PermissionsubmitForm(_this) {
                     that.$message({
                         type: 'success',
                         message: '新增成功',
-                        duration: 4000,
+                        duration: 3000,
                         offset: 40
                     });
                     for (let i in m) {
@@ -49,7 +49,7 @@ export function PermissionsubmitForm(_this) {
                     that.$message({
                         type: 'warning',
                         message: '出现未知错误！',
-                        duration: 4000,
+                        duration: 3000,
                         offset: 40
                     });
                     that.OtherdialogFormVisible = false;
@@ -205,15 +205,18 @@ export function AddRoleuserTest1(_this) {
 export function AddRoleuserTest11(_this) {
     _this.choosetitle = "新增角色用户";
     _this.RoleUserdialogFormVisibleTest1 = true;
-    if (_this.RoleUserTestData[0].UserName == null) {
+    if (_this.RoleUserTestData.length > 0 && _this.RoleUserTestData[0].UserName != null) {
+        _this.vxeloading = false;
+    } else {
         _this.$message({
             showClose: true,
             message: '请从资源要素管理页重新加载用户数据',
             type: 'error',
-            duration: 0
+            duration: 10000
         });
     }
 }
+
 
 //角色用户确认
 export function RoleUserSubmit1(_this) {
@@ -296,14 +299,14 @@ export function RoleUserSubmitTest1(_this) {
 
 }
 //测试确认1
-export function RoleUserSubmitTest11(_this) {
+export function RoleUserSubmitTest11(_this, ruData) {
     var that = _this;
     console.log("进入测试1确认");
     //确认数据源设置
     var arr = [];
-    for (let i = 0; i < _this.RoleUserTest1Selection.length; i++) {
-        if (_this.RoleUserTest1Selection[i].children.length == 0) {
-            arr.push(_this.RoleUserTest1Selection[i]);
+    for (let i = 0; i < ruData.length; i++) {
+        if (ruData[i].children.length == 0) {
+            arr.push(ruData[i]);
         }
     }
     var m = DataRoleUser(arr, _this.RoleIDvue);
@@ -352,6 +355,8 @@ export function RoleUserSubmitTest11(_this) {
                 _this.vxeFilterName = "";
                 //重置搜索数据源
                 _this.RUvxeSelectData = _this.RoleUserTestData;
+                //重置重复搜索标识符
+                _this.searchSymbol = false;
                 //清空测试1页面多选框
                 _this.$refs.RoleUservxeTree.clearCheckboxRow();
                 //关闭测试1所有展开节点
@@ -375,6 +380,8 @@ export function RoleUserSubmitTest11(_this) {
                 _this.vxeFilterName = "";
                 //重置搜索数据源
                 _this.RUvxeSelectData = _this.RoleUserTestData;
+                //重置重复搜索标识符
+                _this.searchSymbol = false;
                 //清空测试1页面多选框
                 _this.$refs.RoleUservxeTree.clearCheckboxRow();
                 //关闭测试1所有展开节点
@@ -421,6 +428,8 @@ export function ColseRoleUserTest11(_this) {
     _this.vxeFilterName = "";
     //重置搜索数据源
     _this.RUvxeSelectData = _this.RoleUserTestData;
+    //重置重复搜索标识符
+    _this.searchSymbol = false;
 }
 
 //点击X关闭角色用户弹窗
@@ -461,6 +470,8 @@ export function RUClosedialogTest11(done, _this) {
     _this.vxeFilterName = "";
     //重置搜索数据源
     _this.RUvxeSelectData = _this.RoleUserTestData;
+    //重置重复搜索标识符
+    _this.searchSymbol = false;
 }
 
 //右键删除角色用户
