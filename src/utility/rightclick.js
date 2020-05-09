@@ -33,16 +33,18 @@ export function rightClick(_this, row, column, event) {
 //资源目录 右键菜单布局
 export function styleMenu(menu) {
     event.preventDefault();
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
     if (event.clientX > 1800) {
-        menu.style.left = event.clientX - 100 + 'px';
+        menu.style.left = event.clientX + scrollX - 100 + 'px';
     } else {
-        menu.style.left = event.clientX + 1 + 'px';
+        menu.style.left = event.clientX + scrollX + 1 + 'px';
     }
-    document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行cfoo方法
+    document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行foo方法
     if (event.clientY > 700) {
-        menu.style.top = event.clientY - 30 + 'px';
+        menu.style.top = event.clientY + scrollY - 30 + 'px';
     } else {
-        menu.style.top = event.clientY - 10 + 'px';
+        menu.style.top = event.clientY + scrollY - 10 + 'px';
     }
 }
 
@@ -78,16 +80,18 @@ export function crightClick(_this, row, column, event, state) {
 //要素分类 右键菜单布局
 export function cstyleMenu(menu) {
     event.preventDefault();
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
     if (event.clientX > 1800) {
-        menu.style.left = event.clientX - 100 + 'px';
+        menu.style.left = event.clientX + scrollX - 100 + 'px';
     } else {
-        menu.style.left = event.clientX + 1 + 'px';
+        menu.style.left = event.clientX + scrollX + 1 + 'px';
     }
-    document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行cfoo方法
+    document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行foo方法
     if (event.clientY > 700) {
-        menu.style.top = event.clientY - 30 + 'px';
+        menu.style.top = event.clientY + scrollY - 30 + 'px';
     } else {
-        menu.style.top = event.clientY - 10 + 'px';
+        menu.style.top = event.clientY + scrollY - 10 + 'px';
     }
 };
 
@@ -114,16 +118,18 @@ export function rightClickCountNorm(_this, row, event, state) {
 //统计指标 右键菜单布局
 export function styleMenuCountNorm(menu) {
     event.preventDefault();
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
     if (event.clientX > 1800) {
-        menu.style.left = event.clientX - 100 + 'px';
+        menu.style.left = event.clientX + scrollX - 100 + 'px';
     } else {
-        menu.style.left = event.clientX + 1 + 'px';
+        menu.style.left = event.clientX + scrollX + 1 + 'px';
     }
-    document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行cfoo方法
+    document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行foo方法
     if (event.clientY > 700) {
-        menu.style.top = event.clientY - 30 + 'px';
+        menu.style.top = event.clientY + scrollY - 30 + 'px';
     } else {
-        menu.style.top = event.clientY - 10 + 'px';
+        menu.style.top = event.clientY + scrollY - 10 + 'px';
     }
 }
 //资源明细-角色权限 右键菜单
@@ -146,16 +152,18 @@ export function rightClickMainAuthority(_this, row, event, state) {
 //资源明细-角色权限 右键菜单布局
 export function styleMenuMainAuthority(menu) {
     event.preventDefault();
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
     if (event.clientX > 1800) {
-        menu.style.left = event.clientX - 100 + 'px';
+        menu.style.left = event.clientX + scrollX - 100 + 'px';
     } else {
-        menu.style.left = event.clientX + 1 + 'px';
+        menu.style.left = event.clientX + scrollX + 1 + 'px';
     }
-    document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行cfoo方法
+    document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行foo方法
     if (event.clientY > 700) {
-        menu.style.top = event.clientY - 30 + 'px';
+        menu.style.top = event.clientY + scrollY - 30 + 'px';
     } else {
-        menu.style.top = event.clientY - 10 + 'px';
+        menu.style.top = event.clientY + scrollY - 10 + 'px';
     }
 }
 
@@ -178,16 +186,18 @@ export function rightRole(_this, row, event) {
 //角色 右键菜单布局
 export function styleMenuRole(menu) {
     event.preventDefault();
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
     if (event.clientX > 1800) {
-        menu.style.left = event.clientX - 100 + 'px';
+        menu.style.left = event.clientX + scrollX - 100 + 'px';
     } else {
-        menu.style.left = event.clientX + 1 + 'px';
+        menu.style.left = event.clientX + scrollX + 1 + 'px';
     }
     document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行foo方法
     if (event.clientY > 700) {
-        menu.style.top = event.clientY - 30 + 'px';
+        menu.style.top = event.clientY + scrollY - 30 + 'px';
     } else {
-        menu.style.top = event.clientY - 10 + 'px';
+        menu.style.top = event.clientY + scrollY - 10 + 'px';
     }
 }
 
@@ -208,16 +218,18 @@ export function rightPermission(_this, row) {
 //权限 右键菜单布局
 export function stylePermission(menu) {
     event.preventDefault();
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
     if (event.clientX > 1800) {
-        menu.style.left = event.clientX - 100 + 'px';
+        menu.style.left = event.clientX + scrollX - 100 + 'px';
     } else {
-        menu.style.left = event.clientX + 1 + 'px';
+        menu.style.left = event.clientX + scrollX + 1 + 'px';
     }
     document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行foo方法
     if (event.clientY > 700) {
-        menu.style.top = event.clientY - 30 + 'px';
+        menu.style.top = event.clientY + scrollY - 30 + 'px';
     } else {
-        menu.style.top = event.clientY - 10 + 'px';
+        menu.style.top = event.clientY + scrollY - 10 + 'px';
     }
 }
 
@@ -243,15 +255,17 @@ export function rightRoleUser(_this, row, event, state) {
 //角色用户右键菜单布局
 export function styleRoleUser(menu) {
     event.preventDefault();
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
     if (event.clientX > 1800) {
-        menu.style.left = event.clientX - 100 + 'px';
+        menu.style.left = event.clientX + scrollX - 100 + 'px';
     } else {
-        menu.style.left = event.clientX + 1 + 'px';
+        menu.style.left = event.clientX + scrollX + 1 + 'px';
     }
     document.addEventListener('click', cfoo); // 给整个document新增监听鼠标事件，点击任何位置执行foo方法
     if (event.clientY > 700) {
-        menu.style.top = event.clientY - 30 + 'px';
+        menu.style.top = event.clientY + scrollY - 30 + 'px';
     } else {
-        menu.style.top = event.clientY - 10 + 'px';
+        menu.style.top = event.clientY + scrollY - 10 + 'px';
     }
 }
