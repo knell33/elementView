@@ -472,6 +472,9 @@ export default {
             //测试1 树形数据加载延迟
             RUTreeDataLoading: false,
 
+            //登录用户名
+            getuserName: "",
+
         }
     },
     components: {
@@ -487,6 +490,8 @@ export default {
         //this.RoleUserTestData = this.$route.query.RoleUserTestData;
         this.GetRoleUserData();
         
+        //获取登录用户
+        this.GetUserName();
 
         //测试1
         this.vxeloading = true;
@@ -1637,6 +1642,15 @@ export default {
                 path: '/index'
             })
         },
+
+        //获取登录用户
+        GetUserName(){
+            this.getuserName = window.sessionStorage.getItem('user');
+            console.log("接收用户名");
+            console.log(this.getuserName);
+            this.form.LastModify = this.getuserName;  
+            this.oform.LastModify = this.getuserName;
+        }
 
     }
 

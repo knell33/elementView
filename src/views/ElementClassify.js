@@ -53,8 +53,10 @@ export function ClassifysubmitForm(_this) {
     if (that.mark == 1) {
         if (_this.cform.Name != "") {
             //console.log("cform:"+that.cform);
+            that.cform.LastModify = that.UserName;
+            console.log(that.cform);
             that.$ajax.post("CreateElementClassify", that.cform)
-                .then(function (obj) {
+                .then(function(obj) {
                     that.$message({
                         type: 'success',
                         message: '新增成功',
@@ -64,10 +66,10 @@ export function ClassifysubmitForm(_this) {
                     //that.ElementClassifyTableData.push(that.cform);
                     //局部刷新-要素分类
                     that.$ajax.post('GetAllElementClassifyByRID',
-                        that.$qs.stringify({
-                            RID: that.cform.RID
-                        }))
-                        .then(function (res) {
+                            that.$qs.stringify({
+                                RID: that.cform.RID
+                            }))
+                        .then(function(res) {
                             that.ElementClassifyTableData = res.data;
                         })
                         .catch();
@@ -76,7 +78,7 @@ export function ClassifysubmitForm(_this) {
                     that.cmark = null;
 
                 })
-                .catch(function (obj) {
+                .catch(function(obj) {
                     console.log("新增失败");
                     that.$message({
                         type: 'warning',
@@ -85,8 +87,7 @@ export function ClassifysubmitForm(_this) {
                         offset: 40
                     });
                 })
-        }
-        else {
+        } else {
             that.$message({
                 type: 'warning',
                 message: '名称不能为空!',
@@ -97,6 +98,8 @@ export function ClassifysubmitForm(_this) {
     } else {
         //console.log("进入修改");
         if (_this.cform.Name != "") {
+            that.cform.LastModify = that.UserName;
+            console.log(that.cform);
             that.$ajax.put('PutElementClassifyByID', that.cform)
                 //返回成功调用
                 .then((res) => {
@@ -124,8 +127,7 @@ export function ClassifysubmitForm(_this) {
                         offset: 40
                     });
                 });
-        }
-        else {
+        } else {
             that.$message({
                 type: 'warning',
                 message: '名称不能为空!',

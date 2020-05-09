@@ -338,9 +338,7 @@
                         </el-form-item>
                     </el-form>
                     <span slot="footer" class="dialog-footer">
-                        <el-button type="primary" @click="ElementClassify
-
-                        ('submit')">确 定</el-button>
+                        <el-button type="primary" @click="ElementClassify('submit')">确 定</el-button>
                         <el-button @click="ElementClassify('cancel')">取 消</el-button>
                     </span>
                 </el-dialog>
@@ -723,7 +721,7 @@ export default {
 
         //获取登录用户名
         //this.getQueryVariable();
-        //this.GetUserName();
+        this.GetUserName();
 
     },
     computed: {
@@ -1182,6 +1180,7 @@ export default {
                         });
                     } else {
                         console.log("进入新增");
+                        this.form.LastModify = this.UserName;
                         console.log(this.form);
                         this.$ajax.post("CreateResource", this.form)
                             .then(function (obj) {
@@ -1243,6 +1242,7 @@ export default {
                         });
                     } else {
                         console.log("进入修改");
+                        this.form.LastModify = this.UserName;
                         this.$ajax.put('PutResourceByID', this.form)
                             //返回成功调用
                             .then((res) => {
@@ -1569,6 +1569,7 @@ export default {
             } else {
                 if (this.mark == 1) {
                     console.log("进入要素新增");
+                    this.elform.LastModify = this.UserName;
                     console.log(this.elform);
                     // console.log(qs.stringify(this.CountNormTableData));
                     axios.post("CreateElement", qs.stringify(this.elform), {
@@ -1632,6 +1633,8 @@ export default {
 
                 } else {
                     console.log("进入要素修改");
+                    this.elform.LastModify = this.UserName;
+                    console.log(this.elform);
                     this.$ajax.put('UpdateElementByEID', this.elform)
                         //返回成功调用
                         .then((res) => {
@@ -1910,12 +1913,13 @@ export default {
                         }
                     }
                 },
-                // GetUserName() {
-                //     //this.UserName = getUserName("user", window.location.href);
-                //     var aa = getQueryVariable("user");
-                //     window.sessionStorage.setItem("user",aa);
-                //     console.log(aa);
-                // },
+
+                //获取登录用户
+                GetUserName(){
+                    this.UserName = window.sessionStorage.getItem('user');
+                    console.log("接收用户名");
+                    console.log(this.UserName);
+                },
 
         }
     }

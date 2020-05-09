@@ -55,6 +55,7 @@ export function submitCountNorm(_this) {
         });
     } else {
         if (that.mark === 3) {
+            that.form.LastModify = that.UserName;
             that.$ajax.post('CreateCountNorm', that.form)
                 //返回成功调用
                 .then(function(res) {
@@ -90,6 +91,7 @@ export function submitCountNorm(_this) {
                     that.mark = null;
                 });
         } else if (that.mark === 4) {
+            that.form.LastModify = that.UserName;
             that.$ajax.put('PutCountNormByID', that.form)
                 //返回成功调用
                 .then((res) => {

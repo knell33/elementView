@@ -55,6 +55,7 @@ export function submitMainAuthority(_this) {
         //权限类型-格式化  将数组转换为字符串
         let totalType = that.aform.AuthorityType.join(",");
         that.aform.AuthorityType = totalType;
+        that.aform.LastModify = that.UserName;
         that.$ajax.post('CreateMainAuthority', that.aform)
             //返回成功调用
             .then(function(res) {
@@ -102,6 +103,7 @@ export function submitMainAuthority(_this) {
         //权限类型-格式化   方便保存到数据库
         let totalType = that.aform.AuthorityType.join(",");
         that.aform.AuthorityType = totalType;
+        that.aform.LastModify = that.UserName;
         that.$ajax.put('PutMainAuthorityByAID', that.aform)
             //返回成功调用
             .then((res) => {
