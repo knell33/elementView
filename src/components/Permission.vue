@@ -234,11 +234,17 @@
 
             <!-- 新增角色用户弹窗测试1 -->
             <el-dialog :title="choosetitle" :visible.sync="RoleUserdialogFormVisibleTest1" :before-close="RUClosedialogTest1" width="69%">
+                <el-tooltip effect="dark" placement="bottom-end">
+                    <div slot="content">点击获取最新人员信息<br/><span style="color:#E6A23C">小提示:重新加载人员信息数据较慢，请小心选择</span></div>
+                    <el-button @click="RuTreeDataRefresh()" :loading="RUTreeDataLoading" icon="el-icon-refresh-right" type="primary" plain style="float:right">获取最新人员信息</el-button>
+                </el-tooltip>
+                
                 <vxe-toolbar>
                     <template v-slot:buttons>
                         <input v-model="vxeFilterName" @keyup="vxeSearchEvent" type="type" placeholder="请输入组织机构或人员名称搜索" class="vxeFilterInput">
                     </template>
                 </vxe-toolbar>
+                
                 <vxe-table 
                 border 
                 resizable 
@@ -463,6 +469,8 @@ export default {
             searchSymbol: false,
             //测试1 延迟加载
             vxeloading: false, //:loading="vxeloading"
+            //测试1 树形数据加载延迟
+            RUTreeDataLoading: false,
 
         }
     },
@@ -476,7 +484,9 @@ export default {
         this.RoleUserData();
 
         //角色用户 树形数据接收
-        this.RoleUserTestData = this.$route.query.RoleUserTestData;
+        //this.RoleUserTestData = this.$route.query.RoleUserTestData;
+        this.GetRoleUserData();
+        
 
         //测试1
         this.vxeloading = true;
@@ -1222,7 +1232,7 @@ export default {
                 let options = {
                     children: 'children'
                 };
-                let searchProps = ['OU', 'UserName'];
+                let searchProps = ['OU', 'UserName','Email'];
                 this.RUvxeSelectData = XEUtils.searchTree(this.RoleUserTestData, item => searchProps.some(key => XEUtils.toString(item[key]).toLowerCase().indexOf(vxeFilterName) > -1), options);
                 // 搜索之后默认展开所有子节点
                 this.$nextTick(() => {
@@ -1320,6 +1330,62 @@ export default {
             leading: false,
             trailing: true
         }),
+        //角色用户树形数据获取
+        GetRoleUserData() {
+            var RUTree = localStorage.getItem('ruTree');
+            if(RUTree == null){
+                //测试数据源
+                this.$ajax.post("GetZLAllUser1")
+                    .then((res) => {
+                        var arr = [];
+                        //将children为null的值转换为Arryay[0]
+                        for (let i = 0; i < res.data.length; i++) {
+                            for (let j = 0; j < res.data[i].children.length; j++) {
+                                if (res.data[i].children[j].children == null) {
+                                    res.data[i].children[j].children = arr;
+                                }
+                            }
+                        }
+                        this.RoleUserTestData = res.data;
+                        localStorage.setItem('ruTree', JSON.stringify(res.data));
+                        this.$message({
+                            showClose: true,
+                            message: '角色用户数据加载完成',
+                            type: 'success',
+                            duration: 2000
+                        })
+                    });
+            }else{
+                this.RoleUserTestData = JSON.parse(RUTree);
+            }
+        },
+        //角色用户数据 通过弹窗按钮获取
+        RuTreeDataRefresh(){
+            this.RUTreeDataLoading = true;
+            localStorage.removeItem('ruTree');
+            this.$ajax.post("GetZLAllUser1")
+                .then((res) => {
+                    var arr = [];
+                    //将children为null的值转换为Arryay[0]
+                    for (let i = 0; i < res.data.length; i++) {
+                        for (let j = 0; j < res.data[i].children.length; j++) {
+                            if (res.data[i].children[j].children == null) {
+                                res.data[i].children[j].children = arr;
+                            }
+                        }
+                    }
+                    this.RUTreeDataLoading = false;
+                    this.RoleUserTestData = res.data;
+                    localStorage.setItem('ruTree', JSON.stringify(res.data));
+                    this.$message({
+                        showClose: true,
+                        message: '角色用户数据加载完成',
+                        type: 'success',
+                        duration: 2000
+                    })
+                });
+
+        },
 
         //测试 设置数据索引值
         RoleUserTesttableRowClassName({

@@ -536,6 +536,11 @@ import {
     mainAuthorityDelete,
     getDetailname,
 } from '../views/MainAuthority';
+//获取登录用户名
+import {
+    getUserName,
+    getQueryVariable
+} from '../utility/User'
 
 //角色权限
 const authorityOptions = ['新增', '修改', '删除', '查询'];
@@ -692,7 +697,9 @@ export default {
             RoleUserTestData: [],
             //设置树形数据加载完成标识符
             RUTreeDataSymbol: false,
-            
+            //登录用户名
+            UserName: "",
+
         };
 
     },
@@ -704,16 +711,20 @@ export default {
         //权限页 角色用户 树形数据
         this.RoleUserData();
         //角色用户数据加载完成提示
-       var tips = setInterval(() => {
-           this.RoleUserTestDataControl();
-       },1000);
+        // var tips = setInterval(() => {
+        //     this.RoleUserTestDataControl();
+        // }, 1000);
 
-       setInterval(() => {
-           if(this.RUTreeDataSymbol){
-               clearInterval(tips);
-           }
-       },1000);
-       
+        // setInterval(() => {
+        //     if (this.RUTreeDataSymbol) {
+        //         clearInterval(tips);
+        //     }
+        // }, 1000);
+
+        //获取登录用户名
+        //this.getQueryVariable();
+        //this.GetUserName();
+
     },
     computed: {
         //上级资源列表
@@ -1832,65 +1843,82 @@ export default {
 
         //权限页 角色用户树形数据
         RoleUserData() {
-            if(this.RoleUserTestData.length == 0){
+            var RUTree = localStorage.getItem('ruTree');
+            if (RUTree == null) {
                 //测试数据源
                 this.$ajax.post("GetZLAllUser1")
                     .then((res) => {
-                        var arr = [];
-                        for(let i = 0;i < res.data.length;i++){
-                            for(let j = 0;j < res.data[i].children.length;j++){
-                                if(res.data[i].children[j].children == null){
-                                    res.data[i].children[j].children = arr;
+                            var arr = [];
+                            //将children为null的值转换为Arryay[0]
+                            for (let i = 0; i < res.data.length; i++) {
+                                for (let j = 0; j < res.data[i].children.length; j++) {
+                                    if (res.data[i].children[j].children == null) {
+                                        res.data[i].children[j].children = arr;
+                                    }
                                 }
                             }
+                            this.RoleUserTestData = res.data;
+                            localStorage.setItem('ruTree', JSON.stringify(res.data));
+                                this.$message({
+                                    showClose: true,
+                                    message: '角色用户数据加载完成',
+                                    type: 'success',
+                                    duration: 2000
+                                })
+                            });
+                    }
+                else {
+                    this.RoleUserTestData = JSON.parse(RUTree);
+                }
+            },
+            //角色用户数据加载完成提示
+            RoleUserTestDataControl() {
+                    if (this.RoleUserTestData.length > 0) {
+                        this.$message({
+                            showClose: true,
+                            message: '角色用户数据加载完成',
+                            type: 'success',
+                            duration: 2000
+                        });
+                        //设置数据加载完成标识符
+                        this.RUTreeDataSymbol = true;
+                    }
+                },
+                //权限管理跳转页面
+                Permission() {
+                    this.$router.push({
+                        path: '/permission',
+                        // query: {
+                        //     RoleUserTestData: this.RoleUserTestData
+                        // }
+                    })
+                },
+                //解决当element中input标签输入值不能正常输入
+                changeMainName() {
+                    this.$forceUpdate();
+                },
+                //要素目录-定义指标个数大于0样式修改
+                changeRowColor({
+                    row,
+                    rowIndex
+                }) {
+                    if (row.DYZBGS == 0) {
+                        return ''
+                    } else {
+                        return {
+                            'color': '#409EFF'
                         }
-                        this.RoleUserTestData = res.data;
-                        console.log("角色用户树形数据");
-                        console.log(this.RoleUserTestData);
-                    });
-            }
-        },
-        //角色用户数据加载完成提示
-        RoleUserTestDataControl(){
-            if(this.RoleUserTestData.length > 0){
-                this.$message({
-                showClose: true,
-                message: '角色用户数据加载完成',
-                type: 'success',
-                duration: 2000
-                });
-                //设置数据加载完成标识符
-                this.RUTreeDataSymbol = true;
-            }
-        },
-        //权限管理跳转页面
-        Permission() {
-            this.$router.push({
-                path: '/permission',
-                query:{
-                    RoleUserTestData: this.RoleUserTestData
-                }
-            })
-        },
-        //解决当element中input标签输入值不能正常输入
-        changeMainName() {
-            this.$forceUpdate();
-        },
-        //要素目录-定义指标个数大于0样式修改
-        changeRowColor({
-            row,
-            rowIndex
-        }) {
-            if (row.DYZBGS == 0) {
-                return ''
-            } else {
-                return {
-                    'color': '#409EFF'
-                }
-            }
-        },
+                    }
+                },
+                // GetUserName() {
+                //     //this.UserName = getUserName("user", window.location.href);
+                //     var aa = getQueryVariable("user");
+                //     window.sessionStorage.setItem("user",aa);
+                //     console.log(aa);
+                // },
+
+        }
     }
-}
 </script>
 
 <style scoped>

@@ -39,6 +39,8 @@ Vue.prototype.$ajax = axios;
 
 Vue.prototype.$qs = qs;
 
+
+
 new Vue({
     router,
     el: '#app',
