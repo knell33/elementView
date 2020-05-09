@@ -9,8 +9,8 @@ export function PermissionhandleAdd(_this) {
     _this.dialogFormVisible = true;
     //console.log(this.srow);
     _this.form.RoleID = _this.RoleIDvue; //将角色表格当前行的ID传给RoleID
-    console.log(_this.form);
-    console.log(_this.multipleSelection);
+    //console.log(_this.form);
+    //console.log(_this.multipleSelection);
 
 
 }
@@ -45,7 +45,7 @@ export function PermissionsubmitForm(_this) {
 
                 })
                 .catch(obj => {
-                    console.log("新增失败");
+                    //console.log("新增失败");
                     that.$message({
                         type: 'warning',
                         message: '出现未知错误！',
@@ -100,9 +100,9 @@ export function OPermissionhandleAdd(_this) {
 export function OPermissionsubmitForm(_this) {
     var that = _this;
     _this.oform.RoleID = _this.RoleIDvue;
-    console.log("as");
-    console.log(_this.RoleIDvue);
-    console.log(that.oform);
+    // console.log("as");
+    // console.log(_this.RoleIDvue);
+    // console.log(that.oform);
     that.$ajax.post("CreateMainAuthorityByOthers", that.oform)
         .then(function(obj) {
             that.$message({
@@ -119,7 +119,7 @@ export function OPermissionsubmitForm(_this) {
             that.RoleUserCuChange(that.RoleUesrData[0]);
         })
         .catch(function(obj) {
-            console.log("新增失败");
+            //console.log("新增失败");
             that.$message({
                 type: 'warning',
                 message: '出现未知错误！',
@@ -222,7 +222,7 @@ export function AddRoleuserTest11(_this) {
 export function RoleUserSubmit1(_this) {
     var that = _this;
     var m = [];
-    console.log(_this.symbol);
+    //console.log(_this.symbol);
     if (_this.symbol == "fatherSelect") {
         m = DataRoleUser(_this.RoleUserSelection1, _this.RoleIDvue);
     } else {
@@ -230,9 +230,9 @@ export function RoleUserSubmit1(_this) {
     }
     var m1 = JSON.stringify(m);
 
-    console.log(m1);
-    console.log(_this.RoleUserSelection);
-    console.log(_this.RoleIDvue);
+    //console.log(m1);
+    //console.log(_this.RoleUserSelection);
+    //console.log(_this.RoleIDvue);
     if (_this.RoleIDvue == "") {
         that.$message({
             type: 'warning',
@@ -261,7 +261,7 @@ export function RoleUserSubmit1(_this) {
                         }))
                     //返回成功调用
                     .then((res) => {
-                        console.log(res.data)
+                        //console.log(res.data)
                         that.RoleUesrData = res.data;
                     })
 
@@ -280,7 +280,7 @@ export function RoleUserSubmit1(_this) {
 
             })
             .catch(function(obj) {
-                console.log("新增失败");
+                //console.log("新增失败");
                 that.$message({
                     type: 'warning',
                     message: '出现未知错误！',
@@ -301,7 +301,7 @@ export function RoleUserSubmitTest1(_this) {
 //测试确认1
 export function RoleUserSubmitTest11(_this, ruData) {
     var that = _this;
-    console.log("进入测试1确认");
+    //console.log("进入测试1确认");
     //确认数据源设置
     var arr = [];
     for (let i = 0; i < ruData.length; i++) {
@@ -312,9 +312,9 @@ export function RoleUserSubmitTest11(_this, ruData) {
     var m = DataRoleUser(arr, _this.RoleIDvue);
     var m1 = JSON.stringify(m);
 
-    console.log(m1);
-    console.log(arr);
-    console.log(_this.RoleIDvue);
+    // console.log(m1);
+    // console.log(arr);
+    // console.log(_this.RoleIDvue);
     if (_this.RoleIDvue == "") {
         that.$message({
             type: 'warning',
@@ -343,7 +343,7 @@ export function RoleUserSubmitTest11(_this, ruData) {
                         }))
                     //返回成功调用
                     .then((res) => {
-                        console.log(res.data)
+                        //console.log(res.data)
                         that.RoleUesrData = res.data;
                     })
 

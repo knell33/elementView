@@ -151,7 +151,7 @@ export function countNormDelete(_this) {
                 type: 'warning'
             })
             .then(() => {
-                console.log(self.rid);
+                //console.log(self.rid);
                 self.$ajax.delete('DeleteCountNormByID', {
                         params: ({
                             countNormID: self.rid

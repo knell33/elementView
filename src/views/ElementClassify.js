@@ -54,7 +54,7 @@ export function ClassifysubmitForm(_this) {
         if (_this.cform.Name != "") {
             //console.log("cform:"+that.cform);
             that.cform.LastModify = that.UserName;
-            console.log(that.cform);
+            //console.log(that.cform);
             that.$ajax.post("CreateElementClassify", that.cform)
                 .then(function(obj) {
                     that.$message({
@@ -79,7 +79,7 @@ export function ClassifysubmitForm(_this) {
 
                 })
                 .catch(function(obj) {
-                    console.log("新增失败");
+                    //console.log("新增失败");
                     that.$message({
                         type: 'warning',
                         message: '出现未知错误！',
@@ -99,7 +99,7 @@ export function ClassifysubmitForm(_this) {
         //console.log("进入修改");
         if (_this.cform.Name != "") {
             that.cform.LastModify = that.UserName;
-            console.log(that.cform);
+            //console.log(that.cform);
             that.$ajax.put('PutElementClassifyByID', that.cform)
                 //返回成功调用
                 .then((res) => {
@@ -109,7 +109,7 @@ export function ClassifysubmitForm(_this) {
                         duration: 4000,
                         offset: 40
                     });
-                    console.log(_this.crow.LastDate);
+                    //console.log(_this.crow.LastDate);
                     //_this.crow.LastDate = NowDate();
                     that.$set(that.ElementClassifyTableData, _this.crow.row_index, _this.crow); //替换要素分类表格中的数据
                     that.ClassifydialogFormVisible = false;

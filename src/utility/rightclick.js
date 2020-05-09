@@ -19,7 +19,7 @@ export function rightClick(_this, row, column, event) {
     _this.menuVisible = true; // 显示模态窗口，跳出自定义菜单栏
     _this.cmenuVisible = false;
     _this.menuVisibleCountNorm = false;
-    
+
     var menu = document.querySelector('#menu');
     styleMenu(menu);
     _this.srow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
@@ -27,7 +27,7 @@ export function rightClick(_this, row, column, event) {
     //console.log(this.srow);
     //  console.log("退出保存");
     _this.rid = row.ID;
-    console.log(event);
+    //console.log(event);
 }
 
 //资源目录 右键菜单布局
@@ -69,9 +69,9 @@ export function crightClick(_this, row, column, event, state) {
         _this.crow = JSON.parse(JSON.stringify(row));
         _this.cid = row.ID;
     }
-    console.log(_this.cid)
-        //console.log('ROW:'+_this.crow.row_index);
-        //console.log(event);
+    //console.log(_this.cid)
+    //console.log('ROW:'+_this.crow.row_index);
+    //console.log(event);
 
 };
 
@@ -146,7 +146,7 @@ export function rightClickMainAuthority(_this, row, event, state) {
     }
     _this.srow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
     _this.aid = row.AID;
-    console.log()
+    //console.log()
 }
 
 //资源明细-角色权限 右键菜单布局
@@ -180,7 +180,7 @@ export function rightRole(_this, row, event) {
     _this.RoleIDvue = row.ID;
     //console.log("右键保存数据srow");
     //console.log(_this.srow);
-    console.log(row);
+    //console.log(row);
 }
 
 //角色 右键菜单布局
@@ -212,7 +212,7 @@ export function rightPermission(_this, row) {
     stylePermission(menu);
     _this.AIDvue = row.AID;
     _this.Prow = JSON.parse(JSON.stringify(row));
-    console.log(_this.Prow);
+    //console.log(_this.Prow);
 }
 
 //权限 右键菜单布局
@@ -249,7 +249,7 @@ export function rightRoleUser(_this, row, event, state) {
     }
     //保存当前行数据
     _this.RoleUserRowData = JSON.parse(JSON.stringify(row));
-    console.log(_this.RoleUserRowData);
+    //console.log(_this.RoleUserRowData);
 }
 
 //角色用户右键菜单布局

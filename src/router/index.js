@@ -53,9 +53,6 @@ const router = new VueRouter({
 //导航守卫(登录拦截)
 router.beforeEach((to, from, next) => {
     let isLogin = window.sessionStorage.getItem('user');
-    console.log("导航守卫");
-    console.log(isLogin);
-    console.log(to);
     if (to.meta.requireAuth) { //判断进入的路由是否需要登录
         if (isLogin != null) { //是否具有登录信息
             next();

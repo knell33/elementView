@@ -143,7 +143,7 @@ export function mainAuthoritycolse(_this) {
     //保存取消前的数据
     self.aform.DID = oldaform.DID;
     self.aform.RID = oldaform.RID;
-    console.log("关闭并清空模态框");
+    //console.log("关闭并清空模态框");
 
 }
 //点击X关闭模态框
@@ -158,7 +158,7 @@ export function mainAuthorityclosedialog(done, _this) {
     self.isMainName = true;
     self.mark = null;
     self.title = "";
-    console.log("点击X关闭模态框");
+    //console.log("点击X关闭模态框");
 
 }
 

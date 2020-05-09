@@ -65,7 +65,7 @@
   // 实时监听表格
    tables: function() {
     const search = this.search;
-    console.log("aaa");
+    //console.log("aaa");
     if (search) {
      return this.tableData.filter(dataNews => {
       return Object.keys(dataNews).some(key => {
@@ -73,7 +73,7 @@
       })
      })
     }
-    console.log(this.tableData);
+    //console.log(this.tableData);
     return this.tableData;
    }
   },

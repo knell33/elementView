@@ -31,19 +31,19 @@ export function handleUpdate(_this) {
 //获取资源类型
 export function getTypeData() {
     self.$ajax.post('GetTypeByRID',
-        self.$qs.stringify({
-            RID: self.form.PID
-        }))
+            self.$qs.stringify({
+                RID: self.form.PID
+            }))
         //返回成功调用
-        .then(function (res) {
+        .then(function(res) {
             var GetType = res.data[0].Type;
             self.getType = GetType;
             //  console.log("调用");
             //  console.log(that.getType);
         })
         //返回失败调用
-        .catch(function (res) {
-            console.log("没有找到类型");
+        .catch(function(res) {
+            //console.log("没有找到类型");
         });
 }
 
@@ -57,14 +57,14 @@ export function submitForm(_this) {
         _this.$message.error('请输入资源名称');
     } else {
         if (_this.mark == 1) {
-            console.log("aa");
-            console.log(_this.form);
+            //console.log("aa");
+            //console.log(_this.form);
             var Type1 = _this.form.Type;
-            console.log(Type1);
-            console.log("aa");
+            //console.log(Type1);
+            //console.log("aa");
             getTypeData();
 
-            console.log(_this.getType);
+            //console.log(_this.getType);
 
             if (_this.getType == "资源" && Type1 == "资源") {
                 _this.$message({
@@ -101,7 +101,7 @@ export function submitForm(_this) {
             } else {
                 //console.log("进入新增");
                 _this.$ajax.post("CreateResource", _this.form)
-                    .then(function (obj) {
+                    .then(function(obj) {
                         that.$message({
                             type: 'success',
                             message: '新增成功',
@@ -113,8 +113,8 @@ export function submitForm(_this) {
                         that.mark = null;
                         that.treeList();
                     })
-                    .catch(function (obj) {
-                        console.log("新增失败");
+                    .catch(function(obj) {
+                        //console.log("新增失败");
                         that.$message({
                             type: 'warning',
                             message: '出现未知错误！',
@@ -159,7 +159,7 @@ export function submitForm(_this) {
                     offset: 40
                 });
             } else {
-                console.log("进入修改");
+                //console.log("进入修改");
                 _this.$ajax.put('PutResourceByID', _this.form)
                     //返回成功调用
                     .then((res) => {
@@ -201,10 +201,10 @@ export function colse(_this) {
 //点击X关闭模态框
 export function closedialog(_this, done) {
     _this.$confirm('确认关闭？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-    })
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        })
         .then(_ => {
             done();
             _this.form = {};
@@ -212,22 +212,22 @@ export function closedialog(_this, done) {
             //_this.title = "";
             _this.$refs['form'].resetFields();
         })
-        .catch(_ => { });
+        .catch(_ => {});
 }
 
 //右键删除
 export function handleDelete(_this) {
     _this.$confirm('是否要删除当前资源目录？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-    })
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        })
         .then(() => {
             _this.$ajax.delete('DeleteResourceByID', {
-                params: ({
-                    ResourceId: _this.rid
+                    params: ({
+                        ResourceId: _this.rid
+                    })
                 })
-            })
                 //返回成功调用
                 .then((res) => {
                     _this.$message({
@@ -246,7 +246,7 @@ export function handleDelete(_this) {
 
                 });
         })
-        .catch(() => { });
+        .catch(() => {});
 }
 
 // 上级资源列表下拉框开启搜索功能

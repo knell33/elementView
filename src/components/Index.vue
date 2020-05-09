@@ -737,8 +737,6 @@ export default {
                         Type: Pdata[i].Type
                     })
                 }
-                //console.log("进入测试");
-                //console.log(obj);
             });
             return obj;
         },
@@ -790,7 +788,6 @@ export default {
         //统计指标-要素名称
         ElementList() {
             let obj = [];
-            console.log("统计指标-要素名称");
             this.$ajax.post('GetAllElementByResourceID', this.$qs.stringify({
                     RID: this.resouceData.ID
                 }))
@@ -806,13 +803,11 @@ export default {
                         res.data.GLID = null;
                     }
                 });
-            console.log(obj);
             return obj;
         },
         //角色权限-角色信息
         RoleList() {
             let obj = [];
-            console.log("角色权限-角色信息");
             this.$ajax.post('GetAllRoleInfo')
                 .then(function (res) {
                     for (let i in res.data) {
@@ -826,7 +821,6 @@ export default {
                         res.data.RoleID = null;
                     }
                 });
-            console.log(obj);
             this.RoleInfo = obj;
             return obj;
         },
@@ -848,7 +842,6 @@ export default {
                     //item.Children = [] // 1
                     map[item.ID] = item;
                 });
-                //console.log(map);
                 var treeData = [];
                 var relationResource = [];
                 var count = 0
@@ -871,8 +864,6 @@ export default {
                         treeData.push(item);
                     }
                 });
-                console.log("进入树形");
-                console.log(treeData);
                 that.ResourceTableData = treeData;
                 that.RelationResourceTableData = relationResource;
             });
@@ -887,8 +878,6 @@ export default {
             that.resouceData = row;
             //保存资源ID供要素目录新增时使用
             this.lrid = row.ID;
-            console.log("保存资源ID供要素目录新增时使用");
-            console.log(this.lrid);
             //要素
             this.$ajax.post('GetAllELementByResourceID',
                     this.$qs.stringify({
@@ -896,13 +885,10 @@ export default {
                     }))
                 //返回成功调用
                 .then(function (res) {
-                    console.log("要素目录");
-                    console.log(res);
                     that.ElementTableData = res.data;
                 })
                 //返回失败调用
                 .catch(function (res) {
-                    console.log("出错了")
                 });
             //分类
             this.$ajax.post('GetAllElementClassifyByRID',
@@ -910,8 +896,6 @@ export default {
                         RID: row.ID
                     }))
                 .then(function (res) {
-                    console.log("要素分类");
-                    console.log(res);
                     that.ElementClassifyTableData = res.data;
                 })
                 .catch(function (res) {})
@@ -921,8 +905,6 @@ export default {
                         RID: row.ID
                     }))
                 .then(function (res) {
-                    console.log("统计指标");
-                    console.log(res);
                     that.CountNormTableData = res.data;
                 })
                 .catch(function (res) {})
@@ -932,8 +914,6 @@ export default {
                         RID: row.ID
                     }))
                 .then(function (res) {
-                    console.log("资源明细");
-                    console.log(res);
                     that.DetailTableData = res.data;
                 })
                 .catch(function (res) {})
@@ -949,8 +929,6 @@ export default {
                         EID: row.EID
                     }))
                 .then(function (res) {
-                    console.log("要素值域选项");
-                    console.log(res);
                     that.ElementRangeTableData = res.data;
                 })
                 .catch(function (res) {})
@@ -958,11 +936,8 @@ export default {
         //明细目录--角色权限 联动
         detaillink(row, column, event) {
             var that = this;
-            console.log("明细目录--角色权限 联动");
-            console.log(row);
             that.aform.DID = row.DID;
             that.aform.RID = row.RID;
-            console.log(that.aform);
             that.detailID = row.DID;
             that.detailName = row.DetailName;
             //角色权限
@@ -971,8 +946,6 @@ export default {
                         DID: row.DID
                     }))
                 .then(function (res) {
-                    console.log("角色权限");
-                    console.log(res);
                     that.MainAuthorityTableData = res.data;
                 })
                 .catch(function (res) {})
@@ -1032,9 +1005,6 @@ export default {
         },
         //资源目录右键点击表头事件
         rightHeaderClick(column, event) {
-            console.log("进入资源目录表头事件");
-            console.log(column);
-            console.log(event);
             this.disabledvalue = false;
             this.menuVisible = false;
             this.menuVisible = true;
@@ -1104,8 +1074,6 @@ export default {
         handleUpdate() {
             this.choosetitle = "修改资源";
             this.mark = 2;
-            //console.log(this.srow);
-            //console.log(this.mark);
             this.dialogFormVisible = true;
             this.form = this.srow;
         },
@@ -1120,12 +1088,9 @@ export default {
                 .then(function (res) {
                     var GetType = res.data[0].Type;
                     that.getType = GetType;
-                    //  console.log("调用");
-                    //  console.log(that.getType);
                 })
                 //返回失败调用
                 .catch(function (res) {
-                    console.log("没有找到类型");
                 });
         },
         //资源目录弹框点击确认事件
@@ -1137,14 +1102,8 @@ export default {
                 this.$message.error('请输入资源名称');
             } else {
                 if (this.mark == 1) {
-                    console.log("aa");
-                    console.log(this.form);
                     var Type1 = this.form.Type;
-                    console.log(Type1);
-                    console.log("aa");
                     this.getTypeData();
-
-                    console.log(this.getType);
 
                     if (this.getType == "资源" && Type1 == "资源") {
                         this.$message({
@@ -1179,9 +1138,7 @@ export default {
                             offset: 40
                         });
                     } else {
-                        console.log("进入新增");
                         this.form.LastModify = this.UserName;
-                        console.log(this.form);
                         this.$ajax.post("CreateResource", this.form)
                             .then(function (obj) {
                                 that.$message({
@@ -1196,7 +1153,6 @@ export default {
                                 that.treeList();
                             })
                             .catch(function (obj) {
-                                console.log("新增失败");
                                 that.$message({
                                     type: 'warning',
                                     message: '出现未知错误！',
@@ -1241,7 +1197,6 @@ export default {
                             offset: 40
                         });
                     } else {
-                        console.log("进入修改");
                         this.form.LastModify = this.UserName;
                         this.$ajax.put('PutResourceByID', this.form)
                             //返回成功调用
@@ -1411,7 +1366,6 @@ export default {
             this.mark = 2;
             this.eldialogFormVisible = true;
             this.elform = this.erow;
-            console.log(this.erow);
             //设置名称是否展示禁用
             if (this.erow.Type == "资源") {
                 this.zsmcdis = true;
@@ -1471,13 +1425,10 @@ export default {
                                     }))
                                 //返回成功调用
                                 .then(function (res) {
-                                    console.log("要素目录");
-                                    console.log(res);
                                     that.ElementTableData = res.data;
                                 })
                                 //返回失败调用
                                 .catch(function (res) {
-                                    console.log("出错了")
                                 });
                         })
                         //返回失败调用
@@ -1493,7 +1444,6 @@ export default {
         },
         //根据条件设置要素目录新增、修改字段的禁用状态
         resourceChange() {
-            console.log(this.elform);
             var that = this;
             //根据资源类型改变名称是否展示禁用
             for (let i in this.ResourceTableData) {
@@ -1512,23 +1462,18 @@ export default {
                     }))
                 //返回成功调用
                 .then(function (res) {
-                    console.log("要素目录");
-                    console.log(res);
                     that.elform.Numbera = (res.data.length + 1).toString();
                 })
                 //返回失败调用
                 .catch(function (res) {
-                    console.log("出错了")
                 });
         },
         //根据资源目录类型决定是否显示资源关系字段
         relationResourceChange() {
             if (this.form.Type == "资源关系") {
                 this.isRelationResource = true;
-                console.log(this.form.Type == "资源关系");
             } else {
                 this.isRelationResource = false;
-                console.log(this.form.Type == "资源关系");
             }
         },
         //根据要素类型改变单位、长度、选项类型、值域资源、编码目录字段禁用
@@ -1568,10 +1513,7 @@ export default {
                 this.$message.error('请选择选项类型');
             } else {
                 if (this.mark == 1) {
-                    console.log("进入要素新增");
                     this.elform.LastModify = this.UserName;
-                    console.log(this.elform);
-                    // console.log(qs.stringify(this.CountNormTableData));
                     axios.post("CreateElement", qs.stringify(this.elform), {
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -1590,13 +1532,10 @@ export default {
                                     }))
                                 //返回成功调用
                                 .then(function (res) {
-                                    console.log("要素目录");
-                                    console.log(res);
                                     that.ElementTableData = res.data;
                                 })
                                 //返回失败调用
                                 .catch(function (res) {
-                                    console.log("出错了")
                                 });
                             that.eldialogFormVisible = false;
                             that.elform = {
@@ -1632,9 +1571,7 @@ export default {
                         });
 
                 } else {
-                    console.log("进入要素修改");
                     this.elform.LastModify = this.UserName;
-                    console.log(this.elform);
                     this.$ajax.put('UpdateElementByEID', this.elform)
                         //返回成功调用
                         .then((res) => {
@@ -1651,13 +1588,10 @@ export default {
                                     }))
                                 //返回成功调用
                                 .then(function (res) {
-                                    console.log("要素目录");
-                                    console.log(res);
                                     that.ElementTableData = res.data;
                                 })
                                 //返回失败调用
                                 .catch(function (res) {
-                                    console.log("出错了")
                                 });
                             that.eldialogFormVisible = false;
                             that.elform = {
@@ -1917,8 +1851,6 @@ export default {
                 //获取登录用户
                 GetUserName(){
                     this.UserName = window.sessionStorage.getItem('user');
-                    console.log("接收用户名");
-                    console.log(this.UserName);
                 },
 
         }

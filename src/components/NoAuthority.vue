@@ -24,10 +24,8 @@ export default {
             if(this.UserName != null){
                 window.sessionStorage.setItem("user",this.UserName);
             } 
-            console.log(this.UserName);
             // var aa = getQueryVariable("user");
             // window.sessionStorage.setItem("user",aa);
-            // console.log(aa);
 
             //登录成功后实现路由重定向
             if(this.UserName != null){
