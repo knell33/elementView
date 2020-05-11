@@ -1470,6 +1470,7 @@ export default {
         },
         //根据资源目录类型决定是否显示资源关系字段
         relationResourceChange() {
+            this.$forceUpdate();
             if (this.form.Type == "资源关系") {
                 this.isRelationResource = true;
             } else {
