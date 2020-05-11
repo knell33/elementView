@@ -288,8 +288,8 @@
                             <el-form-item label="分类" style="margin-left:20px">
                                 <el-select v-model="elform.CID" filterable :filter-method="datafilter"
                                     :default-first-option="true" placeholder="请选择分类" style="width:217px" clearable>
-                                    <el-option v-for="(item,index) in ClassifyList" :label="item.CName"
-                                        :value="item.CID" :key="index"></el-option>
+                                    <el-option v-for="(item,index) in ClassifyList" :label="item.Name"
+                                        :value="item.ID" :key="index"></el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="要素类型">
@@ -629,6 +629,7 @@
     export default {
         data() {
             return {
+                ClassifyList: [],
                 //资源目录新增下级单的字段-类型
                 PType: "",
                 //要素目录左对齐
@@ -825,23 +826,6 @@
                 });
                 return obj;
             },
-            //要素目录分类列表
-            ClassifyList() {
-                var obj = [];
-                this.$ajax.post("GetAllElementClassifyByRID",
-                    this.$qs.stringify({
-                        RID: this.rid
-                    })).then(function (res) {
-                        var Cdata = res.data;
-                        for (let i in Cdata) {
-                            obj.push({
-                                CID: Cdata[i].ID,
-                                CName: Cdata[i].Name
-                            })
-                        }
-                    });
-                return obj;
-            },
             //值域资源列表
             DRList() {
                 var obj = [];
@@ -957,6 +941,13 @@
             //资源--明细 联动
             elementlink(row, column, event) {
                 var that = this;
+                //刷新要素目录的分类字段
+                that.$ajax.post("GetAllElementClassifyByRID",
+                that.$qs.stringify({
+                        RID: row.ID
+                    })).then(function (res) {
+                        that.ClassifyList = res.data;
+                    });
                 //单击资源目录保存资源ID
                 that.treedata = row.ID;
                 //单击资源目录保存当前行记录

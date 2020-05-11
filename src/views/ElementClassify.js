@@ -73,6 +73,13 @@ export function ClassifysubmitForm(_this) {
                             that.ElementClassifyTableData = res.data;
                         })
                         .catch();
+                    //刷新要素目录的分类字段
+                    that.$ajax.post("GetAllElementClassifyByRID",
+                    that.$qs.stringify({
+                            RID: that.cform.RID
+                        })).then(function (res) {
+                            that.ClassifyList = res.data;
+                        });
                     that.ClassifydialogFormVisible = false;
                     that.cform = {};
                     that.cmark = null;
@@ -99,7 +106,6 @@ export function ClassifysubmitForm(_this) {
         //console.log("进入修改");
         if (_this.cform.Name != "") {
             that.cform.LastModify = that.UserName;
-            //console.log(that.cform);
             that.$ajax.put('PutElementClassifyByID', that.cform)
                 //返回成功调用
                 .then((res) => {
@@ -109,13 +115,17 @@ export function ClassifysubmitForm(_this) {
                         duration: 4000,
                         offset: 40
                     });
-                    //console.log(_this.crow.LastDate);
-                    //_this.crow.LastDate = NowDate();
                     that.$set(that.ElementClassifyTableData, _this.crow.row_index, _this.crow); //替换要素分类表格中的数据
+                    //刷新要素目录的分类字段
+                    that.$ajax.post("GetAllElementClassifyByRID",
+                    that.$qs.stringify({
+                            RID: that.cform.RID
+                        })).then(function (res) {
+                            that.ClassifyList = res.data;
+                        });
                     that.ClassifydialogFormVisible = false;
                     that.cform = {};
                     that.mark = null;
-
 
                 })
                 //返回失败调用
@@ -187,6 +197,8 @@ export function ClassifyhandleDelete(_this) {
                         message: '删除成功!'
                     });
                     _this.$delete(_this.ElementClassifyTableData, _this.crow.row_index);
+                    //资源目录-分类字段
+                    _this.$delete(_this.ClassifyList, _this.crow.row_index);
 
                 })
                 //返回失败调用
