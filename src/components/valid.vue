@@ -13,7 +13,7 @@
    <el-table
     :data="tables"
     style="width: 100%"
-    max-height=500>
+    max-height="500">
    <!-- 地址 -->
     <el-table-column label="时间">
      <template slot-scope="scope">

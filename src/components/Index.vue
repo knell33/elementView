@@ -1071,7 +1071,10 @@
                 var menu = document.querySelector('#menu');
                 this.styleMenu(menu);
                 this.srow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
-                console.log(row);
+                //判断修改的类型是否为资源关系
+                if(row.Type == "资源关系"){
+                    this.isRelationResource = true;
+                }
                 this.rid = row.ID;
             },
             //要素目录右键点击事件
@@ -1307,6 +1310,8 @@
             colse() {
                 //关闭资源目录弹框
                 this.dialogFormVisible = false;
+                //将关系资源字段隐藏;
+                this.isRelationResource = false;
                 this.form = {};
                 //关闭要素目录弹框
                 this.eldialogFormVisible = false;
@@ -1337,6 +1342,8 @@
                 done();
                 this.form = {};
                 this.mark = null;
+                //将关系资源字段隐藏;
+                this.isRelationResource = false;
                 this.$refs['form'].resetFields();
             },
             //点击X关闭要素目录模态框
