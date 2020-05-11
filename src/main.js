@@ -33,8 +33,8 @@ Vue.use(ElementUI);
 //Vue.use(fecha);
 
 //配置请求根路径
-//axios.defaults.baseURL = 'http://192.168.31.119:62200/api/'
-axios.defaults.baseURL = 'http://localhost:62200/api/'
+axios.defaults.baseURL = 'http://192.168.31.119:62200/api/'
+// axios.defaults.baseURL = 'http://localhost:62200/api/'
 Vue.prototype.$ajax = axios;
 
 Vue.prototype.$qs = qs;
