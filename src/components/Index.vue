@@ -569,24 +569,24 @@
         cfoo,
         crightClick,
         cstyleMenu,
-        rightClick,
-        styleMenu,
+        // rightClick,
+        // styleMenu,
         rightClickCountNorm,
         styleMenuCountNorm,
         rightClickMainAuthority,
         styleMenuMainAuthority
     } from '../utility/rightclick';
 
-    import {
-        handleAdd,
-        handleXAdd,
-        handleUpdate,
-        submitForm,
-        colse,
-        closedialog,
-        handleDelete,
-        resourcedatafilter
-    } from '../views/Resource';
+    // import {
+    //     handleAdd,
+    //     handleXAdd,
+    //     handleUpdate,
+    //     submitForm,
+    //     colse,
+    //     closedialog,
+    //     handleDelete,
+    //     resourcedatafilter
+    // } from '../views/Resource';
 
     import {
         ClassifyhandleAdd,
@@ -1175,10 +1175,8 @@
                 } else if (this.form.Name == "") {
                     this.$message.error('请输入资源名称');
                 } else {
-                    if (this.mark == 1) {
-                        
+                    if (this.mark == 1) {                        
                         let Type1 = this.form.Type;
-                        console.log(this.PType +"====" +Type1);
                         if (this.PType == "资源" && Type1 == "资源") {
                             this.$message({
                                 type: 'warning',
@@ -1237,6 +1235,7 @@
                     } else {          
                         let Type1 = this.form.Type;
                         let PType1 = "";
+                        //通过提交数据的PID找到对应父级的类型
                         for (let i = 0; i < this.ResourceTableData.length; i++) {
                             if (this.form.PID == this.ResourceTableData[i].ID) {
                                 PType1 = this.ResourceTableData[i].Type;

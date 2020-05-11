@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <template>
  <div class="">
   <div class="top">

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <template>
 <h4>您不具备查看和操作该页面的权限，请联系管理员</h4>
 </template>
