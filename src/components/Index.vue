@@ -26,7 +26,8 @@
                                 @click="Permission()">权限管理</el-button>
                         </el-popover>
                         <!-- <div class="g-permission" @click="Permission()">权限管理</div> -->
-                        <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink"
+                        <!-- <el-table :data="ElementTableData" height="350px" @row-click="elementrangelink" -->
+                        <el-table :data="ElementTableData" height="350px"
                             :row-style="changeRowColor" :header-cell-style="{background:'white',color:'#606266'}" border
                             highlight-current-row @current-change="ElementTableChange" @row-contextmenu="elrightClick"
                             @header-contextmenu="elrightHeaderClick"
@@ -110,8 +111,7 @@
                                 </el-table-column>
                             </el-table>
                         </el-tab-pane>
-                        <el-tab-pane label="要素值域选项" name="third">
-                            <!-- 要素值域选项表格 -->
+                        <!-- <el-tab-pane label="要素值域选项" name="third">
                             <el-table :data="ElementRangeTableData" height="440px"
                                 :header-cell-style="{background:'white',color:'#606266'}" border highlight-current-row
                                 @current-change="ElementRangeTableChange">
@@ -125,7 +125,7 @@
                                     sortable>
                                 </el-table-column>
                             </el-table>
-                        </el-tab-pane>
+                        </el-tab-pane> -->
                         <!-- 资源明细 -->
                         <el-tab-pane label="资源明细" name="fourth">
                             <el-table :data="DetailTableData" height="250px" @row-click="detaillink"
@@ -415,7 +415,7 @@
                             <el-form-item label="要素名称">
                                 <el-select v-model="form.GLID" placeholder="请选择要素名称" @change="ElementchangeName"
                                     style="width: 100%">
-                                    <el-option v-for="(item,index) in ElementList" :label="item.Name" :value="item.ID"
+                                    <el-option v-for="(item,index) in ElementList" :label="item.Name" :value="item.EID"
                                         :key="index"></el-option>
                                 </el-select>
                             </el-form-item>
@@ -453,7 +453,7 @@
                                 <el-select v-model="aform.Type" placeholder="请选择类型" style="width: 100%"
                                     @change="RolechangeName">
                                     <el-option label="资源明细" value="资源明细"></el-option>
-                                    <el-option label="要素" value="要素"></el-option>
+                                    <!-- <el-option label="要素" value="要素"></el-option> -->
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="主体名称">
@@ -629,6 +629,7 @@
     export default {
         data() {
             return {
+                ElementList: [],
                 ClassifyList: [],
                 //资源目录新增下级单的字段-类型
                 PType: "",
@@ -854,26 +855,6 @@
                 });
                 return obj;
             },
-            //统计指标-要素名称
-            ElementList() {
-                let obj = [];
-                this.$ajax.post('GetAllElementByResourceID', this.$qs.stringify({
-                    RID: this.resouceData.ID
-                }))
-                    .then(function (res) {
-                        for (let i in res.data) {
-                            obj.push({
-                                ID: res.data[i].EID,
-                                Name: res.data[i].Name
-                            })
-                        }
-                        //解决当获取的列表有值但无法选择
-                        if (!res.data.GLID) {
-                            res.data.GLID = null;
-                        }
-                    });
-                return obj;
-            },
             //角色权限-角色信息
             RoleList() {
                 let obj = [];
@@ -962,6 +943,7 @@
                     //返回成功调用
                     .then(function (res) {
                         that.ElementTableData = res.data;
+                        that.ElementList = res.data;
                     })
                     //返回失败调用
                     .catch(function (res) {
@@ -972,7 +954,7 @@
                         RID: row.ID
                     }))
                     .then(function (res) {
-                        that.ElementClassifyTableData = res.data;
+                        that.ElementClassifyTableData = res.data;                        
                     })
                     .catch(function (res) { })
                 //统计指标
@@ -997,18 +979,18 @@
                 that.MainAuthorityTableData = [];
             },
             //要素目录--文本值域选项 联动
-            elementrangelink(row, column, event) {
-                var that = this;
-                //要素值域选项
-                this.$ajax.post('GetAllElementRangeByEID',
-                    this.$qs.stringify({
-                        EID: row.EID
-                    }))
-                    .then(function (res) {
-                        that.ElementRangeTableData = res.data;
-                    })
-                    .catch(function (res) { })
-            },
+            // elementrangelink(row, column, event) {
+            //     var that = this;
+            //     //要素值域选项
+            //     this.$ajax.post('GetAllElementRangeByEID',
+            //         this.$qs.stringify({
+            //             EID: row.EID
+            //         }))
+            //         .then(function (res) {
+            //             that.ElementRangeTableData = res.data;
+            //         })
+            //         .catch(function (res) { })
+            // },
             //明细目录--角色权限 联动
             detaillink(row, column, event) {
                 var that = this;
@@ -1504,6 +1486,17 @@
                                     //返回失败调用
                                     .catch(function (res) {
                                     });
+                                //统计指标-要素名称字段刷新
+                                that.$ajax.post('GetAllElementByResourceID', that.$qs.stringify({
+                                    RID: that.rid
+                                }))
+                                    .then(function (res) {
+                                        that.ElementList = res.data;
+                                        //解决当获取的列表有值但无法选择
+                                        if (!res.data.GLID) {
+                                            res.data.GLID = null;
+                                        }
+                                    });
                             })
                             //返回失败调用
                             .catch((res) => {
@@ -1588,6 +1581,7 @@
                     this.$message.error('请选择选项类型');
                 } else {
                     if (this.mark == 1) {
+                        console.log(that.elform);
                         this.elform.LastModify = this.UserName;
                         axios.post("CreateElement", qs.stringify(this.elform), {
                             headers: {
@@ -1612,6 +1606,17 @@
                                     //返回失败调用
                                     .catch(function (res) {
                                     });
+                                //统计指标-要素名称字段刷新
+                                that.$ajax.post('GetAllElementByResourceID', that.$qs.stringify({
+                                    RID: that.elform.RID
+                                }))
+                                    .then(function (res) {
+                                        that.ElementList = res.data;
+                                        //解决当获取的列表有值但无法选择
+                                        if (!res.data.GLID) {
+                                            res.data.GLID = null;
+                                        }
+                                    });
                                 that.eldialogFormVisible = false;
                                 that.elform = {
                                     EID: "",
@@ -1635,6 +1640,7 @@
                                     ElementClassify: "普通要素"
                                 };
                                 that.mark = null;
+                               
                             })
                             //返回失败调用
                             .catch((res) => {
@@ -1668,6 +1674,17 @@
                                     //返回失败调用
                                     .catch(function (res) {
                                     });
+                                //统计指标-要素名称字段刷新
+                                that.$ajax.post('GetAllElementByResourceID', that.$qs.stringify({
+                                    RID: that.elform.RID
+                                }))
+                                    .then(function (res) {
+                                        that.ElementList = res.data;
+                                        //解决当获取的列表有值但无法选择
+                                        if (!res.data.GLID) {
+                                            res.data.GLID = null;
+                                        }
+                                    });
                                 that.eldialogFormVisible = false;
                                 that.elform = {
                                     EID: "",
@@ -1690,7 +1707,7 @@
                                     CDID: "",
                                     ElementClassify: "普通要素"
                                 };
-                                that.mark = null;
+                                that.mark = null;                                
                             })
                             //返回失败调用
                             .catch((res) => {
