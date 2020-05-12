@@ -922,13 +922,7 @@
             //资源--明细 联动
             elementlink(row, column, event) {
                 var that = this;
-                //刷新要素目录的分类字段
-                that.$ajax.post("GetAllElementClassifyByRID",
-                that.$qs.stringify({
-                        RID: row.ID
-                    })).then(function (res) {
-                        that.ClassifyList = res.data;
-                    });
+                
                 //单击资源目录保存资源ID
                 that.treedata = row.ID;
                 //单击资源目录保存当前行记录
@@ -943,6 +937,7 @@
                     //返回成功调用
                     .then(function (res) {
                         that.ElementTableData = res.data;
+                        //刷新要素目录的分类字段
                         that.ElementList = res.data;
                     })
                     //返回失败调用
@@ -954,7 +949,8 @@
                         RID: row.ID
                     }))
                     .then(function (res) {
-                        that.ElementClassifyTableData = res.data;                        
+                        that.ElementClassifyTableData = res.data;
+                        that.ClassifyList = res.data;                        
                     })
                     .catch(function (res) { })
                 //统计指标

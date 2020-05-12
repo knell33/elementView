@@ -10,7 +10,6 @@ export function ClassifyhandleAdd(_this) {
     } else {
         _this.choosetitle = "新增要素分类";
         _this.ClassifydialogFormVisible = true;
-        //console.log(this.srow);
         _this.cform.RID = _this.rid; //将单击树形后的当前ID赋值给表单的RID
         _this.mark = 1; //编辑标识
         _this.form = {}; //清空表单
@@ -21,30 +20,9 @@ export function ClassifyhandleAdd(_this) {
 export function ClassifyhandleUpdate(_this) {
     _this.choosetitle = "修改要素分类";
     _this.mark = 2;
-    //console.log(this.srow);
-    //console.log(this.mark);cr
     _this.ClassifydialogFormVisible = true;
     _this.cform = _this.crow;
 }
-// //获取类型数据
-// export function getTypeData(_this) {
-//     var that = this;
-//     this.$ajax.post('GetTypeByRID',
-//             this.$qs.stringify({
-//                 RID: this.form.PID
-//             }))
-//         //返回成功调用
-//         .then(function (res) {
-//             var GetType = res.data[0].Type;
-//             that.getType = GetType;
-//             //  console.log("调用");
-//             //  console.log(that.getType);
-//         })
-//         //返回失败调用
-//         .catch(function (res) {
-//             console.log("没有找到类型");
-//         });
-// }
 
 //点击确认
 export function ClassifysubmitForm(_this) {
@@ -63,7 +41,6 @@ export function ClassifysubmitForm(_this) {
                         duration: 4000,
                         offset: 40
                     });
-                    //that.ElementClassifyTableData.push(that.cform);
                     //局部刷新-要素分类
                     that.$ajax.post('GetAllElementClassifyByRID',
                             that.$qs.stringify({
@@ -71,15 +48,10 @@ export function ClassifysubmitForm(_this) {
                             }))
                         .then(function(res) {
                             that.ElementClassifyTableData = res.data;
-                        })
-                        .catch();
-                    //刷新要素目录的分类字段
-                    that.$ajax.post("GetAllElementClassifyByRID",
-                    that.$qs.stringify({
-                            RID: that.cform.RID
-                        })).then(function (res) {
+                            //刷新要素目录的分类字段
                             that.ClassifyList = res.data;
-                        });
+                        })
+                        .catch();                   
                     that.ClassifydialogFormVisible = false;
                     that.cform = {};
                     that.cmark = null;

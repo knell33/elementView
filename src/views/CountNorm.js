@@ -74,6 +74,18 @@ export function submitCountNorm(_this) {
                             that.CountNormTableData = res.data;
                         })
                         .catch(function(res) {})
+                    //局部刷新-要素目录
+                    that.$ajax.post('GetAllELementByResourceID',
+                    that.$qs.stringify({
+                        RID: that.form.RID
+                    }))
+                    //返回成功调用
+                    .then(function (res) {
+                        that.ElementTableData = res.data;
+                    })
+                    //返回失败调用
+                    .catch(function (res) {
+                    });
                     that.dialogFormVisibleCountNorm = false;
                     that.form = {};
                     that.mark = null;
@@ -105,7 +117,18 @@ export function submitCountNorm(_this) {
                     that.dialogFormVisibleCountNorm = false;
                     that.form = {};
                     that.mark = null;
-
+                    //局部刷新-要素目录
+                    that.$ajax.post('GetAllELementByResourceID',
+                    that.$qs.stringify({
+                        RID: that.srow.RID
+                    }))
+                    //返回成功调用
+                    .then(function (res) {
+                        that.ElementTableData = res.data;
+                    })
+                    //返回失败调用
+                    .catch(function (res) {
+                    });
                 })
                 //返回失败调用
                 .catch((res) => {
@@ -151,7 +174,6 @@ export function countNormDelete(_this) {
                 type: 'warning'
             })
             .then(() => {
-                //console.log(self.rid);
                 self.$ajax.delete('DeleteCountNormByID', {
                         params: ({
                             countNormID: self.rid
@@ -170,6 +192,19 @@ export function countNormDelete(_this) {
                                 message: '删除成功!'
                             });
                             _this.$delete(_this.CountNormTableData, _this.srow.row_index);
+                            //局部刷新-要素目录
+                            self.$ajax.post('GetAllELementByResourceID',
+                            self.$qs.stringify({
+                                RID: self.srow.RID
+                            }))
+                            //返回成功调用
+                            .then(function (res) {
+                                self.ElementTableData = res.data;
+                            })
+                            //返回失败调用
+                            .catch(function (res) {
+                            });
+                            
                         }
                         //location.reload();
                     })
