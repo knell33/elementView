@@ -52,11 +52,26 @@ export function submitMainAuthority(_this) {
     var that = _this;
     that.aform.LastDate = NowDate();
     if (that.mark === 7) {
-        //权限类型-格式化  将数组转换为字符串
-        let totalType = that.aform.AuthorityType.join(",");
-        that.aform.AuthorityType = totalType;
-        that.aform.LastModify = that.UserName;
-        that.$ajax.post('CreateMainAuthority', that.aform)
+        if(that.aform.RoleID == "" || that.aform.RoleID == undefined || that.aform.RoleID == null){
+            that.$message({
+                type: 'warning',
+                message: '角色不能为空,请选择',
+                duration: 4000,
+                offset: 40
+            });
+        }else if(that.aform.AuthorityType == "" || that.aform.AuthorityType == undefined || that.aform.AuthorityType == null){
+            that.$message({
+                type: 'warning',
+                message: '权限类型不能为空，请选择',
+                duration: 4000,
+                offset: 40
+            });
+        }else{
+             //权限类型-格式化  将数组转换为字符串
+            let totalType = that.aform.AuthorityType.join(",");
+            that.aform.AuthorityType = totalType;
+            that.aform.LastModify = that.UserName;
+            that.$ajax.post('CreateMainAuthority', that.aform)
             //返回成功调用
             .then(function(res) {
                 that.$message({
@@ -90,7 +105,7 @@ export function submitMainAuthority(_this) {
             .catch((res) => {
                 that.$message({
                     type: 'warning',
-                    message: '新增异常',
+                    message: '选择资源明细数据无效，请重新选择！',
                     duration: 4000,
                     offset: 40
                 });
@@ -98,7 +113,7 @@ export function submitMainAuthority(_this) {
                 that.aform = {};
                 that.mark = null;
             });
-
+        }
     } else if (that.mark === 8) {
         //权限类型-格式化   方便保存到数据库
         let totalType = that.aform.AuthorityType.join(",");
