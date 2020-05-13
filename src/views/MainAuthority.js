@@ -66,6 +66,13 @@ export function submitMainAuthority(_this) {
                 duration: 4000,
                 offset: 40
             });
+        }else if(that.aform.Type == "" || that.aform.Type == undefined || that.aform.Type == null){
+            that.$message({
+                type: 'warning',
+                message: '类型不能为空，请选择',
+                duration: 4000,
+                offset: 40
+            });
         }else{
              //权限类型-格式化  将数组转换为字符串
             let totalType = that.aform.AuthorityType.join(",");
@@ -233,6 +240,7 @@ export function getDetailname(_this, val) {
     if (val == "资源明细") {
         that.aform.MID = that.detailID;
         that.aform.MainName = that.detailName;
+        console.log(that.detailName);
         that.isMainName = true;
     } else if (val == "要素") {
         that.isMainName = false;

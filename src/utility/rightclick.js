@@ -144,6 +144,12 @@ export function rightClickMainAuthority(_this, row, event, state) {
     } else {
         _this.disabledvalue = true
     }
+    //判断修改的类型为要素则主体名称可选
+    if(row.Type == "要素"){
+        self.isMainName = false;
+    }else{
+        self.isMainName = true;
+    }
     _this.srow = JSON.parse(JSON.stringify(row)); //将当前行的数据保存至srow中
     _this.aid = row.AID;
     //console.log()

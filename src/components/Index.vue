@@ -453,12 +453,15 @@
                                 <el-select v-model="aform.Type" placeholder="请选择类型" style="width: 100%"
                                     @change="RolechangeName">
                                     <el-option label="资源明细" value="资源明细"></el-option>
-                                    <!-- <el-option label="要素" value="要素"></el-option> -->
+                                    <el-option label="要素" value="要素"></el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="主体名称">
-                                <el-input v-model="aform.MainName" :disabled="isMainName"
-                                    @input="changeMainName($event)"></el-input>
+                                    <el-select :disabled="isMainName" v-model="aform.MainName" @change="changeMainName($event)"
+                                    filterable  placeholder="请选择资源" style="width: 100%">
+                                    <el-option v-for="(item,index) in ElementList" :label="item.Name" :value="item.EID"
+                                        :key="index"></el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item label="角色">
                                 <el-select v-model="aform.RoleID" placeholder="请选择要素名称" style="width: 100%" filterable
